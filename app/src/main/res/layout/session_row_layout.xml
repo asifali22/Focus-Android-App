@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view_session"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/cardMarginVertical"
+    android:layout_marginLeft="@dimen/cardMarginHorizontal"
+    android:layout_marginRight="@dimen/cardMarginHorizontal"
+    android:layout_marginTop="@dimen/cardMarginVertical"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="2dp"
+    app:cardPreventCornerOverlap="false">
+
+
+
+
+
+        <LinearLayout
+            android:id="@+id/post_body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:id="@+id/post_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:paddingBottom="4dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="8dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/user_profile_image_session"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="start"
+                    android:layout_marginLeft="8dp"
+                    android:src="@drawable/blank_person_final" />
+
+                <TextView
+                    android:id="@+id/user_name_session"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toRightOf="@+id/user_profile_image_session"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Name"
+                    android:textAppearance="@android:style/TextAppearance.Holo.Small"
+                    android:textColor="#000"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/time_session"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/user_name_session"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toRightOf="@+id/user_profile_image_session"
+                    android:text="Day, Date @ Time"
+                    android:textAppearance="@android:style/TextAppearance.Holo.Small"
+                    android:textColor="#88000000"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/session_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:lineSpacingExtra="1.6sp"
+                android:maxLines="2"
+                android:paddingBottom="8dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="8dp"
+                android:text="Description"
+                android:textAppearance="@android:style/TextAppearance.SearchResult.Subtitle"
+                android:textColor="#cc000000" />
+
+            <android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:gravity="center">
+
+
+                <ImageView
+                    android:id="@+id/session_image"
+                    android:background="#e3e3e3"
+                    app:layout_aspectRatio="178%"
+                    android:scaleType="centerCrop"
+                    app:layout_widthPercent="100%" />
+
+                <TextView
+                    android:id="@+id/session_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/session_image"
+                    android:layout_gravity="bottom"
+                    android:background="#99000000"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingTop="8dp"
+                    android:text="TITLE"
+                    android:textAppearance="@android:style/TextAppearance.Holo.SearchResult.Title"
+                    android:textColor="@android:color/white" />
+
+            </android.support.percent.PercentRelativeLayout>
+        </LinearLayout>
+</android.support.v7.widget.CardView>

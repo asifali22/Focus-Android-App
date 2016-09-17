@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1022523501019",
+    "firebase_url": "https://focus-46bf1.firebaseio.com",
+    "project_id": "focus-46bf1",
+    "storage_bucket": "focus-46bf1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1022523501019:android:220c788012ddebd2",
+        "android_client_info": {
+          "package_name": "com.hybrid.freeopensourceusers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1022523501019-6tklecgqt383is7k461p59f10e695s9b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNDKOdjd7U9eaBdjUIKxcTKtifj7akhCY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

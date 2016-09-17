@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">FreeOpensourCeUsers</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment sdfkjsdnfnsjdnfsjkfisbfs
+        fuisfsidnfjksndkjfsndfuisdfbjsdffdsfjkgudsgsdjfgkdjfguuidshg8yajasbfsdhfuysadfuasdfsh
+        hufhahudfuashdfuiahsifhashdfiusdfhsakdaksfknfnsdfjknsdkfnskdnfksnaisfan
+        askkjdfnkjasnfkansjfasnjkfnkanfkjanskfnjasnfnajkfnkasnfkanfakebfabfkajsndflknaiefuifuiaef
+        afanfjkndfjksnjkfnjskfnsuifasbflaelfjnwuilnfnasfnafbaf</string>
+
+    <string name="description">You can also make one dimension be a fraction of the other by setting only width or height and using ...</string>
+    <string name="facebook_app_id">306215729724983</string>
+    <string name="ipsum">As with many things in software development, the Design support library improved with time, adding support for bottom sheets with the 23.2 release. In this article, you learn how to easily implement the bottom sheet pattern into your own apps. A sample project for this article can be found on GitHub.</string>
+
+
+</resources>
