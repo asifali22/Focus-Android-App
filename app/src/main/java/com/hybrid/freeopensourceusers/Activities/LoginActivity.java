@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity implements
     ImageView logoImage;
     GoogleApiClient mGoogleApiClient;
     EditText input_email, input_password;
-    TextView invalidPop;
+    TextView invalidPop, navigateToRegister;
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
     private ProgressDialog mProgressDialog;
@@ -81,10 +81,12 @@ public class LoginActivity extends AppCompatActivity implements
         logoImage = (ImageView) findViewById(R.id.logoImageeView);
         invalidPop = (TextView) findViewById(R.id.invalidPop);
         input_email = (EditText) findViewById(R.id.input_email);
+        navigateToRegister = (TextView) findViewById(R.id.createOneLink);
         input_password = (EditText) findViewById(R.id.input_password);
         Login = (Button) findViewById(R.id.btn_login);
         Login.setOnClickListener(this);
         Glide.with(this).load(R.drawable.focus).into(logoImage);
+
 
 
         // Configure sign-in to request the user's ID, email address, and basic
@@ -238,6 +240,12 @@ public class LoginActivity extends AppCompatActivity implements
         callbackManager.onActivityResult(requestCode, resultCode, data);
         Log.e("data", data.toString());
     }
+
+
+    public void navigateToRegister(View view){
+        startActivity(new Intent(this, RegisterActivity.class));
+    }
+
     public void loginUser() {
         final String email = input_email.getText().toString().trim();
         if (email.isEmpty()) {

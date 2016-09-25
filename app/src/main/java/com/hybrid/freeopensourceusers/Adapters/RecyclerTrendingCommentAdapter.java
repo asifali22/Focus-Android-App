@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
@@ -42,6 +43,7 @@ public class RecyclerTrendingCommentAdapter extends RecyclerView.Adapter<Recycle
     private MyApplication myApplication;
 //    private ImageLoader imageLoader;
 
+
     public RecyclerTrendingCommentAdapter(Context context) {
         myApplication = MyApplication.getInstance();
         layoutInflater = LayoutInflater.from(context);
@@ -72,7 +74,7 @@ public class RecyclerTrendingCommentAdapter extends RecyclerView.Adapter<Recycle
     }
 
     @Override
-    public void onBindViewHolder(final ViewholderCommentsFeed holder, int position) {
+    public void onBindViewHolder(final ViewholderCommentsFeed holder, final int position) {
 
         final MyTextDrawable myTextDrawable = new MyTextDrawable();
         final CommentFeed commentFeed = commentsFeedArrayList.get(position);
@@ -110,6 +112,21 @@ public class RecyclerTrendingCommentAdapter extends RecyclerView.Adapter<Recycle
             holder.avatar.setImageDrawable(myTextDrawable.setTextDrawable(commentFeed.getUser_name()));
         }
 
+        holder.body.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (holder.timeOfComment.getVisibility() == View.GONE) {
+                    holder.timeOfComment.setVisibility(View.VISIBLE);
+
+                }
+                else {
+                    holder.timeOfComment.setVisibility(View.GONE);
+
+                }
+            }
+        });
+
     }
 
     @Override
@@ -121,6 +138,7 @@ public class RecyclerTrendingCommentAdapter extends RecyclerView.Adapter<Recycle
 
         CircleImageView avatar;
         TextView name, timeOfComment, comment;
+        LinearLayout body;
 
         public ViewholderCommentsFeed(View itemView) {
             super(itemView);
@@ -128,7 +146,11 @@ public class RecyclerTrendingCommentAdapter extends RecyclerView.Adapter<Recycle
             name = (TextView) itemView.findViewById(R.id.name_user);
             timeOfComment = (TextView) itemView.findViewById(R.id.time_of_comment);
             comment = (TextView) itemView.findViewById(R.id.comment_text);
+            body = (LinearLayout) itemView.findViewById(R.id.body);
+
         }
+
+
     }
 
 }

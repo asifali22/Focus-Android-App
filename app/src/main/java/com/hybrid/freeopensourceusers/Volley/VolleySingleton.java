@@ -14,28 +14,12 @@ public class VolleySingleton {
     // Instance of the this class
     private static VolleySingleton mInstance = null;
 
-    // Instance of Image loader
-    private static ImageLoader imageLoader;
 
     private static RequestQueue mRequestQueue;
 
     // Constructor
     private VolleySingleton() {
         mRequestQueue = Volley.newRequestQueue(MyApplication.getAppContext());
-        imageLoader = new ImageLoader(mRequestQueue, new ImageLoader.ImageCache() {
-
-            private LruCache<String, Bitmap> cache = new LruCache<>((int) (Runtime.getRuntime().maxMemory() / 1024) / 8);
-
-            @Override
-            public Bitmap getBitmap(String url) {
-                return cache.get(url);
-            }
-
-            @Override
-            public void putBitmap(String url, Bitmap bitmap) {
-                cache.put(url, bitmap);
-            }
-        });
     }
 
     // Instance getter
@@ -51,7 +35,4 @@ public class VolleySingleton {
         return mRequestQueue;
     }
 
-    public ImageLoader getImageLoader() {
-        return imageLoader;
-    }
 }

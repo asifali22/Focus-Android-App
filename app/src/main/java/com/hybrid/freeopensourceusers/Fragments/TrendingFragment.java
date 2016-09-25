@@ -1,6 +1,7 @@
 package com.hybrid.freeopensourceusers.Fragments;
 
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,7 +10,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -19,10 +22,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
@@ -34,10 +41,16 @@ import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.Callback.FabClickListener;
 import com.hybrid.freeopensourceusers.Callback.PostFeedLoadingListener;
 import com.hybrid.freeopensourceusers.PojoClasses.PostFeed;
+import com.hybrid.freeopensourceusers.PojoClasses.SampleSuggestionsBuilder;
+import com.hybrid.freeopensourceusers.PojoClasses.SimpleAnimationListener;
 import com.hybrid.freeopensourceusers.R;
 import com.hybrid.freeopensourceusers.Sqlite.DatabaseOperations;
 import com.hybrid.freeopensourceusers.Task.TaskLoadPostFeed;
 import com.hybrid.freeopensourceusers.UserProfileStuff.UserProfile;
+
+import org.cryse.widget.persistentsearch.DefaultVoiceRecognizerDelegate;
+import org.cryse.widget.persistentsearch.PersistentSearchView;
+import org.cryse.widget.persistentsearch.VoiceRecognitionDelegate;
 
 import java.util.ArrayList;
 
@@ -49,8 +62,8 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class TrendingFragment extends Fragment implements PostFeedLoadingListener,FabClickListener{
 
-
     private ArrayList<PostFeed> newsFeedsList = new ArrayList<>();
+
     private RecyclerView trendingRecyclerView;
     private RecyclerTrendingAdapter mRecyclerTrendingAdapter;
     private static final String POST_FEED = "post_feed";
@@ -60,11 +73,14 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
         // Required empty public constructor
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_trending, container, false);
+
+
         trendingRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefreshForTrendingPost);
         trendingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -118,6 +134,8 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
                 android.R.color.holo_green_light,
                 android.R.color.holo_red_light);
         mRecyclerTrendingAdapter.setFeed(newsFeedsList);
+
+
         return view;
     }
 
@@ -160,12 +178,7 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
         else if(!isLoggedIn())
             showAlertDialog(getView());
     }
-    public boolean isLoggedIn() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user_details", MODE_PRIVATE);
-        boolean status = sharedPreferences.getBoolean("logged_in", false);
-        return status;
 
-    }
     private void showAlertDialog(View view) {
         new AlertDialog.Builder(view.getContext())
                 .setTitle("Sign up?")
@@ -183,4 +196,13 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
                 })
                 .show();
     }
+
+
+    public boolean isLoggedIn() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user_details", getActivity().MODE_PRIVATE);
+        boolean status = sharedPreferences.getBoolean("logged_in", false);
+        return status;
+
+    }
+
 }

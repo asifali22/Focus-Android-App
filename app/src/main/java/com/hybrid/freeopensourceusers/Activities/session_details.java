@@ -65,6 +65,7 @@ public class session_details extends AppCompatActivity {
         coo=(TextView) findViewById(R.id.nameOfCoordinator);
         sessionPic = (ImageView) findViewById(R.id.postpicImageSession);
 
+
         collapsingToolbarLayout.setTitle(title);
         des.setText(desc);
         resource_person.setText(rp);

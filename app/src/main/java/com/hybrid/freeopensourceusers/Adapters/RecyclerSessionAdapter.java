@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.bumptech.glide.Glide;
 import com.hybrid.freeopensourceusers.Activities.session_details;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
+import com.hybrid.freeopensourceusers.PojoClasses.PostFeed;
 import com.hybrid.freeopensourceusers.PojoClasses.SessionFeed;
 import com.hybrid.freeopensourceusers.R;
 import com.hybrid.freeopensourceusers.Utility.MyTextDrawable;
@@ -45,18 +48,20 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
     public VolleySingleton volleySingleton;
     public RequestQueue requestQueue;
     public MyApplication myApplication;
-    public ImageLoader imageLoader;
+  //  public ImageLoader imageLoader;
     public Context context;
     public DateFormat dateFormat = new SimpleDateFormat("EEE, MMM dd 'at' h:mm a");
     private int previousPosition = 0;
+    private ClickCallback clickCallback;
 
     public RecyclerSessionAdapter(Context context){
         myApplication = MyApplication.getInstance();
         layoutInflater = LayoutInflater.from(context);
         volleySingleton = VolleySingleton.getInstance();
         requestQueue = volleySingleton.getRequestQueue();
-        imageLoader = volleySingleton.getImageLoader();
+       // imageLoader = volleySingleton.getImageLoader();
         this.context=context;
+        setCallback(clickCallback);
     }
     public void setFeed(ArrayList<SessionFeed> newsFeedArrayList) {
         this.sessiofeedArrayList = newsFeedArrayList;
@@ -96,51 +101,14 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
             holder.imageView.setImageDrawable(myTextDrawable.setTextDrawableForPost(sessionFeed.getSession_title(), "No Image!"));
             // default
         }
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
+        holder.post_body.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(context,session_details.class);
-                i.putExtra("id",sessionFeed.getSession_id());
-                i.putExtra("title",sessionFeed.getSession_title());
-                i.putExtra("desc",sessionFeed.getSession_description());
-                i.putExtra("picurl",sessionFeed.getSession_image());
-                i.putExtra("venue",sessionFeed.getS_venue());
-                i.putExtra("coord",sessionFeed.getS_coordinator());
-                i.putExtra("email",sessionFeed.getS_c_email());
-                i.putExtra("phone",sessionFeed.getS_c_phone());
-                i.putExtra("rp",sessionFeed.getResource_person());
-                i.putExtra("rpd",sessionFeed.getRp_desg());
-                i.putExtra("addr",sessionFeed.getAddress());
-                i.putExtra("date_time",sessionFeed.getTime_and_date());
-                i.putExtra("room",sessionFeed.getRoom());
-                Log.e("ADARSH",Integer.toString(sessionFeed.getSession_id())+" "+sessionFeed.getSession_title()+
-                " "+sessionFeed.getSession_description()+" "+sessionFeed.getSession_image()+" "+ sessionFeed.getResource_person()+
-                " "+sessionFeed.getRoom());
-                context.startActivity(i);
-            }
-        });
-        holder.title_session.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(context,session_details.class);
-                i.putExtra("id",sessionFeed.getSession_id());
-                i.putExtra("title",sessionFeed.getSession_title());
-                i.putExtra("desc",sessionFeed.getSession_description());
-                i.putExtra("picurl",sessionFeed.getSession_image());
-                i.putExtra("venue",sessionFeed.getS_venue());
-                i.putExtra("coord",sessionFeed.getS_coordinator());
-                i.putExtra("email",sessionFeed.getS_c_email());
-                i.putExtra("phone",sessionFeed.getS_c_phone());
-                i.putExtra("rp",sessionFeed.getResource_person());
-                i.putExtra("rpd",sessionFeed.getRp_desg());
-                i.putExtra("addr",sessionFeed.getAddress());
-                i.putExtra("date_time",sessionFeed.getTime_and_date());
-                i.putExtra("room",sessionFeed.getRoom());
-
-                context.startActivity(i);
+                clickCallback.openSessionDetails(sessionFeed, holder);
 
             }
         });
+
         holder.user_name.setText(sessionFeed.getUser_name()+"");
         Date gotDate = sessionFeed.getDosp();
         String formatedDate = dateFormat.format(gotDate);
@@ -161,6 +129,24 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
             // default
             holder.circleImageView.setImageDrawable(myTextDrawable.setTextDrawable(sessionFeed.getUser_name()));
         }
+
+        holder.post_header.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickCallback.openProfile(sessionFeed, holder);
+            }
+        });
+
+
+    }
+
+    public void setCallback(ClickCallback callback) {
+        this.clickCallback = callback;
+    }
+
+    public interface ClickCallback {
+        void openProfile(SessionFeed sessionFeed, ViewholderSessionFeed viewHolder);
+        void openSessionDetails(SessionFeed sessionFeed, ViewholderSessionFeed viewHolder);
     }
 
     @Override
@@ -168,14 +154,16 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
         return sessiofeedArrayList.size();
     }
 
-    static class ViewholderSessionFeed extends RecyclerView.ViewHolder {
+    public static class ViewholderSessionFeed extends RecyclerView.ViewHolder {
         public ImageView imageView;
         public TextView title_session;
         public TextView description;
         public CardView cardView;
+        public RelativeLayout post_header;
+        public LinearLayout post_body;
         public TextView user_name;
         public TextView date;
-        CircleImageView circleImageView;
+        public CircleImageView circleImageView;
         public ViewholderSessionFeed(View view) {
             super(view);
             cardView = (CardView) view.findViewById(R.id.card_view_session);
@@ -185,6 +173,8 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
             user_name = (TextView) view.findViewById(R.id.user_name_session);
             date = (TextView) view.findViewById(R.id.time_session);
             circleImageView = (CircleImageView) view.findViewById(R.id.user_profile_image_session);
+            post_body = (LinearLayout) view.findViewById(R.id.post_body_session);
+            post_header = (RelativeLayout) view.findViewById(R.id.post_header_session);
         }
     }
 

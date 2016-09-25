@@ -11,10 +11,14 @@
         android:id="@+id/miniProfile"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        app:civ_border_overlay="true"
+        app:civ_border_width="4dp"
+        app:civ_border_color="#fff"
         android:layout_marginLeft="4dp"
         android:src="@drawable/blank_person_final" />
 
     <LinearLayout
+        android:id="@+id/body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/miniProfile"
@@ -28,8 +32,7 @@
             android:layout_marginLeft="8dp"
             android:text="Name"
             android:textAppearance="@android:style/TextAppearance.Holo.Small"
-            android:textColor="#000"
-            android:textStyle="bold" />
+            android:textColor="#000" />
 
         <TextView
             android:id="@+id/comment_text"
@@ -38,23 +41,21 @@
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:text="Comment"
+            android:lineSpacingExtra="2dp"
             android:textAppearance="@android:style/TextAppearance.SearchResult.Subtitle"
             android:textColor="#cc000000"
             android:textSize="15dp" />
 
-        <TextView
-            android:id="@+id/time_of_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:layout_marginLeft="8dp"
-            android:text="Day, Date @ Time"
-            android:textAppearance="@android:style/TextAppearance.Holo.Small"
-            android:textColor="#88000000"
-            android:textSize="12sp"
-            android:textStyle="italic" />
-
     </LinearLayout>
-
+    <TextView
+        android:id="@+id/time_of_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/body"
+        android:layout_below="@+id/body"
+        android:text="Day, Date @ Time"
+        android:visibility="gone"
+        android:textAppearance="@android:style/TextAppearance.Holo.Small"
+        android:textSize="12sp" />
 
 </RelativeLayout>

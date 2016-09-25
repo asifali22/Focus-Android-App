@@ -8,7 +8,20 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
         <item name="android:windowTransitionBackgroundFadeDuration" tools:targetApi="lollipop">300</item>
+
     </style>
+
+
+    <!--&lt;!&ndash; Base application theme. &ndash;&gt;-->
+    <!--<style name="AppThemeWhite" parent="Theme.AppCompat.Light.NoActionBar">-->
+        <!--<item name="colorPrimary">@color/colorWhitePrimary</item>-->
+        <!--<item name="colorPrimaryDark">@color/colorWhitePrimary</item>-->
+        <!--<item name="colorAccent">@color/colorAccent</item>-->
+        <!--<item name="android:statusBarColor" tools:targetApi="lollipop">@color/colorWhitePrimary</item>-->
+        <!--<item name="android:windowLightStatusBar" tools:targetApi="m">true</item>-->
+    <!--</style>-->
+
+
 
     <style name="Divider">
         <item name="android:layout_width">match_parent</item>
@@ -19,5 +32,14 @@
     <style name="SessionFitSystem" parent="AppTheme">
         <item name="android:windowTranslucentStatus" tools:targetApi="kitkat">true</item>
     </style>
+
+    <style name="AppTheme.Button.Borderless" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="android:textSize">@dimen/text_size_s</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
+
 
 </resources>

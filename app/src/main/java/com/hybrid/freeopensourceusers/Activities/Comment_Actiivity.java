@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.NavUtils;
 import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -225,7 +226,7 @@ public class Comment_Actiivity extends AppCompatActivity {
 
         switch (id) {
             case android.R.id.home:
-                this.finish();
+               this.finish();
                 return true;
 
         }
@@ -323,7 +324,6 @@ public class Comment_Actiivity extends AppCompatActivity {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             commentAdd.setText("");
-            Toast.makeText(this, "No Network", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -1,12 +1,17 @@
 package com.hybrid.freeopensourceusers.Activities;
 
+import android.app.SearchManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
 import android.animation.Animator;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
+import android.provider.SearchRecentSuggestions;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -15,11 +20,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.CursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,6 +54,7 @@ import com.hybrid.freeopensourceusers.PojoClasses.SimpleAnimationListener;
 import com.hybrid.freeopensourceusers.R;
 import com.hybrid.freeopensourceusers.Fragments.SessionFragment;
 import com.hybrid.freeopensourceusers.Fragments.TrendingFragment;
+import com.hybrid.freeopensourceusers.SearchStuffs.SearchableProvider;
 import com.hybrid.freeopensourceusers.Services.MyFireBaseInstanceIdService;
 import com.hybrid.freeopensourceusers.Sqlite.DatabaseOperations;
 
@@ -62,16 +71,16 @@ public class FirstActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
 
-    private static final int VOICE_RECOGNITION_REQUEST_CODE = 1023;
-    private PersistentSearchView mSearchView;
-    private View mSearchTintView;
-    private RecyclerTrendingAdapter mResultAdapter;
-    private RecyclerView mRecyclerView;
-    private Boolean isSearchOpen = false;
-    private ArrayList<PostFeed> newsFeedsList = new ArrayList<>();
+//    private static final int VOICE_RECOGNITION_REQUEST_CODE = 1023;
+//    private PersistentSearchView mSearchView;
+//    private View mSearchTintView;
+//    private RecyclerTrendingAdapter mResultAdapter;
+//    private RecyclerView mRecyclerView;
+//    private Boolean isSearchOpen = false;
+//    private ArrayList<PostFeed> newsFeedsList = new ArrayList<>();
 
-    private static final int JOB_ID = 100;
-    private static final long POLL_FREQUENCY = 3000;
+//    private static final int JOB_ID = 100;
+//    private static final long POLL_FREQUENCY = 3000;
     MyApplication myApplication;
 //    private JobScheduler mJobScheduler;
 
@@ -94,12 +103,11 @@ public class FirstActivity extends AppCompatActivity implements
 
         //setupJob();
         bindViews();
-        setUpSearchView();
+//        setUpSearchView();
         if(isLoggedIn()&&isOnline()){
             FirebaseMessaging.getInstance().subscribeToTopic("fcm_token");
             MyFireBaseInstanceIdService myFireBaseInstanceIdService = new MyFireBaseInstanceIdService();
             myFireBaseInstanceIdService.registerToken(FirebaseInstanceId.getInstance().getToken());
-            Toast.makeText(this,"HERE",Toast.LENGTH_SHORT).show();
         }
         user_details = getSharedPreferences("user_details", MODE_PRIVATE);
         if(getSharedPreferences("com.hybrid.freeopensourceusers", MODE_PRIVATE).getBoolean("firstrun",true)) {
@@ -153,8 +161,8 @@ public class FirstActivity extends AppCompatActivity implements
 
         mViewPager =    (ViewPager) findViewById(R.id.m_viewpager);
         mTabLayout =    (TabLayout) findViewById(R.id.tab_layout);
-        mSearchView = (PersistentSearchView) findViewById(R.id.searchview);
-        mSearchTintView = findViewById(R.id.view_search_tint);
+//        mSearchView = (PersistentSearchView) findViewById(R.id.searchview);
+//        mSearchTintView = findViewById(R.id.view_search_tint);
         mFab       =    (FloatingActionButton) findViewById(R.id.fabButton);
         mFab.setOnClickListener(this);
         mFab.setTag(TAG_TRENDING_FRAGMENT);
@@ -169,10 +177,12 @@ public class FirstActivity extends AppCompatActivity implements
         if(mTabLayout != null)
             mTabLayout.setupWithViewPager(mViewPager);
 
-        VoiceRecognitionDelegate delegate = new DefaultVoiceRecognizerDelegate(this, VOICE_RECOGNITION_REQUEST_CODE);
-        if(delegate.isVoiceRecognitionAvailable()) {
-            mSearchView.setVoiceRecognitionDelegate(delegate);
-        }
+//        VoiceRecognitionDelegate delegate = new DefaultVoiceRecognizerDelegate(this, VOICE_RECOGNITION_REQUEST_CODE);
+//        if(delegate.isVoiceRecognitionAvailable()) {
+//            mSearchView.setVoiceRecognitionDelegate(delegate);
+//        }
+
+
 
     }
 
@@ -259,10 +269,13 @@ public class FirstActivity extends AppCompatActivity implements
                 finish();
                 break;
 
-            case R.id.action_search:
-                    openSearch();
+//            case R.id.action_search:
+//                    openSearch();
+//                        return true;
 
-                 return true;
+            case R.id.clearSuggestion:
+                SearchRecentSuggestions searchRecentSuggestions = new SearchRecentSuggestions(this, SearchableProvider.AUTHORITY,SearchableProvider.MODE);
+                searchRecentSuggestions.clearHistory();
 
 
         }
@@ -270,14 +283,14 @@ public class FirstActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    public void openSearch() {
-
-
-
-        View menuItemView = findViewById(R.id.action_search);
-        mSearchView.setStartPositionFromMenuItem(menuItemView);
-        mSearchView.openSearch();
-    }
+//    public void openSearch() {
+//
+//
+//
+//        View menuItemView = findViewById(R.id.action_search);
+//        mSearchView.setStartPositionFromMenuItem(menuItemView);
+//        mSearchView.openSearch();
+//    }
 
     private void signOut() {
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
@@ -297,26 +310,66 @@ public class FirstActivity extends AppCompatActivity implements
         inflater.inflate(R.menu.menu_main_logged_out, menu);
         else
         inflater.inflate(R.menu.menu_main_logged_in,menu);
+
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        final CursorAdapter adapter = new SimpleCursorAdapter(
+                this,
+                R.layout.suggestion_item,
+                null,
+                new String[]{SearchManager.SUGGEST_COLUMN_TEXT_1},
+                new int[]{R.id.textView_suggestion},
+                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+
+        searchView.setSuggestionsAdapter(adapter);
+
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Cursor c = getSuggestions(newText);
+                adapter.changeCursor(c);
+                return false;
+            }
+        });
+
+
         return true;
     }
 
+    private Cursor getSuggestions(String newText) {
+        Cursor c = null;
+        ContentResolver contentResolver = getContentResolver();
+        String strUri = "content://"+SearchableProvider.AUTHORITY+"/"+SearchManager.SUGGEST_URI_PATH_QUERY;
+        c = contentResolver.query(Uri.parse(strUri), null, null, new String[]{newText}, null);
+        return c;
+    }
+
+
     @Override
     public void onBackPressed() {
-        if(mSearchView.isSearching()) {
-            mSearchView.closeSearch();
-            mTabLayout.setVisibility(View.VISIBLE);
-
-        } else if(mRecyclerView.getVisibility() == View.VISIBLE) {
-            mResultAdapter.clear();
-            mRecyclerView.setVisibility(View.GONE);
-            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mToolbar.getLayoutParams();
-            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL|AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS| AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
-            mTabLayout.setVisibility(View.VISIBLE);
-
-        } else {
+//        if(mSearchView.isSearching()) {
+//            mSearchView.closeSearch();
+//            mTabLayout.setVisibility(View.VISIBLE);
+//
+//        } else if(mRecyclerView.getVisibility() == View.VISIBLE) {
+//            mResultAdapter.clear();
+//            mRecyclerView.setVisibility(View.GONE);
+//            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mToolbar.getLayoutParams();
+//            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL|AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS| AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
+//            mTabLayout.setVisibility(View.VISIBLE);
+//
+//        } else {
             super.onBackPressed();
             moveTaskToBack(true);
-        }
+//        }
     }
     /*private void constructJob(){
         JobInfo.Builder builder = new JobInfo.Builder(JOB_ID,new ComponentName(this, MyService.class));
@@ -328,142 +381,142 @@ public class FirstActivity extends AppCompatActivity implements
     }*/
 
 
-    public void setUpSearchView() {
-        mRecyclerView = (RecyclerView)findViewById(R.id.recyclerview_search_result);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mResultAdapter = new RecyclerTrendingAdapter(this,new ArrayList<PostFeed>());
-        mRecyclerView.setAdapter(mResultAdapter);
-        mSearchTintView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)  {
-                mSearchView.cancelEditing();
-            }
-        });
-
-        mSearchView.setHomeButtonListener(new PersistentSearchView.HomeButtonListener() {
-
-            @Override
-            public void onHomeButtonClick() {
-                // Hamburger has been clicked
-//                Toast.makeText(FirstActivity.this, "Menu click",
-//                        Toast.LENGTH_LONG).show();
-            }
-
-        });
-        mSearchView.setSuggestionBuilder(new SampleSuggestionsBuilder(this));
-        mSearchView.setSearchListener(new PersistentSearchView.SearchListener() {
-
-            @Override
-            public void onSearchEditOpened() {
-                //Use this to tint the screen
-                mSearchTintView.setVisibility(View.VISIBLE);
-                mSearchTintView
-                        .animate()
-                        .alpha(1.0f)
-                        .setDuration(300)
-                        .setListener(new SimpleAnimationListener())
-                        .start();
-                isSearchOpen = true;
-
-
-
-            }
-
-            @Override
-            public void onSearchEditClosed() {
-                mSearchTintView
-                        .animate()
-                        .alpha(0.0f)
-                        .setDuration(300)
-                        .setListener(new SimpleAnimationListener() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                                mSearchTintView.setVisibility(View.GONE);
-                            }
-                        })
-                        .start();
-                if (isSearchOpen){
-                    AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mToolbar.getLayoutParams();
-                    params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL|AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS| AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
-                    mTabLayout.setVisibility(View.VISIBLE);
-                }
-
-            }
-
-            @Override
-            public boolean onSearchEditBackPressed() {
-                if(mSearchView.isEditing()) {
-                   mSearchView.cancelEditing();
-                    mTabLayout.setVisibility(View.VISIBLE);
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public void onSearchExit() {
-                mResultAdapter.clear();
-                if (mRecyclerView.getVisibility() == View.VISIBLE) {
-                    mRecyclerView.setVisibility(View.GONE);
-                    AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mToolbar.getLayoutParams();
-                    params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL|AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS| AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
-                    mTabLayout.setVisibility(View.VISIBLE);
-                    mFab.setVisibility(View.VISIBLE);
-
-                }
-            }
-
-            @Override
-            public void onSearchTermChanged(String term) {
-
-            }
-
-            @Override
-            public void onSearch(String string) {
-//                Toast.makeText(FirstActivity.this, "Results for " + string , Toast.LENGTH_SHORT).show();
-                AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mToolbar.getLayoutParams();
-                params.setScrollFlags(0);
-                DatabaseOperations dop = new DatabaseOperations(FirstActivity.this);
-                dop.insertSuggestionForSearch(dop,string);
-                isSearchOpen = false;
-                mFab.setVisibility(View.INVISIBLE);
-                mTabLayout.setVisibility(View.GONE);
-                mRecyclerView.setVisibility(View.VISIBLE);
-                fillResultToRecyclerView(string);
-            }
-
-            @Override
-            public void onSearchCleared() {
-
-            }
-
-        });
-
-    }
-
-    private void fillResultToRecyclerView(String query) {
-
-        DatabaseOperations dop = new DatabaseOperations(this);
-        newsFeedsList = dop.readPostForSearch(query,dop);
-//        for(int i =0; i< 100; i++) {
-//            SearchResult result = new SearchResult(query, query + Integer.toString(i), "");
-//            newResults.add(result);
+//    public void setUpSearchView() {
+//        mRecyclerView = (RecyclerView)findViewById(R.id.recyclerview_search_result);
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        mResultAdapter = new RecyclerTrendingAdapter(this,new ArrayList<PostFeed>());
+//        mRecyclerView.setAdapter(mResultAdapter);
+//        mSearchTintView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v)  {
+//                mSearchView.cancelEditing();
+//            }
+//        });
+//
+//        mSearchView.setHomeButtonListener(new PersistentSearchView.HomeButtonListener() {
+//
+//            @Override
+//            public void onHomeButtonClick() {
+//                // Hamburger has been clicked
+////                Toast.makeText(FirstActivity.this, "Menu click",
+////                        Toast.LENGTH_LONG).show();
+//            }
+//
+//        });
+//        mSearchView.setSuggestionBuilder(new SampleSuggestionsBuilder(this));
+//        mSearchView.setSearchListener(new PersistentSearchView.SearchListener() {
+//
+//            @Override
+//            public void onSearchEditOpened() {
+//                //Use this to tint the screen
+//                mSearchTintView.setVisibility(View.VISIBLE);
+//                mSearchTintView
+//                        .animate()
+//                        .alpha(1.0f)
+//                        .setDuration(300)
+//                        .setListener(new SimpleAnimationListener())
+//                        .start();
+//                isSearchOpen = true;
+//
+//
+//
+//            }
+//
+//            @Override
+//            public void onSearchEditClosed() {
+//                mSearchTintView
+//                        .animate()
+//                        .alpha(0.0f)
+//                        .setDuration(300)
+//                        .setListener(new SimpleAnimationListener() {
+//                            @Override
+//                            public void onAnimationEnd(Animator animation) {
+//                                super.onAnimationEnd(animation);
+//                                mSearchTintView.setVisibility(View.GONE);
+//                            }
+//                        })
+//                        .start();
+//                if (isSearchOpen){
+//                    AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mToolbar.getLayoutParams();
+//                    params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL|AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS| AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
+//                    mTabLayout.setVisibility(View.VISIBLE);
+//                }
+//
+//            }
+//
+//            @Override
+//            public boolean onSearchEditBackPressed() {
+//                if(mSearchView.isEditing()) {
+//                   mSearchView.cancelEditing();
+//                    mTabLayout.setVisibility(View.VISIBLE);
+//                    return true;
+//                }
+//                return false;
+//            }
+//
+//            @Override
+//            public void onSearchExit() {
+//                mResultAdapter.clear();
+//                if (mRecyclerView.getVisibility() == View.VISIBLE) {
+//                    mRecyclerView.setVisibility(View.GONE);
+//                    AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mToolbar.getLayoutParams();
+//                    params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL|AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS| AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
+//                    mTabLayout.setVisibility(View.VISIBLE);
+//                    mFab.setVisibility(View.VISIBLE);
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onSearchTermChanged(String term) {
+//
+//            }
+//
+//            @Override
+//            public void onSearch(String string) {
+////                Toast.makeText(FirstActivity.this, "Results for " + string , Toast.LENGTH_SHORT).show();
+//                AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mToolbar.getLayoutParams();
+//                params.setScrollFlags(0);
+//                DatabaseOperations dop = new DatabaseOperations(FirstActivity.this);
+//                dop.insertSuggestionForSearch(dop,string);
+//                isSearchOpen = false;
+//                mFab.setVisibility(View.INVISIBLE);
+//                mTabLayout.setVisibility(View.GONE);
+//                mRecyclerView.setVisibility(View.VISIBLE);
+//                fillResultToRecyclerView(string);
+//            }
+//
+//            @Override
+//            public void onSearchCleared() {
+//
+//            }
+//
+//        });
+//
+//    }
+//
+//    private void fillResultToRecyclerView(String query) {
+//
+//        DatabaseOperations dop = new DatabaseOperations(this);
+//        newsFeedsList = dop.readPostForSearch(query,dop);
+////        for(int i =0; i< 100; i++) {
+////            SearchResult result = new SearchResult(query, query + Integer.toString(i), "");
+////            newResults.add(result);
+////        }
+//
+//
+//        mResultAdapter.replaceWith(newsFeedsList);
+//    }
+//
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
+//            ArrayList<String> matches = data
+//                    .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+//            mSearchView.populateEditText(matches);
 //        }
-
-
-        mResultAdapter.replaceWith(newsFeedsList);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
-            ArrayList<String> matches = data
-                    .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            mSearchView.populateEditText(matches);
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+//        super.onActivityResult(requestCode, resultCode, data);
+//    }
     public boolean isLoggedIn() {
         SharedPreferences sharedPreferences = myApplication.getApplicationContext().getSharedPreferences("user_details", myApplication.getApplicationContext().MODE_PRIVATE);
         boolean status = sharedPreferences.getBoolean("logged_in", false);

@@ -12,6 +12,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <provider
+            android:authorities="com.hybrid.freeopensourceusers.SearchStuffs.SearchableProvider"
+            android:name=".SearchStuffs.SearchableProvider"/>
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -22,6 +25,12 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
+            <meta-data android:name="android.app.default_searchable"
+                android:value=".SearchStuffs.SearchableActivity"/>
+
+
         </activity>
         <activity android:name=".Activities.New_Post">
             <intent-filter>
@@ -57,7 +66,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.LoginActivity" />
-        <activity android:name=".Activities.Comment_Actiivity" />
+        <activity android:name=".Activities.Comment_Actiivity" >
+
+
+        </activity>
         <activity android:name=".Activities.WebViewActivity" />
         <activity android:name=".UserProfileStuff.UserProfile" />
         <activity
@@ -74,18 +86,34 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        
-        <activity android:name=".Activities.new_session_add"></activity>
+
+        <activity android:name=".Activities.new_session_add" />
+
         <service android:name=".Services.MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <service android:name=".Services.MyFireBaseInstanceIdService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
+        <activity android:name=".Activities.RegisterActivity" />
+        <activity android:name=".SearchStuffs.SearchableActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
+
+            <!--<meta-data android:name="android.support.PARENT_ACTIVITY"-->
+                <!--android:value=".Activities.FirstActivity"/>-->
+
+        </activity>
     </application>
 
 </manifest>

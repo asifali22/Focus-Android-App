@@ -324,7 +324,7 @@ public class DatabaseOperations extends SQLiteOpenHelper {
                 postFeed.setUid(cursor.getInt(cursor.getColumnIndex(html_test_const.getUid())));
                 postFeed.setPostPicUrl(cursor.getString(cursor.getColumnIndex(html_test_const.getPost_pic())));
                 postFeed.setUser_pic(cursor.getString(cursor.getColumnIndex(html_test_const.getUser_pic())));
-
+                postFeed.setUser_status(cursor.getString(cursor.getColumnIndex(html_test_const.getUser_status())));
                 newsFeedList.add(postFeed);
 
             } while (cursor.moveToNext());

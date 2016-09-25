@@ -4,4 +4,11 @@
     <color name="colorPrimaryDark">#00796B</color>
     <color name="colorAccent">#FF9800</color>
     <color name="colorAccentDark">#FF5000</color>
+
+    <color name="colorWhitePrimary">#fff</color>
+
+
+    <color name="overlay">#AA1C1C1C</color>
+    <color name="windowBackground">#1C1C1C</color>
+    <color name="divider">#333333</color>
 </resources>

@@ -2,10 +2,8 @@
 
 <RelativeLayout android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:background="@color/colorPrimaryDark"
     xmlns:android="http://schemas.android.com/apk/res/android" >
-
-
-
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -16,13 +14,41 @@
     android:id="@+id/linear"
     tools:context="com.hybrid.freeopensourceusers.Activities.New_Post">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/linkTv"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:text="Link"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_editor_insert_link"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:textColor="@android:color/white"/>
+
     <EditText
         android:id="@+id/input_user_link"
         android:layout_width="match_parent"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:ellipsize="end"
+        android:textColorLink="@android:color/white"
+        android:backgroundTint="@android:color/white"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:hint="URL" />
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/linkTv"
+        android:textColorHint="@android:color/white"
+        android:textColorHighlight="@android:color/white"
+        android:textColor="@android:color/white"
+        android:hint="Link" />
 
+    </RelativeLayout>
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">

@@ -10,4 +10,8 @@
     <dimen name="image_final_width">32dp</dimen>
     <dimen name="image_width">120dp</dimen>
     <dimen name="spacing_normal">16dp</dimen>
+    <dimen name="text_size_m">20sp</dimen>
+    <dimen name="text_size_s">16sp</dimen>
+    <dimen name="button_height">48dp</dimen>
+
 </resources>
