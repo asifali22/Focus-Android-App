@@ -198,25 +198,27 @@
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp">
 
-            <Button
+            <TextView
                 android:id="@+id/cancelButtonDialog"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
+                android:layout_marginRight="16dp"
                 android:layout_toLeftOf="@+id/addButtonDialog"
-                android:background="@android:color/white"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
+                android:padding="8dp"
                 android:text="CANCEL"
                 android:textColor="@color/colorPrimary"/>
 
-            <Button
+            <TextView
                 android:id="@+id/addButtonDialog"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="16dp"
-                android:background="@android:color/white"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
+                android:padding="8dp"
                 android:text="ADD"
                 android:textColor="@color/colorPrimary" />
 
