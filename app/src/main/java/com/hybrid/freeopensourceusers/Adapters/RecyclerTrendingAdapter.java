@@ -4,13 +4,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
-import android.support.v4.app.ActivityOptionsCompat;
 
-import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,8 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -38,12 +32,9 @@ import com.hybrid.freeopensourceusers.Activities.WebViewActivity;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.PojoClasses.Likes;
 import com.hybrid.freeopensourceusers.Sqlite.DatabaseOperations;
-import com.hybrid.freeopensourceusers.Task.TaskLoadPostFeed;
-import com.hybrid.freeopensourceusers.UserProfileStuff.UserProfile;
 import com.hybrid.freeopensourceusers.Utility.MyTextDrawable;
 import com.hybrid.freeopensourceusers.PojoClasses.PostFeed;
 import com.hybrid.freeopensourceusers.R;
-import com.hybrid.freeopensourceusers.Utility.RecyclerViewAnimation;
 import com.hybrid.freeopensourceusers.Utility.Utility;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
 import com.like.LikeButton;
@@ -59,7 +50,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -76,7 +66,6 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
     private MyApplication myApplication;
 //    public ImageLoader imageLoader;
     private DatabaseOperations dop;
-    private int previousPosition = 0;
     private ClickCallback clickCallback;
 
     public RecyclerTrendingAdapter(Context context, ArrayList<PostFeed> newsFeedArrayList) {
@@ -108,19 +97,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
     @Override
     public void onBindViewHolder(final ViewholderPostFeed holder, final int position) {
 
-        if (position > previousPosition)
-            RecyclerViewAnimation.animateRecyclerView(holder, true);
-        else
-            RecyclerViewAnimation.animateRecyclerView(holder, false);
-        previousPosition = position;
-//        //Animation
-//        int lastPosition = -1;
-//        Animation animation = AnimationUtils.loadAnimation(myApplication.getApplicationContext(),
-//                (position > lastPosition) ? R.anim.up_from_bottom
-//                        : R.anim.down_from_top);
-//        holder.itemView.startAnimation(animation);
-//        lastPosition = position;
-        //For textDrawable image
+
         final MyTextDrawable myTextDrawable = new MyTextDrawable();
 
         final PostFeed postFeed = newsFeedArrayList.get(position);

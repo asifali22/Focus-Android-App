@@ -54,6 +54,9 @@ import org.cryse.widget.persistentsearch.VoiceRecognitionDelegate;
 
 import java.util.ArrayList;
 
+import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
+import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+
 import static android.content.Context.MODE_PRIVATE;
 
 
@@ -100,7 +103,8 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
                 startActivity(myIntent, options.toBundle());
             }
         });
-        trendingRecyclerView.setAdapter(mRecyclerTrendingAdapter);
+        AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(mRecyclerTrendingAdapter);
+        trendingRecyclerView.setAdapter( new ScaleInAnimationAdapter(alphaAdapter));
         if (savedInstanceState != null) {
             newsFeedsList = savedInstanceState.getParcelableArrayList(POST_FEED);
         } else {

@@ -52,6 +52,7 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile 'org.cryse.widget:persistentsearchview:1.0.4@aar'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha5'
+    compile 'jp.wasabeef:recyclerview-animators:2.2.4'
     testCompile 'junit:junit:4.12'
 }
 apply plugin: 'com.google.gms.google-services'

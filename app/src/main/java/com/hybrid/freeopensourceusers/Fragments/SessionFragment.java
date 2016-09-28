@@ -36,6 +36,9 @@ import com.hybrid.freeopensourceusers.UserProfileStuff.UserProfile;
 
 import java.util.ArrayList;
 
+import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
+import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,7 +65,8 @@ public class SessionFragment extends Fragment implements SessionFeedLoadingListe
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
         recyclerSessionAdapter = new RecyclerSessionAdapter(getContext());
-        recyclerView.setAdapter(recyclerSessionAdapter);
+        AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(recyclerSessionAdapter);
+        recyclerView.setAdapter( new ScaleInAnimationAdapter(alphaAdapter));
         recyclerSessionAdapter.setCallback(new RecyclerSessionAdapter.ClickCallback() {
             @Override
             public void openProfile(SessionFeed sessionFeed, RecyclerSessionAdapter.ViewholderSessionFeed viewHolder) {

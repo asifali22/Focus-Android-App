@@ -65,26 +65,12 @@ import org.cryse.widget.persistentsearch.VoiceRecognitionDelegate;
 import java.util.ArrayList;
 import java.util.List;
 
-//import me.tatarka.support.job.JobScheduler;
 
 public class FirstActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
 
-//    private static final int VOICE_RECOGNITION_REQUEST_CODE = 1023;
-//    private PersistentSearchView mSearchView;
-//    private View mSearchTintView;
-//    private RecyclerTrendingAdapter mResultAdapter;
-//    private RecyclerView mRecyclerView;
-//    private Boolean isSearchOpen = false;
-//    private ArrayList<PostFeed> newsFeedsList = new ArrayList<>();
-
-//    private static final int JOB_ID = 100;
-//    private static final long POLL_FREQUENCY = 3000;
     MyApplication myApplication;
-//    private JobScheduler mJobScheduler;
-
-
     private ViewPager mViewPager ;
     private Toolbar mToolbar;
     private TabLayout mTabLayout;
@@ -124,17 +110,6 @@ public class FirstActivity extends AppCompatActivity implements
 
     }
 
-    /*private void setupJob() {
-        mJobScheduler = JobScheduler.getInstance(this);
-        //set an initial delay with a Handler so that the data loading by the JobScheduler does not clash with the loading inside the Fragment
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //schedule the job after the delay has been elapsed
-                constructJob();
-            }
-        }, 30000);
-    }*/
 
     /*
     Initialize the views
@@ -161,8 +136,7 @@ public class FirstActivity extends AppCompatActivity implements
 
         mViewPager =    (ViewPager) findViewById(R.id.m_viewpager);
         mTabLayout =    (TabLayout) findViewById(R.id.tab_layout);
-//        mSearchView = (PersistentSearchView) findViewById(R.id.searchview);
-//        mSearchTintView = findViewById(R.id.view_search_tint);
+
         mFab       =    (FloatingActionButton) findViewById(R.id.fabButton);
         mFab.setOnClickListener(this);
         mFab.setTag(TAG_TRENDING_FRAGMENT);
@@ -177,10 +151,6 @@ public class FirstActivity extends AppCompatActivity implements
         if(mTabLayout != null)
             mTabLayout.setupWithViewPager(mViewPager);
 
-//        VoiceRecognitionDelegate delegate = new DefaultVoiceRecognizerDelegate(this, VOICE_RECOGNITION_REQUEST_CODE);
-//        if(delegate.isVoiceRecognitionAvailable()) {
-//            mSearchView.setVoiceRecognitionDelegate(delegate);
-//        }
 
 
 
@@ -269,28 +239,16 @@ public class FirstActivity extends AppCompatActivity implements
                 finish();
                 break;
 
-//            case R.id.action_search:
-//                    openSearch();
-//                        return true;
 
             case R.id.clearSuggestion:
                 SearchRecentSuggestions searchRecentSuggestions = new SearchRecentSuggestions(this, SearchableProvider.AUTHORITY,SearchableProvider.MODE);
                 searchRecentSuggestions.clearHistory();
-
 
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-//    public void openSearch() {
-//
-//
-//
-//        View menuItemView = findViewById(R.id.action_search);
-//        mSearchView.setStartPositionFromMenuItem(menuItemView);
-//        mSearchView.openSearch();
-//    }
 
     private void signOut() {
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
@@ -306,39 +264,41 @@ public class FirstActivity extends AppCompatActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
 
         MenuInflater inflater = getMenuInflater();
-        if(user_details.getBoolean("logged_in",false))
-        inflater.inflate(R.menu.menu_main_logged_out, menu);
+        if(user_details.getBoolean("logged_in",false)) {
+            inflater.inflate(R.menu.menu_main_logged_out, menu);
+
+
+            SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+            SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+            final CursorAdapter adapter = new SimpleCursorAdapter(
+                    this,
+                    R.layout.suggestion_item,
+                    null,
+                    new String[]{SearchManager.SUGGEST_COLUMN_TEXT_1},
+                    new int[]{R.id.textView_suggestion},
+                    CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+
+            searchView.setSuggestionsAdapter(adapter);
+
+
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    Cursor c = getSuggestions(newText);
+                    adapter.changeCursor(c);
+                    return false;
+                }
+            });
+        }
         else
-        inflater.inflate(R.menu.menu_main_logged_in,menu);
-
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
-        final CursorAdapter adapter = new SimpleCursorAdapter(
-                this,
-                R.layout.suggestion_item,
-                null,
-                new String[]{SearchManager.SUGGEST_COLUMN_TEXT_1},
-                new int[]{R.id.textView_suggestion},
-                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-
-        searchView.setSuggestionsAdapter(adapter);
-
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                Cursor c = getSuggestions(newText);
-                adapter.changeCursor(c);
-                return false;
-            }
-        });
+            inflater.inflate(R.menu.menu_main_logged_in,menu);
 
 
         return true;
@@ -355,168 +315,12 @@ public class FirstActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-//        if(mSearchView.isSearching()) {
-//            mSearchView.closeSearch();
-//            mTabLayout.setVisibility(View.VISIBLE);
-//
-//        } else if(mRecyclerView.getVisibility() == View.VISIBLE) {
-//            mResultAdapter.clear();
-//            mRecyclerView.setVisibility(View.GONE);
-//            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mToolbar.getLayoutParams();
-//            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL|AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS| AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
-//            mTabLayout.setVisibility(View.VISIBLE);
-//
-//        } else {
+
             super.onBackPressed();
             moveTaskToBack(true);
-//        }
+
     }
-    /*private void constructJob(){
-        JobInfo.Builder builder = new JobInfo.Builder(JOB_ID,new ComponentName(this, MyService.class));
-        builder.setPeriodic(POLL_FREQUENCY)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-                .setPersisted(true);
 
-        mJobScheduler.schedule(builder.build());
-    }*/
-
-
-//    public void setUpSearchView() {
-//        mRecyclerView = (RecyclerView)findViewById(R.id.recyclerview_search_result);
-//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        mResultAdapter = new RecyclerTrendingAdapter(this,new ArrayList<PostFeed>());
-//        mRecyclerView.setAdapter(mResultAdapter);
-//        mSearchTintView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v)  {
-//                mSearchView.cancelEditing();
-//            }
-//        });
-//
-//        mSearchView.setHomeButtonListener(new PersistentSearchView.HomeButtonListener() {
-//
-//            @Override
-//            public void onHomeButtonClick() {
-//                // Hamburger has been clicked
-////                Toast.makeText(FirstActivity.this, "Menu click",
-////                        Toast.LENGTH_LONG).show();
-//            }
-//
-//        });
-//        mSearchView.setSuggestionBuilder(new SampleSuggestionsBuilder(this));
-//        mSearchView.setSearchListener(new PersistentSearchView.SearchListener() {
-//
-//            @Override
-//            public void onSearchEditOpened() {
-//                //Use this to tint the screen
-//                mSearchTintView.setVisibility(View.VISIBLE);
-//                mSearchTintView
-//                        .animate()
-//                        .alpha(1.0f)
-//                        .setDuration(300)
-//                        .setListener(new SimpleAnimationListener())
-//                        .start();
-//                isSearchOpen = true;
-//
-//
-//
-//            }
-//
-//            @Override
-//            public void onSearchEditClosed() {
-//                mSearchTintView
-//                        .animate()
-//                        .alpha(0.0f)
-//                        .setDuration(300)
-//                        .setListener(new SimpleAnimationListener() {
-//                            @Override
-//                            public void onAnimationEnd(Animator animation) {
-//                                super.onAnimationEnd(animation);
-//                                mSearchTintView.setVisibility(View.GONE);
-//                            }
-//                        })
-//                        .start();
-//                if (isSearchOpen){
-//                    AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mToolbar.getLayoutParams();
-//                    params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL|AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS| AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
-//                    mTabLayout.setVisibility(View.VISIBLE);
-//                }
-//
-//            }
-//
-//            @Override
-//            public boolean onSearchEditBackPressed() {
-//                if(mSearchView.isEditing()) {
-//                   mSearchView.cancelEditing();
-//                    mTabLayout.setVisibility(View.VISIBLE);
-//                    return true;
-//                }
-//                return false;
-//            }
-//
-//            @Override
-//            public void onSearchExit() {
-//                mResultAdapter.clear();
-//                if (mRecyclerView.getVisibility() == View.VISIBLE) {
-//                    mRecyclerView.setVisibility(View.GONE);
-//                    AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mToolbar.getLayoutParams();
-//                    params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL|AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS| AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
-//                    mTabLayout.setVisibility(View.VISIBLE);
-//                    mFab.setVisibility(View.VISIBLE);
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onSearchTermChanged(String term) {
-//
-//            }
-//
-//            @Override
-//            public void onSearch(String string) {
-////                Toast.makeText(FirstActivity.this, "Results for " + string , Toast.LENGTH_SHORT).show();
-//                AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mToolbar.getLayoutParams();
-//                params.setScrollFlags(0);
-//                DatabaseOperations dop = new DatabaseOperations(FirstActivity.this);
-//                dop.insertSuggestionForSearch(dop,string);
-//                isSearchOpen = false;
-//                mFab.setVisibility(View.INVISIBLE);
-//                mTabLayout.setVisibility(View.GONE);
-//                mRecyclerView.setVisibility(View.VISIBLE);
-//                fillResultToRecyclerView(string);
-//            }
-//
-//            @Override
-//            public void onSearchCleared() {
-//
-//            }
-//
-//        });
-//
-//    }
-//
-//    private void fillResultToRecyclerView(String query) {
-//
-//        DatabaseOperations dop = new DatabaseOperations(this);
-//        newsFeedsList = dop.readPostForSearch(query,dop);
-////        for(int i =0; i< 100; i++) {
-////            SearchResult result = new SearchResult(query, query + Integer.toString(i), "");
-////            newResults.add(result);
-////        }
-//
-//
-//        mResultAdapter.replaceWith(newsFeedsList);
-//    }
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
-//            ArrayList<String> matches = data
-//                    .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-//            mSearchView.populateEditText(matches);
-//        }
-//        super.onActivityResult(requestCode, resultCode, data);
-//    }
     public boolean isLoggedIn() {
         SharedPreferences sharedPreferences = myApplication.getApplicationContext().getSharedPreferences("user_details", myApplication.getApplicationContext().MODE_PRIVATE);
         boolean status = sharedPreferences.getBoolean("logged_in", false);

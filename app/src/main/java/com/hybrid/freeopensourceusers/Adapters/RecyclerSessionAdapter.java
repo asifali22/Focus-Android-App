@@ -1,11 +1,8 @@
 package com.hybrid.freeopensourceusers.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,19 +10,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.bumptech.glide.Glide;
-import com.hybrid.freeopensourceusers.Activities.session_details;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
-import com.hybrid.freeopensourceusers.PojoClasses.PostFeed;
 import com.hybrid.freeopensourceusers.PojoClasses.SessionFeed;
 import com.hybrid.freeopensourceusers.R;
 import com.hybrid.freeopensourceusers.Utility.MyTextDrawable;
-import com.hybrid.freeopensourceusers.Utility.RecyclerViewAnimation;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
 
 
@@ -51,7 +42,6 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
   //  public ImageLoader imageLoader;
     public Context context;
     public DateFormat dateFormat = new SimpleDateFormat("EEE, MMM dd 'at' h:mm a");
-    private int previousPosition = 0;
     private ClickCallback clickCallback;
 
     public RecyclerSessionAdapter(Context context){
@@ -78,11 +68,7 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
 
     @Override
     public void onBindViewHolder(final ViewholderSessionFeed holder, int position) {
-        if (position > previousPosition)
-            RecyclerViewAnimation.animateRecyclerView(holder, true);
-        else
-            RecyclerViewAnimation.animateRecyclerView(holder, false);
-        previousPosition = position;
+
         final SessionFeed sessionFeed = sessiofeedArrayList.get(position);
         final MyTextDrawable myTextDrawable = new MyTextDrawable();
         holder.title_session.setText(sessionFeed.getSession_title());
