@@ -33,17 +33,20 @@
 
         </activity>
         <activity android:name=".Activities.New_Post">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.FirstActivity"/>
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <android:data
-                    android:host="www.youtube.com"
-                    android:mimeType="text/*" />
-                <android:data
-                    android:host="www.facebook.com"
-                    android:mimeType="text/*" />
-            </intent-filter>
-            <!-- Added intent filter for handling incoming Texts, Single and Multiple Images - Starts here -->
+            <android:data
+                android:host="www.youtube.com"
+                android:mimeType="text/*" />
+            <android:data
+                android:host="www.facebook.com"
+                android:mimeType="text/*" />
+        </intent-filter>
+        <!-- Added intent filter for handling incoming Texts, Single and Multiple Images - Starts here -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
 

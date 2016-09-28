@@ -2,7 +2,7 @@
     <string name="app_name">FreeOpensourCeUsers</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment sdfkjsdnfnsjdnfsjkfisbfs
+    <string name="blank_fragment">Hello blank fragment sdfkjsdnfnsjdnfsjkfisbfs
         fuisfsidnfjksndkjfsndfuisdfbjsdffdsfjkgudsgsdjfgkdjfguuidshg8yajasbfsdhfuysadfuasdfsh
         hufhahudfuashdfuiahsifhashdfiusdfhsakdaksfknfnsdfjknsdkfnskdnfksnaisfan
         askkjdfnkjasnfkansjfasnjkfnkanfkjanskfnjasnfnajkfnkasnfkanfakebfabfkajsndflknaiefuifuiaef
@@ -14,6 +14,9 @@
     <string name="app_label">com.hybrid.freeopensourceusers</string>
     <string name="search_hint">Search Feed or session</string>
     <string name="clearSuggestion">Clear search history</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

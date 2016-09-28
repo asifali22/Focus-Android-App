@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
@@ -33,6 +34,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.R;
 import com.hybrid.freeopensourceusers.Utility.Utility;
+import com.hybrid.freeopensourceusers.ViewDialog;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
 
 import org.jsoup.Connection;
@@ -46,7 +48,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class New_Post extends AppCompatActivity {
+public class New_Post extends AppCompatActivity  {
 
     public Toolbar newPostToolbar;
     public Connection connection;
@@ -70,11 +72,11 @@ public class New_Post extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(com.hybrid.freeopensourceusers.R.layout.activity_new__post);
+        setContentView(R.layout.add_post_layout);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        //newPostToolbar   =    (Toolbar) findViewById(R.id.newPostToolbar);
+        newPostToolbar   =    (Toolbar) findViewById(R.id.newaddPostToolbar);
         user_input_link = (EditText) findViewById(R.id.input_user_link);
         linkPhoto = (ImageView) findViewById(R.id.linkPhoto);
         input_title = (EditText) findViewById(R.id.input_title);
@@ -83,13 +85,13 @@ public class New_Post extends AppCompatActivity {
         addpost = (Button) findViewById(R.id.add_post_button);
         input_title.setVisibility(View.INVISIBLE);
         input_desc.setVisibility(View.INVISIBLE);
-        /*if( newPostToolbar != null)
+        if( newPostToolbar != null)
             setSupportActionBar(newPostToolbar);
 
         if(getSupportActionBar() != null)
-            getSupportActionBar().setTitle("New Post");
+            getSupportActionBar().setTitle("Add Post");
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
         // Get the action of the intent
         String action = intent.getAction();
@@ -226,6 +228,11 @@ public class New_Post extends AppCompatActivity {
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .crossFade()
                     .into(linkPhoto);
+
+            ViewDialog alert = new ViewDialog();
+            alert.showDialog(this,"",getUserName(),title,finalDesc,getImageUrl);
+
+
         }
 
 
@@ -406,7 +413,7 @@ public class New_Post extends AppCompatActivity {
 
         switch (id) {
             case android.R.id.home:
-                this.finish();
+                NavUtils.navigateUpFromSameTask(this);
                 return true;
 
         }
@@ -434,6 +441,25 @@ public class New_Post extends AppCompatActivity {
         } else
             return null;
     }
+
+    public String getUserName() {
+
+        SharedPreferences sharedPreferences = myApplication.getApplicationContext().getSharedPreferences("user_details", myApplication.getApplicationContext().MODE_PRIVATE);
+        String user_name_from_sf = sharedPreferences.getString("user_name", null);
+
+        if (!user_name_from_sf.isEmpty()) {
+            return user_name_from_sf;
+        } else
+            return null;
+    }
+
+    public String getUserprofilePicFromSharedPref(){
+        // NOTE:
+        // Handle this in login activity and then just like getUsername implement it
+
+        return null;
+    }
+
 
 }
 

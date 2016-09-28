@@ -16,6 +16,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -170,17 +171,19 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
 
     @Override
     public void fabListener() {
-        if(isLoggedIn()&&isOnline()) {
-            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user_details", MODE_PRIVATE);
-            String api_key = sharedPreferences.getString("api_key", null);
+        if(isLoggedIn()) {
+//            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user_details", MODE_PRIVATE);
+//            String api_key = sharedPreferences.getString("api_key", null);
             Intent intent = new Intent(getContext(), New_Post.class);
-            intent.putExtra("API_KEY", api_key);
+//            intent.putExtra("API_KEY", api_key);
             startActivity(intent);
         }
-        else if(!isOnline())
-            Toast.makeText(getActivity(),"No Network",Toast.LENGTH_SHORT).show();
-        else if(!isLoggedIn())
+//        else if(!isOnline())
+//            Toast.makeText(getActivity(),"No Network",Toast.LENGTH_SHORT).show();
+        else
             showAlertDialog(getView());
+
+
     }
 
     private void showAlertDialog(View view) {

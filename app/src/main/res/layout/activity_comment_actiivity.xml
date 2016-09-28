@@ -10,12 +10,12 @@
 
 
         <android.support.design.widget.AppBarLayout
-            android:id="@+id/appbar.layout"
+            android:id="@+id/appbar_layoutcomment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:elevation="8dp">
+            app:elevation="6dp">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/newCommentToolbar"
