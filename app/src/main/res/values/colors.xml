@@ -11,4 +11,11 @@
     <color name="overlay">#AA1C1C1C</color>
     <color name="windowBackground">#1C1C1C</color>
     <color name="divider">#333333</color>
+
+
+    <color name="status_bar_color">@color/colorPrimaryDark</color>
+    <color name="toolbar_color">@color/colorPrimaryDark</color>
+
+    <color name="status_bar_to_color">#28A751</color>
+    <color name="toolbar_to_color">#28A751</color>
 </resources>

@@ -1,131 +1,241 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_height="match_parent"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/colorPrimaryDark"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/linear"
-        tools:context="com.hybrid.freeopensourceusers.Activities.New_Post">
+        android:layout_height="wrap_content">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/appbar_layoutAddpost"
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/linear"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:elevation="0dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context="com.hybrid.freeopensourceusers.Activities.New_Post">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/newaddPostToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:background="?attr/colorPrimaryDark"
-            android:minHeight="?attr/actionBarSize"
-            app:elevation="0dp"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-        </android.support.design.widget.AppBarLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/linkTv"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:text="Link"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_editor_insert_link"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:textColor="@android:color/white"/>
-
-           <EditText
-               android:id="@+id/input_user_link"
-               android:layout_toRightOf="@+id/linkTv"
-               android:layout_width="match_parent"
-               android:hint="Link"
-               android:layout_margin="8dp"
-               android:ellipsize="end"
-               android:layout_centerVertical="true"
-               android:backgroundTint="@android:color/white"
-               android:textColorHint="@android:color/white"
-               android:textColor="@android:color/white"
-               android:textColorHighlight="@android:color/white"
-               android:layout_height="wrap_content" />
-
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:id="@+id/submit_button"
-                android:layout_width="wrap_content"
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/appbar_layoutAddpost"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="10dp"
-                android:layout_marginBottom="0dp"
-                android:onClick="submitButton"
-                android:text="Link Preview" />
+                android:layout_alignParentTop="true"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:elevation="0dp">
 
-            <Button
-                android:id="@+id/add_post_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_gravity="center"
-                android:onClick="addPostButton"
-                android:layout_margin="10dp"
-                android:layout_marginBottom="0dp"
-                android:text="Add Post" />
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/newaddPostToolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:background="?attr/colorPrimaryDark"
+                    android:minHeight="?attr/actionBarSize"
+                    app:elevation="0dp"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            </android.support.design.widget.AppBarLayout>
 
-        </RelativeLayout>
+            <ScrollView
+                android:id="@+id/simpleRelative"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none">
 
-        <android.support.percent.PercentRelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
-            <ImageView
-                android:id="@+id/linkPhoto"
-                app:layout_aspectRatio="178%"
-                app:layout_widthPercent="100%" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-        </android.support.percent.PercentRelativeLayout>
+                    <RelativeLayout
 
-    </LinearLayout>
-    <EditText
-        android:id="@+id/input_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:hint="TITLE"
-        android:layout_below="@+id/linear"/>
-    <EditText
-        android:id="@+id/input_desc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:layout_below="@+id/input_title"
-        android:hint="DESCRIPTION" />
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/upload_fab"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"
-        android:src="@drawable/ic_add_a_photo_black_24dp"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="center"
-        android:onClick="uploadfab"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp">
 
-        />
-</RelativeLayout>
+                        <!--Dummy layout-->
+                        <LinearLayout
+                            android:layout_width="0px"
+                            android:layout_height="0px"
+                            android:focusable="true"
+                            android:focusableInTouchMode="true" />
+
+                        <ImageView
+                            android:id="@+id/link_newPOst_view"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_margin="8dp"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_action_link_new_post" />
+
+                        <EditText
+                            android:id="@+id/input_user_link"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_toLeftOf="@+id/pasteButton"
+                            android:layout_toRightOf="@+id/link_newPOst_view"
+                            android:backgroundTint="@android:color/white"
+                            android:ellipsize="end"
+                            android:hint="URL"
+                            android:inputType="textNoSuggestions"
+                            android:maxLines="4"
+                            android:scrollHorizontally="false"
+                            android:scrollbars="vertical"
+                            android:textColor="@android:color/white"
+                            android:textColorHint="@android:color/white" />
+
+                        <ImageButton
+                            android:id="@+id/pasteButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_toLeftOf="@+id/submit_button"
+                            android:background="?attr/selectableItemBackground"
+                            android:onClick="pasteFromCopy"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_action_paste" />
+
+                        <ImageButton
+                            android:id="@+id/submit_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginTop="8dp"
+                            android:background="?attr/selectableItemBackground"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_action_white_done" />
+
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/toggleLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <android.support.v7.widget.AppCompatButton
+                            android:id="@+id/testAdvanced"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_margin="8dp"
+                            android:background="@color/colorPrimary"
+                            android:padding="8dp"
+                            android:text="Custom?"
+                            android:textColor="@android:color/white" />
+
+                        <RelativeLayout
+                            android:id="@+id/parentReveal"
+                            android:visibility="invisible"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/testAdvanced"
+                            android:background="@color/status_bar_to_color">
+
+                            <ImageView
+                                android:id="@+id/collection_NPost"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_alignParentLeft="true"
+                                android:layout_margin="8dp"
+                                android:padding="8dp"
+                                android:src="@drawable/ic_action_image_new_post" />
+
+                            <android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                android:id="@+id/photoSectionNP"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="16dp"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginTop="16dp"
+                                android:layout_toRightOf="@+id/collection_NPost">
+
+
+                                <ImageView
+                                    android:id="@+id/linkPhoto"
+                                    android:layout_width="240dp"
+                                    android:scaleType="centerCrop"
+                                    app:layout_aspectRatio="178%"
+                                    app:layout_widthPercent="100%" />
+
+
+                                <android.support.design.widget.FloatingActionButton
+                                    android:id="@+id/upload_fab"
+                                    android:layout_width="48dp"
+                                    android:layout_height="48dp"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_alignRight="@+id/linkPhoto"
+                                    app:backgroundTint="@color/colorPrimaryDark"
+                                    android:onClick="uploadfab"
+                                    android:src="@drawable/ic_action_add_a_photo" />
+                            </android.support.percent.PercentRelativeLayout>
+
+
+                            <ImageView
+                                android:id="@+id/editPen"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_alignParentLeft="true"
+                                android:layout_below="@+id/photoSectionNP"
+                                android:layout_margin="8dp"
+                                android:padding="8dp"
+                                android:src="@drawable/ic_action_edit_pen" />
+
+                            <EditText
+                                android:id="@+id/input_title"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/photoSectionNP"
+                                android:layout_centerVertical="true"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginLeft="0dp"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginTop="16dp"
+                                android:layout_toRightOf="@+id/editPen"
+                                android:backgroundTint="@android:color/white"
+                                android:hint="Title"
+                                android:inputType="textCapSentences"
+                                android:textColor="@android:color/white"
+                                android:textColorHint="@android:color/white" />
+
+                            <EditText
+                                android:id="@+id/input_desc"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/input_title"
+                                android:layout_marginBottom="8dp"
+                                android:inputType="textCapSentences"
+                                android:layout_marginLeft="0dp"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_toRightOf="@+id/editPen"
+                                android:backgroundTint="@android:color/white"
+                                android:hint="Description"
+                                android:textColor="@android:color/white"
+                                android:textColorHint="@android:color/white" />
+                        </RelativeLayout>
+
+                    </RelativeLayout>
+                </LinearLayout>
+            </ScrollView>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>
 

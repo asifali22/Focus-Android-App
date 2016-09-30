@@ -8,7 +8,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:id="@+id/image_clock"
-        android:src="@drawable/ic_action_name"
+        android:src="@drawable/ic_action_search_history"
         android:padding="8dp"/>
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -19,6 +19,7 @@
         android:layout_alignTop="@+id/image_clock"
         android:layout_alignBottom="@+id/image_clock"
         android:gravity="center_vertical"
+        android:fontFamily="sans-serif-condensed"
         android:ellipsize="end"
         android:maxLines="1"
         android:padding="8dp"

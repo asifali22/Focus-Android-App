@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/footerLayout"
-            android:layout_below="@+id/appbar.layout">
+            android:layout_below="@+id/appbar_layoutcomment">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/comment_recyclerView"

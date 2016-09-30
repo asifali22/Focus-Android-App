@@ -125,6 +125,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:padding="8dp"
                     android:text="Old school huh!!"
                     android:textColor="@android:color/white"
                     android:textSize="16sp" />
@@ -135,9 +136,10 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/noAccount"
                     android:clickable="true"
+                    android:padding="8dp"
                     android:gravity="center"
                     android:onClick="navigateToRegister"
-                    android:text=" Click here"
+                    android:text=" CLICK HERE"
                     android:textColor="@android:color/holo_blue_bright"
                     android:textSize="16sp" />
             </RelativeLayout>

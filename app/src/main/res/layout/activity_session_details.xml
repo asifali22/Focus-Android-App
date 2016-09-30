@@ -24,15 +24,16 @@
                 android:id="@+id/postpicImageSession"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-                android:transitionName="sessionImage"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
+                android:transitionName="sessionImage"
                 app:layout_collapseMode="parallax" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
-                android:background="@drawable/backdrop_bg"
-                android:layout_gravity="center_horizontal|bottom"/>
+                android:layout_gravity="center_horizontal|bottom"
+                android:background="@drawable/backdrop_bg" />
 
 
             <android.support.v7.widget.Toolbar
@@ -82,6 +83,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
+                        android:fontFamily="sans-serif"
                         android:lineSpacingExtra="1.6dp"
                         android:text="This section contains the details about the session shown above. I'm just tping some junk to test it for now."
                         android:textColor="#000"
@@ -117,6 +119,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
                         android:ellipsize="end"
+                        android:fontFamily="sans-serif"
                         android:text="Mr. XYZ abc"
                         android:textColor="#000"
                         android:textSize="16sp" />
@@ -126,6 +129,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
+                        android:fontFamily="sans-serif-condensed"
                         android:text="CEO at Facebook"
                         android:textColor="#88000000"
                         android:textSize="14sp" />
@@ -166,6 +170,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:ellipsize="end"
+                            android:fontFamily="sans-serif"
                             android:lineSpacingExtra="1.6dp"
                             android:text="SVCE"
                             android:textColor="#000"
@@ -191,10 +196,11 @@
                         android:id="@+id/sd_date_time"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
                         android:layout_marginTop="16dp"
                         android:ellipsize="end"
+                        android:fontFamily="sans-serif"
                         android:lineSpacingExtra="1.6dp"
-                        android:layout_marginBottom="16dp"
                         android:text="Mon, Sep 09 at 12.41 AM"
                         android:textColor="#000"
                         android:textSize="16sp" />
@@ -209,6 +215,7 @@
                         android:layout_marginBottom="16dp"
                         android:layout_marginTop="16dp"
                         android:ellipsize="end"
+                        android:fontFamily="sans-serif"
                         android:lineSpacingExtra="1.6dp"
                         android:text="#141, 7th cross, MS Palya, Bangalore"
                         android:textColor="#000"
@@ -222,6 +229,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
                         android:layout_marginTop="8dp"
+                        android:fontFamily="sans-serif"
                         android:text="Room"
                         android:textColor="#000"
                         android:textSize="16sp" />
@@ -231,6 +239,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
+                        android:fontFamily="sans-serif-condensed"
                         android:lineSpacingExtra="1.6dp"
                         android:text="3rd floor - L 309"
                         android:textColor="#88000000"
@@ -273,6 +282,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:ellipsize="end"
+                            android:fontFamily="sans-serif"
                             android:lineSpacingExtra="1.6dp"
                             android:text="Asif Ali"
                             android:textColor="#000"

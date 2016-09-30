@@ -1,25 +1,43 @@
 package com.hybrid.freeopensourceusers.Activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.app.ProgressDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -33,9 +51,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.R;
+import com.hybrid.freeopensourceusers.Utility.MyTextDrawable;
 import com.hybrid.freeopensourceusers.Utility.Utility;
-import com.hybrid.freeopensourceusers.ViewDialog;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
+import com.like.LikeButton;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -48,25 +67,31 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class New_Post extends AppCompatActivity  {
+import de.hdodenhof.circleimageview.CircleImageView;
 
-    public Toolbar newPostToolbar;
-    public Connection connection;
-    public Document document;
-    public String imgurl = null;
-    public EditText user_input_link, input_title, input_desc;
-    public ImageView linkPhoto;
-    public String title, desc, secondDesc, getImageUrl, input, finalDesc;
-    public MyApplication myApplication;
-    public VolleySingleton volleySingleton;
-    public RequestQueue requestQueue;
-    public Boolean isCLicked = false;
-    public Button preview, addpost;
+public class New_Post extends AppCompatActivity implements View.OnClickListener {
+
+    private Toolbar newPostToolbar;
+    private Connection connection;
+    private Document document;
+    private String imgurl = null;
+    private EditText user_input_link, input_title, input_desc;
+    private ImageView linkPhoto;
+    private String title, desc, secondDesc, getImageUrl, input, finalDesc;
+    private MyApplication myApplication;
+    private VolleySingleton volleySingleton;
+    private RequestQueue requestQueue;
+    private Boolean isCLicked = false;
+    private ImageButton preview;
     private ProgressDialog mProgressDialog;
     private Bitmap bitmap;
     private int PICK_IMAGE_REQUEST = 1;
-    String api_key;
-    int flag;
+    private MyTextDrawable myTextDrawable;
+    private String api_key;
+    private int flag;
+    private RelativeLayout revealLayout, toggleLayout;
+    private ScrollView simpleLayout;
+    private AppCompatButton advancedButton;
 
 
     @Override
@@ -75,16 +100,19 @@ public class New_Post extends AppCompatActivity  {
         setContentView(R.layout.add_post_layout);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-
+        myTextDrawable = new MyTextDrawable();
         newPostToolbar   =    (Toolbar) findViewById(R.id.newaddPostToolbar);
         user_input_link = (EditText) findViewById(R.id.input_user_link);
         linkPhoto = (ImageView) findViewById(R.id.linkPhoto);
         input_title = (EditText) findViewById(R.id.input_title);
         input_desc = (EditText) findViewById(R.id.input_desc);
-        preview = (Button) findViewById(R.id.submit_button);
-        addpost = (Button) findViewById(R.id.add_post_button);
-        input_title.setVisibility(View.INVISIBLE);
-        input_desc.setVisibility(View.INVISIBLE);
+        preview = (ImageButton) findViewById(R.id.submit_button);
+        revealLayout = (RelativeLayout) findViewById(R.id.parentReveal);
+        advancedButton = (AppCompatButton) findViewById(R.id.testAdvanced);
+        simpleLayout = (ScrollView) findViewById(R.id.simpleRelative);
+        toggleLayout = (RelativeLayout) findViewById(R.id.toggleLayout);
+
+        linkPhoto.setImageDrawable(myTextDrawable.setTextDrawableForPost("RandomFinalColor", "Image"));
         if( newPostToolbar != null)
             setSupportActionBar(newPostToolbar);
 
@@ -92,6 +120,11 @@ public class New_Post extends AppCompatActivity  {
             getSupportActionBar().setTitle("Add Post");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+        preview.setOnClickListener(this);
+        advancedButton.setOnClickListener(this);
+
         Intent intent = getIntent();
         // Get the action of the intent
         String action = intent.getAction();
@@ -198,7 +231,7 @@ public class New_Post extends AppCompatActivity  {
         return imgurl;
     }
 
-    public void submitButton(View view) {
+    public void submitButton() {
         flag = 1;
         isCLicked = true;
         input = user_input_link.getText().toString();
@@ -229,8 +262,12 @@ public class New_Post extends AppCompatActivity  {
                     .crossFade()
                     .into(linkPhoto);
 
-            ViewDialog alert = new ViewDialog();
-            alert.showDialog(this,"",getUserName(),title,finalDesc,getImageUrl);
+            finalDesc = finalDesc.trim();
+            if (finalDesc.isEmpty()|| finalDesc == null || finalDesc.equals(""))
+                finalDesc = title;
+
+
+           showDialog("",getUserName(),title,finalDesc,getImageUrl);
 
 
         }
@@ -238,7 +275,91 @@ public class New_Post extends AppCompatActivity  {
 
     }
 
-    public void addPostButton(View view) {
+    private void showDialog(String userImageText, String userName, String title, String finalDesc, String getImageUrl) {
+
+
+        LayoutInflater factory = LayoutInflater.from(this);
+        final View dialogMainView = factory.inflate(R.layout.layout_for_dialog, null);
+
+        final AlertDialog myDialog = new AlertDialog.Builder(this).create();
+
+        CircleImageView circleImageView;
+        TextView user_name, post_title, post_description, like_count, comment_count;
+        ImageView post_pic;
+        TextView addButton, cancelButton;
+        LikeButton plus_like, minus_dislike;
+
+
+
+        circleImageView = (CircleImageView) dialogMainView.findViewById(R.id.user_profile_image);
+        user_name = (TextView) dialogMainView.findViewById(R.id.user_name);
+        post_title = (TextView) dialogMainView.findViewById(R.id.post_title);
+        post_description = (TextView) dialogMainView.findViewById(R.id.post_description);
+        like_count = (TextView) dialogMainView.findViewById(R.id.like_count);
+        comment_count = (TextView) dialogMainView.findViewById(R.id.comment_count);
+        post_pic = (ImageView) dialogMainView.findViewById(R.id.post_pic);
+        addButton = (TextView) dialogMainView.findViewById(R.id.addButtonDialog);
+        cancelButton = (TextView) dialogMainView.findViewById(R.id.cancelButtonDialog);
+        plus_like = (LikeButton) dialogMainView.findViewById(R.id.plus_like);
+        minus_dislike = (LikeButton) dialogMainView.findViewById(R.id.minus_dislike);
+
+
+        myDialog.setView(dialogMainView);
+
+
+        Glide.with(this)
+                .load(getImageUrl)
+                .centerCrop()
+                .placeholder(R.drawable.loading)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .error(myTextDrawable.setTextDrawableForError("Error!"))
+                .crossFade()
+                .into(post_pic);
+
+
+        if (userImageText.isEmpty())
+            userImageText = userName;
+
+        Glide.with(this)
+                .load(userImageText)
+                .fitCenter()
+                .dontAnimate()
+                .placeholder(R.drawable.blank_person_final)
+                .error(myTextDrawable.setTextDrawable(userName))
+                .into(circleImageView);
+
+        user_name.setText(userName);
+        post_title.setText(title);
+        post_description.setText(finalDesc);
+        like_count.setText("0");
+        comment_count.setText("0");
+        plus_like.setEnabled(false);
+        minus_dislike.setEnabled(false);
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addPostButton();
+                myDialog.dismiss();
+            }
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myDialog.dismiss();
+            }
+        });
+
+        myDialog.show();
+
+    }
+
+
+
+
+
+    public void addPostButton() {
         if (flag == 1) {
             if (isCLicked && !input.isEmpty()) {
 
@@ -246,7 +367,7 @@ public class New_Post extends AppCompatActivity  {
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, ADDPOST_URL, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(myApplication.getApplicationContext(), "Post Added", Toast.LENGTH_LONG).show();
+                        Toast.makeText(myApplication.getApplicationContext(), "Post added", Toast.LENGTH_LONG).show();
                         Log.e("ADARSH_LOG",response);
                         finish();
                     }
@@ -254,7 +375,7 @@ public class New_Post extends AppCompatActivity  {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("ADARSH_LOG",error.toString());
-                        Toast.makeText(myApplication.getApplicationContext(), "Post Added", Toast.LENGTH_LONG).show();
+                        Toast.makeText(myApplication.getApplicationContext(), "Error occurred!", Toast.LENGTH_LONG).show();
                         finish();
                     }
                 }) {
@@ -397,8 +518,7 @@ public class New_Post extends AppCompatActivity  {
                 e.printStackTrace();
             }
         }
-        input_title.setVisibility(View.VISIBLE);
-        input_desc.setVisibility(View.VISIBLE);
+
 
     }
 
@@ -460,6 +580,195 @@ public class New_Post extends AppCompatActivity  {
         return null;
     }
 
+    public void pasteFromCopy(View view){
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData.Item item = null;
+        String pasteData = "";
+
+
+        ClipData cData = clipboard.getPrimaryClip();
+        if (cData != null)
+            item = cData.getItemAt(0);
+        if (item != null)
+        pasteData = item.getText().toString();
+        if (!pasteData.isEmpty())
+            user_input_link.setText(pasteData);
+
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.submit_button:
+                submitButton();
+                break;
+
+            case R.id.testAdvanced:
+                advancedBottonClickListener();
+                break;
+
+        }
+    }
+
+    public void advancedBottonClickListener(){
+
+        if (revealLayout.getVisibility() == View.INVISIBLE) {
+            tintSystemBars();
+            if (Build.VERSION.SDK_INT >= 21) {
+                // get the center for the clipping circle
+                int cx = revealLayout.getWidth() / 2;
+                int cy = 0;
+
+                // get the final radius for the clipping circle
+                float finalRadius = (float) Math.hypot(revealLayout.getWidth(), revealLayout.getHeight());
+
+                // create the animator for this view (the start radius is zero)
+                Animator anim =
+                        ViewAnimationUtils.createCircularReveal(revealLayout, cx, cy, 0, finalRadius);
+
+                anim.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+
+                        advancedButton.setText("Simple?");
+                    }
+                });
+
+                // make the view visible and start the animation
+                revealLayout.setVisibility(View.VISIBLE);
+                anim.start();
+
+            } else {
+                revealLayout.setVisibility(View.VISIBLE);
+                advancedButton.setText("Simple?");
+            }
+        }else{
+                tintSystemBarsBack();
+            if (Build.VERSION.SDK_INT >= 21) {
+                // get the center for the clipping circle
+                int cx = revealLayout.getWidth() / 2;
+                int cy = 0;
+
+                // get the initial radius for the clipping circle
+                float initialRadius = (float) Math.hypot(revealLayout.getWidth(), revealLayout.getHeight());
+
+                // create the animation (the final radius is zero)
+                Animator anim =
+                        ViewAnimationUtils.createCircularReveal(revealLayout, cx, cy, initialRadius, 0);
+
+                // make the view invisible when the animation is done
+                anim.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        revealLayout.setVisibility(View.INVISIBLE);
+                        advancedButton.setText("Custom?");
+                    }
+                });
+
+                // start the animation
+                anim.start();
+
+            }else {
+                revealLayout.setVisibility(View.INVISIBLE);
+                advancedButton.setText("Custom?");
+            }
+
+        }
+    }
+
+
+    private void tintSystemBars() {
+        // Initial colors of each system bar.
+        final int statusBarColor = getColorFunction(this,R.color.status_bar_color);
+        final int toolbarColor = getColorFunction(this,R.color.toolbar_color);
+
+        // Desired final colors of each bar.
+        final int statusBarToColor = getColorFunction(this, R.color.status_bar_to_color);
+        final int toolbarToColor = getColorFunction(this, R.color.toolbar_to_color);
+
+        ValueAnimator anim = ValueAnimator.ofFloat(0, 1);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                // Use animation position to blend colors.
+                float position = animation.getAnimatedFraction();
+
+                // Apply blended color to the status bar.
+                int blended = blendColors(statusBarColor, statusBarToColor, position);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    getWindow().setStatusBarColor(blended);
+
+                }
+
+                // Apply blended color to the ActionBar.
+                blended = blendColors(toolbarColor, toolbarToColor, position);
+                ColorDrawable background = new ColorDrawable(blended);
+                getSupportActionBar().setBackgroundDrawable(background);
+                simpleLayout.setBackgroundColor(blended);
+                toggleLayout.setBackgroundColor(blended);
+            }
+        });
+
+        anim.setDuration(300).start();
+    }
+
+    private void tintSystemBarsBack() {
+        // Initial colors of each system bar.
+        final int statusBarColor = getColorFunction(this,R.color.status_bar_to_color);
+        final int toolbarColor = getColorFunction(this,R.color.toolbar_to_color);
+
+        // Desired final colors of each bar.
+        final int statusBarToColor = getColorFunction(this, R.color.status_bar_color);
+        final int toolbarToColor = getColorFunction(this, R.color.toolbar_color);
+
+        ValueAnimator anim = ValueAnimator.ofFloat(0, 1);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                // Use animation position to blend colors.
+                float position = animation.getAnimatedFraction();
+
+                // Apply blended color to the status bar.
+                int blended = blendColors(statusBarColor, statusBarToColor, position);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    getWindow().setStatusBarColor(blended);
+
+                }
+
+                // Apply blended color to the ActionBar.
+                blended = blendColors(toolbarColor, toolbarToColor, position);
+                ColorDrawable background = new ColorDrawable(blended);
+                getSupportActionBar().setBackgroundDrawable(background);
+                simpleLayout.setBackgroundColor(blended);
+                toggleLayout.setBackgroundColor(blended);
+            }
+        });
+
+        anim.setDuration(500).start();
+    }
+
+    private int blendColors(int from, int to, float ratio) {
+        final float inverseRatio = 1f - ratio;
+
+        final float r = Color.red(to) * ratio + Color.red(from) * inverseRatio;
+        final float g = Color.green(to) * ratio + Color.green(from) * inverseRatio;
+        final float b = Color.blue(to) * ratio + Color.blue(from) * inverseRatio;
+
+        return Color.rgb((int) r, (int) g, (int) b);
+    }
+
+
+    public static final int getColorFunction(Context context, int id) {
+        final int version = Build.VERSION.SDK_INT;
+        if (version >= 23) {
+            return ContextCompat.getColor(context, id);
+        } else {
+            return context.getResources().getColor(id);
+        }
+    }
 
 }
 
