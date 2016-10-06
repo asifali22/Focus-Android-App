@@ -42,4 +42,13 @@
     </style>
 
 
+    <style name="UserProfileTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimaryUserProfile</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkUserProfile</item>
+        <item name="colorAccent">@color/colorAccentUserProfile</item>
+        <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
+        <item name="android:windowTransitionBackgroundFadeDuration" tools:targetApi="lollipop">300</item>
+    </style>
+
+
 </resources>

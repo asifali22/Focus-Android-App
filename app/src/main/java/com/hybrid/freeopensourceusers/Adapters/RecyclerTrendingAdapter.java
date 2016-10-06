@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -26,6 +28,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hybrid.freeopensourceusers.Activities.Comment_Actiivity;
 import com.hybrid.freeopensourceusers.Activities.LoginActivity;
 import com.hybrid.freeopensourceusers.Activities.WebViewActivity;
@@ -38,6 +41,7 @@ import com.hybrid.freeopensourceusers.R;
 import com.hybrid.freeopensourceusers.Utility.Utility;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
 import com.like.LikeButton;
+import com.like.OnLikeListener;
 
 
 import org.json.JSONArray;
@@ -64,7 +68,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
     private VolleySingleton volleySingleton;
     private RequestQueue requestQueue;
     private MyApplication myApplication;
-//    public ImageLoader imageLoader;
+    //    public ImageLoader imageLoader;
     private DatabaseOperations dop;
     private ClickCallback clickCallback;
 
@@ -101,17 +105,26 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
         final MyTextDrawable myTextDrawable = new MyTextDrawable();
 
         final PostFeed postFeed = newsFeedArrayList.get(position);
+
         holder.user_name.setText(postFeed.getUser_name());
         Date gotDate = postFeed.getDop();
         String formatedDate = dateFormat.format(gotDate);
         holder.user_share_time.setText(formatedDate);
         holder.post_title.setText(postFeed.getTitle());
-        if(postFeed.getDescription()!=null)
-        holder.post_description.setText(postFeed.getDescription());
-        else
+        if (postFeed.getDescription() != null || postFeed.getDescription().isEmpty()) {
+            holder.post_description.setText(postFeed.getDescription());
+            holder.postDescriptionNOImage.setText(postFeed.getDescription());
+            holder.post_descriptionCustom.setText(postFeed.getDescription());
+        }
+        else {
             holder.post_description.setText(postFeed.getTitle());
+            holder.postDescriptionNOImage.setText(postFeed.getTitle());
+            holder.post_descriptionCustom.setText(postFeed.getTitle());
+        }
         holder.like_count.setText(postFeed.getUp() + "");
         holder.comment_count.setText(postFeed.getComment_count() + "");
+        holder.postTitleNoImage.setText(postFeed.getTitle());
+
         final String avatar = postFeed.getUser_pic();
         final String postpic = postFeed.getPostPicUrl();
         if (button(postFeed.getPid()) == -1) {
@@ -129,22 +142,10 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
         }
         if (!avatar.isEmpty()) {
 
-//            imageLoader.get(avatar, new ImageLoader.ImageListener() {
-//                @Override
-//                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-//                    holder.circleImageView.setImageBitmap(response.getBitmap());
-//                }
-//
-//                @Override
-//                public void onErrorResponse(VolleyError error) {
-//                    holder.circleImageView.setImageResource(R.drawable.blank_person_final);
-//                }
-//            });
-
-
             Glide.with(MyApplication.getAppContext())
                     .load(avatar)
                     .fitCenter()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .dontAnimate()
                     .placeholder(R.drawable.blank_person_final)
                     .error(myTextDrawable.setTextDrawable(postFeed.getUser_name()))
@@ -152,50 +153,64 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
 
         } else {
             // default
-
-
-               holder.circleImageView.setImageDrawable(myTextDrawable.setTextDrawable(postFeed.getUser_name()));
+            holder.circleImageView.setImageDrawable(myTextDrawable.setTextDrawable(postFeed.getUser_name()));
 
         }
         if (!postpic.isEmpty()) {
 
-//            imageLoader.get(postpic, new ImageLoader.ImageListener() {
-//                @Override
-//                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-//                    holder.post_pic.setVisibility(View.VISIBLE);
-//                    holder.post_pic.setImageBitmap(response.getBitmap());
-//                }
-//
-//                @Override
-//                public void onErrorResponse(VolleyError error) {
-////                    holder.post_pic.setVisibility(View.GONE);
-//                    holder.post_pic.setImageDrawable(myTextDrawable.setTextDrawableForError("Error!"));
-//                }
-//            });
-
             Glide.with(MyApplication.getAppContext())
                     .load(postpic)
                     .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.loading)
                     .error(myTextDrawable.setTextDrawableForError("Error!"))
                     .crossFade()
                     .into(holder.post_pic);
 
+            holder.post_body.setVisibility(View.VISIBLE);
+            holder.postBodyNoImage.setVisibility(View.GONE);
 
 
-        } else {
+        } else if (postpic.isEmpty()){
 //            holder.post_pic.setVisibility(View.GONE);
 //             default
-            holder.post_pic.setImageDrawable(myTextDrawable.setTextDrawableForPost(postFeed.getTitle(), "No Image!"));
+            //holder.post_pic.setImageDrawable(myTextDrawable.setTextDrawableForPost(postFeed.getTitle(), "No Image!"));
+            holder.post_body.setVisibility(View.GONE);
+            holder.postBodyNoImage.setVisibility(View.VISIBLE);
         }
 
-        holder.post_header.setOnClickListener(new View.OnClickListener() {
+        if (!postFeed.getLink().isEmpty()) {
+            if (postFeed.getLink().equals("abc")) {
+                holder.post_description.setVisibility(View.GONE);
+                holder.post_descriptionCustom.setVisibility(View.VISIBLE);
+            }else {
+                holder.post_description.setVisibility(View.VISIBLE);
+                holder.post_descriptionCustom.setVisibility(View.GONE);
+            }
+        }
+
+        holder.post_body.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                if (!isLoggedIn())
-                    showAlertDialog(view);
+            public void onClick(View v) {
+//                if (isOnline()) {
+                    if (!postFeed.getLink().isEmpty()) {
+                        if (postFeed.getLink().equals("abc")){
+                            clickCallback.startDialogForNewImage(postFeed.getPostPicUrl());
+
+                        } else{
+                            Intent myIntent = new Intent(myApplication.getApplicationContext(), WebViewActivity.class);
+                            myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            myIntent.putExtra("LINK", postFeed.getLink() + "");
+                            myIntent.putExtra("TITLE", postFeed.getTitle() + "");
+                            myApplication.getApplicationContext().startActivity(myIntent);
+                        }
+                    }
+
+//                } else if (!isOnline())
+//                    Toast.makeText(MyApplication.getAppContext(), "No Network", Toast.LENGTH_SHORT).show();
             }
         });
+
 
         holder.comment_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -261,6 +276,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                 }
             }
         });
+
         holder.minus_dislike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -300,19 +316,25 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                 }
             }
         });
-        holder.post_body.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if ( isOnline()) {
-                    Intent myIntent = new Intent(myApplication.getApplicationContext(), WebViewActivity.class);
-                    myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    myIntent.putExtra("LINK", postFeed.getLink() + "");
-                    myIntent.putExtra("TITLE", postFeed.getTitle() + "");
-                    myApplication.getApplicationContext().startActivity(myIntent);
-                } else if (!isOnline())
-                    Toast.makeText(MyApplication.getAppContext(), "No Network", Toast.LENGTH_SHORT).show();
-            }
-        });
+
+
+            holder.postBodyNoImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (isOnline()) {
+                        if (!postFeed.getLink().isEmpty()) {
+                            Intent myIntent = new Intent(myApplication.getApplicationContext(), WebViewActivity.class);
+                            myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            myIntent.putExtra("LINK", postFeed.getLink() + "");
+                            myIntent.putExtra("TITLE", postFeed.getTitle() + "");
+                            myApplication.getApplicationContext().startActivity(myIntent);
+                        }
+                    } else if (!isOnline())
+                        Toast.makeText(MyApplication.getAppContext(), "No Network", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
 
         holder.post_header.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -333,7 +355,10 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
     }
 
     public interface ClickCallback {
-        void openProfile(PostFeed postFeed,ViewholderPostFeed viewHolder);
+        void openProfile(PostFeed postFeed, ViewholderPostFeed viewHolder);
+
+        void startDialogForNewImage(String image);
+
     }
 
     public void down_net(final PostFeed postFeed) {
@@ -492,10 +517,10 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
     public static class ViewholderPostFeed extends RecyclerView.ViewHolder {
 
         public CircleImageView circleImageView;
-        public TextView user_name, user_share_time, post_title, post_description, like_count, comment_count;
+        public TextView user_name, user_share_time,post_descriptionCustom, post_title, post_description, like_count, comment_count, postTitleNoImage, postDescriptionNOImage;
         public ImageView post_pic, comment_button;
         public RelativeLayout post_header;
-        public LinearLayout post_body;
+        public LinearLayout post_body, postBodyNoImage;
         public LikeButton plus_like, minus_dislike;
 
 
@@ -514,9 +539,12 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
             comment_button = (ImageView) itemView.findViewById(R.id.comment_button);
             post_header = (RelativeLayout) itemView.findViewById(R.id.post_header);
             post_body = (LinearLayout) itemView.findViewById(R.id.post_body);
-
+            // changes made
+            postTitleNoImage = (TextView) itemView.findViewById(R.id.post_titleForNoImage);
+            postDescriptionNOImage = (TextView) itemView.findViewById(R.id.post_descriptionForNoImage);
+            postBodyNoImage = (LinearLayout) itemView.findViewById(R.id.post_bodyForNoImage);
+            post_descriptionCustom = (TextView) itemView.findViewById(R.id.post_descriptionCustom);
         }
-
 
 
     }
@@ -576,7 +604,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
 
     public void addAll(int position, Collection<PostFeed> items) {
         int currentItemCount = newsFeedArrayList.size();
-        if(position > currentItemCount)
+        if (position > currentItemCount)
             throw new IndexOutOfBoundsException();
         else
             newsFeedArrayList.addAll(position, items);
@@ -595,7 +623,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
 
 
     public void replaceWith(Collection<PostFeed> items, boolean cleanToReplace) {
-        if(cleanToReplace) {
+        if (cleanToReplace) {
             clear();
             addAll(items);
         } else {
@@ -604,12 +632,12 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
             int delCount = oldCount - newCount;
             newsFeedArrayList.clear();
             newsFeedArrayList.addAll(items);
-            if(delCount > 0) {
+            if (delCount > 0) {
                 notifyItemRangeChanged(0, newCount);
                 notifyItemRangeRemoved(newCount, delCount);
-            } else if(delCount < 0) {
+            } else if (delCount < 0) {
                 notifyItemRangeChanged(0, oldCount);
-                notifyItemRangeInserted(oldCount, - delCount);
+                notifyItemRangeInserted(oldCount, -delCount);
             } else {
                 notifyItemRangeChanged(0, newCount);
             }
@@ -617,21 +645,20 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
     }
 
     public void getPids() {
-        String URL =Utility.getIPADDRESS() + "getlikebyapi";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>(){
+        String URL = Utility.getIPADDRESS() + "getlikebyapi";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 JSONObject jsonObject;
                 ArrayList<Likes> l = new ArrayList<>();
-                try{
+                try {
                     jsonObject = new JSONObject(response);
                     l = parseLike(jsonObject);
-                    dop.insertLikes(dop,l,true);
+                    dop.insertLikes(dop, l, true);
 
-                }catch (JSONException e){
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
 
 
             }
@@ -646,7 +673,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                 SharedPreferences sharedPreferences = MyApplication.getAppContext().getSharedPreferences("user_details", Context.MODE_PRIVATE);
                 String api_key = sharedPreferences.getString("api_key", null);
                 Map<String, String> params = new HashMap<>();
-                params.put("Authorization",api_key);
+                params.put("Authorization", api_key);
                 return params;
             }
 
@@ -655,10 +682,9 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
         requestQueue.add(stringRequest);
     }
 
-    private ArrayList<Likes> parseLike(JSONObject jsonObject){
+    private ArrayList<Likes> parseLike(JSONObject jsonObject) {
         ArrayList<Likes> likes = new ArrayList<>();
         if (jsonObject != null && jsonObject.length() != 0) {
-
 
 
             try {
@@ -680,7 +706,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                 }
 
             } catch (JSONException e) {
-                Log.e("ADARSH",e.toString());
+                Log.e("ADARSH", e.toString());
                 e.printStackTrace();
             }
 
@@ -688,7 +714,6 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
         }
         return likes;
     }
-
 
 
 }

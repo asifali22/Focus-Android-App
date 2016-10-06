@@ -94,5 +94,11 @@
         <!--app:persistentSV_editTextColor="#DE000000"-->
         <!--app:persistentSV_searchCardElevation="4dp"-->
         <!--app:persistentSV_searchTextColor="#DE000000" />-->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:id="@+id/newImageContainer"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>

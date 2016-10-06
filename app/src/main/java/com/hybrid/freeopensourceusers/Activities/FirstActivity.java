@@ -6,14 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import android.animation.Animator;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.SearchRecentSuggestions;
-import android.speech.RecognizerIntent;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -24,16 +21,12 @@ import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
@@ -45,22 +38,15 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.hybrid.freeopensourceusers.Adapters.RecyclerTrendingAdapter;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.Callback.FabClickListener;
-import com.hybrid.freeopensourceusers.PojoClasses.PostFeed;
-import com.hybrid.freeopensourceusers.PojoClasses.SampleSuggestionsBuilder;
-import com.hybrid.freeopensourceusers.PojoClasses.SimpleAnimationListener;
 import com.hybrid.freeopensourceusers.R;
 import com.hybrid.freeopensourceusers.Fragments.SessionFragment;
 import com.hybrid.freeopensourceusers.Fragments.TrendingFragment;
 import com.hybrid.freeopensourceusers.SearchStuffs.SearchableProvider;
 import com.hybrid.freeopensourceusers.Services.MyFireBaseInstanceIdService;
-import com.hybrid.freeopensourceusers.Sqlite.DatabaseOperations;
 
-import org.cryse.widget.persistentsearch.DefaultVoiceRecognizerDelegate;
-import org.cryse.widget.persistentsearch.PersistentSearchView;
-import org.cryse.widget.persistentsearch.VoiceRecognitionDelegate;
+
 
 import java.util.ArrayList;
 import java.util.List;

@@ -74,7 +74,8 @@
 
         </activity>
         <activity android:name=".Activities.WebViewActivity" />
-        <activity android:name=".UserProfileStuff.UserProfile" />
+        <activity android:name=".UserProfileStuff.UserProfile"
+            android:theme="@style/UserProfileTheme"/>
         <activity
             android:name=".Activities.session_details"
             android:theme="@style/SessionFitSystem" />

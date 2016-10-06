@@ -20,8 +20,6 @@ import com.hybrid.freeopensourceusers.PojoClasses.CommentFeed;
 import com.hybrid.freeopensourceusers.PojoClasses.Likes;
 import com.hybrid.freeopensourceusers.PojoClasses.PostFeed;
 
-import org.cryse.widget.persistentsearch.SearchItem;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -282,24 +280,7 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         return newsFeedList;
     }
 
-    public ArrayList<SearchItem> readSearchSuggestion(DatabaseOperations dop){
-        SQLiteDatabase sqLiteDatabase = dop.getReadableDatabase();
-        ArrayList<SearchItem> newsFeedList = new ArrayList<>();
-        String query = "select " + search_suggestion_const.getLastSearch() + " from " + search_suggestion_const.getTable_name()+  " order by " + search_suggestion_const.getSearchSLNo() + " desc " +";";
-        Cursor cursor = sqLiteDatabase.rawQuery(query,null);
-        if (cursor != null && cursor.moveToFirst()) {
 
-            do {
-                SearchItem searchItem = new SearchItem(cursor.getString(cursor.getColumnIndex(search_suggestion_const.getLastSearch())),
-                        cursor.getString(cursor.getColumnIndex(search_suggestion_const.getLastSearch())),
-                        SearchItem.TYPE_SEARCH_ITEM_HISTORY);
-                newsFeedList.add(searchItem);
-            }while (cursor.moveToNext());
-        }
-
-        return newsFeedList;
-
-    }
 
     public ArrayList<PostFeed> readPostForSearch(String searchText, DatabaseOperations dop){
         SQLiteDatabase sqLiteDatabase = dop.getReadableDatabase();

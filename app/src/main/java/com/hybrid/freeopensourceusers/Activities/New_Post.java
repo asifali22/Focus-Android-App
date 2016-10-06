@@ -19,6 +19,7 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.EdgeEffectCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
@@ -32,6 +33,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.widget.Button;
+import android.widget.EdgeEffect;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -88,7 +90,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
     private int PICK_IMAGE_REQUEST = 1;
     private MyTextDrawable myTextDrawable;
     private String api_key;
-    private int flag;
+    private int flag =1;
     private RelativeLayout revealLayout, toggleLayout;
     private ScrollView simpleLayout;
     private AppCompatButton advancedButton;
@@ -112,12 +114,12 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
         simpleLayout = (ScrollView) findViewById(R.id.simpleRelative);
         toggleLayout = (RelativeLayout) findViewById(R.id.toggleLayout);
 
-        linkPhoto.setImageDrawable(myTextDrawable.setTextDrawableForPost("RandomFinalColor", "Image"));
+        linkPhoto.setImageDrawable(myTextDrawable.setTextDrawableForPost("Zebra", "Image"));
         if( newPostToolbar != null)
             setSupportActionBar(newPostToolbar);
 
         if(getSupportActionBar() != null)
-            getSupportActionBar().setTitle("Add Post");
+            getSupportActionBar().setTitle("Add post");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -157,7 +159,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
         // When Text is not null
         if (sharedText != null) {
             // Show the text as Toast message
-            Toast.makeText(this, sharedText, Toast.LENGTH_LONG).show();
+//            Toast.makeText(this, sharedText, Toast.LENGTH_LONG).show();
             user_input_link.setText(sharedText);
         }
     }
@@ -169,9 +171,10 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
      */
     private void handleSendImage(Intent intent) {
         // Get the image URI from intent
-        Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         // When image URI is not null
         if (imageUri != null) {
+
             // Update UI to reflect image being shared
             linkPhoto.setImageURI(imageUri);
         } else {
@@ -201,8 +204,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                 if (pngs.get(i).attr("src") != "") {
                     imgurl = pngs.get(i).attr("src");
                     break;
-                } else
-                    continue;
+                }
             }
         }
 
@@ -232,43 +234,55 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
     }
 
     public void submitButton() {
-        flag = 1;
         isCLicked = true;
         input = user_input_link.getText().toString();
-        if (!input.equals("")) {
-            int start = input.indexOf("http");
-            int end = 0;
-            while (end < start) {
+        if (flag == 1) {
+            if (!input.equals("")) {
+                int start = input.indexOf("http");
+                int end = 0;
+                while (end < start) {
+                    end = input.indexOf(" ");
+                    if (end < start) {
+                        input = input.substring(end + 1, input.length());
+                        start = start - end - 1;
+                        end = 0;
+                    } else
+                        break;
+                }
                 end = input.indexOf(" ");
-                if (end < start) {
-                    input = input.substring(end + 1, input.length());
-                    start = start - end - 1;
-                    end = 0;
-                } else
-                    break;
+                if (end != -1)
+                    input = input.substring(0, end);
+                else
+                    input = input.substring(0, input.length());
+                getImageUrl = getUrl(input);
+//            Glide.with(this)
+//                    .load(getImageUrl)
+//                    .centerCrop()
+//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                    .crossFade()
+//                    .into(linkPhoto);
+
+                finalDesc = finalDesc.trim();
+                if (finalDesc.isEmpty() || finalDesc == null || finalDesc.equals(""))
+                    finalDesc = title;
+
+
+                showDialog("", getUserName(), title, finalDesc, getImageUrl);
+
+
             }
-            end = input.indexOf(" ");
-            if (end != -1)
-                input = input.substring(0, end);
-            else
-                input = input.substring(0, input.length());
-            Toast.makeText(this, input, Toast.LENGTH_SHORT).show();
-            //adarsh trivedi http://focusvce.com ada
-            getImageUrl = getUrl(input);
-            Glide.with(this)
-                    .load(getImageUrl)
-                    .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .crossFade()
-                    .into(linkPhoto);
-
-            finalDesc = finalDesc.trim();
-            if (finalDesc.isEmpty()|| finalDesc == null || finalDesc.equals(""))
-                finalDesc = title;
-
-
-           showDialog("",getUserName(),title,finalDesc,getImageUrl);
-
+        }else if (flag ==2){
+                String title = input_title.getText().toString();
+                String desc = input_desc.getText().toString();
+                if(!(title.isEmpty() || desc.isEmpty()))
+                     showDialog("", getUserName(), title, desc, "");
+                else if (title.isEmpty())
+                    input_title.setError("Title can't be empty");
+                else if (desc.isEmpty())
+                    input_desc.setError("Description can't be empty");
+//                else if(bitmap == null) {
+//                    // handle this event for the post without images
+//                }
 
         }
 
@@ -306,7 +320,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
 
         myDialog.setView(dialogMainView);
 
-
+        if (flag == 1)
         Glide.with(this)
                 .load(getImageUrl)
                 .centerCrop()
@@ -315,6 +329,11 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                 .error(myTextDrawable.setTextDrawableForError("Error!"))
                 .crossFade()
                 .into(post_pic);
+        else if (flag ==2 ) {
+
+                post_pic.setImageBitmap(bitmap);
+
+        }
 
 
         if (userImageText.isEmpty())
@@ -368,13 +387,11 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                     @Override
                     public void onResponse(String response) {
                         Toast.makeText(myApplication.getApplicationContext(), "Post added", Toast.LENGTH_LONG).show();
-                        Log.e("ADARSH_LOG",response);
                         finish();
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("ADARSH_LOG",error.toString());
                         Toast.makeText(myApplication.getApplicationContext(), "Error occurred!", Toast.LENGTH_LONG).show();
                         finish();
                     }
@@ -403,6 +420,11 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
             }
         }
         else if(flag==2){
+            final String photoLink;
+            if (input.isEmpty())
+                photoLink = "abc";
+            else
+                photoLink = input;
 
             String UPLOAD_URL = "http://focusvce.com/api/v1/upload";
             final ProgressDialog loading = ProgressDialog.show(this,"Uploading...","Please wait...",false,false);
@@ -425,7 +447,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                             loading.dismiss();
 
                             //Showing toast
-                            Toast.makeText(New_Post.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(New_Post.this,"Error occurred! Try again.", Toast.LENGTH_LONG).show();
                             Log.e("Error", volleyError.toString());
                         }
                     }){
@@ -440,7 +462,6 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                 protected Map<String, String> getParams() throws AuthFailureError {
                     //Converting Bitmap to String
                     String image = getStringImage(bitmap);
-                    Log.e("ADARSH",image);
 
                     //Getting Image Name
                     String name = api_key+"-"+Long.toString(System.currentTimeMillis());
@@ -451,7 +472,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                     Map<String,String> params = new Hashtable<>();
 
                     //Adding parameters
-
+                    params.put("link", photoLink);
                     params.put("image", image);
                     params.put("name", name);
                     params.put("title",title);
@@ -486,13 +507,12 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
     }
     public String getStringImage(Bitmap bmp){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bmp.compress(Bitmap.CompressFormat.JPEG,30, baos);
         byte[] imageBytes = baos.toByteArray();
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
         return encodedImage;
     }
     public void uploadfab(View view) {
-        flag = 2;
         showFileChooser();
     }
 
@@ -615,6 +635,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
 
         if (revealLayout.getVisibility() == View.INVISIBLE) {
             tintSystemBars();
+            flag = 2;
             if (Build.VERSION.SDK_INT >= 21) {
                 // get the center for the clipping circle
                 int cx = revealLayout.getWidth() / 2;
@@ -646,6 +667,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
             }
         }else{
                 tintSystemBarsBack();
+                flag =1;
             if (Build.VERSION.SDK_INT >= 21) {
                 // get the center for the clipping circle
                 int cx = revealLayout.getWidth() / 2;
@@ -709,6 +731,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                 getSupportActionBar().setBackgroundDrawable(background);
                 simpleLayout.setBackgroundColor(blended);
                 toggleLayout.setBackgroundColor(blended);
+
             }
         });
 
@@ -744,6 +767,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                 getSupportActionBar().setBackgroundDrawable(background);
                 simpleLayout.setBackgroundColor(blended);
                 toggleLayout.setBackgroundColor(blended);
+
             }
         });
 

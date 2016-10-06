@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.PojoClasses.SessionFeed;
 import com.hybrid.freeopensourceusers.R;
@@ -78,6 +79,7 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
             Glide.with(MyApplication.getAppContext())
                     .load(sessionFeed.getSession_image())
                     .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.loading)
                     .error(myTextDrawable.setTextDrawableForError("Error!"))
                     .crossFade()
@@ -106,6 +108,7 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
             Glide.with(MyApplication.getAppContext())
                     .load(avatar)
                     .fitCenter()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .dontAnimate()
                     .placeholder(R.drawable.blank_person_final)
                     .error(myTextDrawable.setTextDrawable(sessionFeed.getUser_name()))

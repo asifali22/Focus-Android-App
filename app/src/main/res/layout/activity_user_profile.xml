@@ -38,7 +38,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="125dp"
                     android:layout_gravity="bottom|center_horizontal"
-                    android:background="@color/colorPrimary"
+                    android:background="@color/colorPrimaryUserProfile"
                     android:orientation="vertical"
                     app:layout_collapseMode="parallax"
                     app:layout_collapseParallaxMultiplier="0.3">
@@ -112,7 +112,7 @@
             android:id="@+id/main.toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
+            android:background="@color/colorPrimaryUserProfile"
             app:layout_anchor="@id/main.framelayout.title"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:theme="@style/ThemeOverlay.AppCompat.Dark"
