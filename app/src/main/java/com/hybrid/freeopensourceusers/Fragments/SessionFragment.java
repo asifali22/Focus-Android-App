@@ -72,6 +72,7 @@ public class SessionFragment extends Fragment implements SessionFeedLoadingListe
             public void openProfile(SessionFeed sessionFeed, RecyclerSessionAdapter.ViewholderSessionFeed viewHolder) {
                 Intent myIntent = new Intent(getActivity(), UserProfile.class);
                 myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                myIntent.putExtra("UID", sessionFeed.getUid());
                 myIntent.putExtra("NAME",sessionFeed.getUser_name());
                 myIntent.putExtra("PIC", sessionFeed.getUser_pic());
                 myIntent.putExtra("STATUS", sessionFeed.getUser_status());

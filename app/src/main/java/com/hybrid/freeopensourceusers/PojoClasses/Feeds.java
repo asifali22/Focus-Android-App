@@ -9,11 +9,18 @@ public class Feeds {
 
     private PostFeed postFeed;
     private SessionFeed sessionFeed;
+    private RecyclerHeader recyclerHeader;
 
-    public Feeds(PostFeed postfeed, SessionFeed sessionfeed){
+    public Feeds(PostFeed postfeed, SessionFeed sessionfeed, RecyclerHeader recyclerHeader){
         this.postFeed = postfeed;
+        this.recyclerHeader = recyclerHeader;
         this.sessionFeed = sessionfeed;
+
     }
+
+    public RecyclerHeader getRecyclerHeader(){ return  recyclerHeader;}
+
+    public boolean isRecyclerHeader(){ return  recyclerHeader!=null;}
 
     public PostFeed getPostFeed() {
         return postFeed;

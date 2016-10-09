@@ -90,7 +90,7 @@
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_margin="8dp"
                 app:cardCornerRadius="2dp"
                 app:cardElevation="8dp"
@@ -99,11 +99,19 @@
                 <TextView
                     android:id="@+id/user.desc"
                     android:gravity="center"
+                    android:clickable="true"
+                    android:onClick="openUserPostAndSession"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:lineSpacingExtra="8dp"
                     android:text="No description available!"
                     android:textSize="18sp" />
+
+                <!--<android.support.v7.widget.RecyclerView-->
+                    <!--android:id="@+id/userProfileRecyclerView"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:transitionGroup="true"-->
+                    <!--android:layout_height="match_parent"/>-->
             </android.support.v7.widget.CardView>
 
         </android.support.v4.widget.NestedScrollView>

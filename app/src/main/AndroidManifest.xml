@@ -13,8 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <provider
-            android:authorities="com.hybrid.freeopensourceusers.SearchStuffs.SearchableProvider"
-            android:name=".SearchStuffs.SearchableProvider"/>
+            android:name=".SearchStuffs.SearchableProvider"
+            android:authorities="com.hybrid.freeopensourceusers.SearchStuffs.SearchableProvider" />
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -26,27 +27,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-
-            <meta-data android:name="android.app.default_searchable"
-                android:value=".SearchStuffs.SearchableActivity"/>
-
-
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".SearchStuffs.SearchableActivity" />
         </activity>
         <activity android:name=".Activities.New_Post">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Activities.FirstActivity"/>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.FirstActivity" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-            <android:data
-                android:host="www.youtube.com"
-                android:mimeType="text/*" />
-            <android:data
-                android:host="www.facebook.com"
-                android:mimeType="text/*" />
-        </intent-filter>
-        <!-- Added intent filter for handling incoming Texts, Single and Multiple Images - Starts here -->
+                <android:data
+                    android:host="www.youtube.com"
+                    android:mimeType="text/*" />
+                <android:data
+                    android:host="www.facebook.com"
+                    android:mimeType="text/*" />
+            </intent-filter>
+            <!-- Added intent filter for handling incoming Texts, Single and Multiple Images - Starts here -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
 
@@ -69,13 +69,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.LoginActivity" />
-        <activity android:name=".Activities.Comment_Actiivity" >
-
-
-        </activity>
+        <activity android:name=".Activities.Comment_Actiivity"></activity>
         <activity android:name=".Activities.WebViewActivity" />
-        <activity android:name=".UserProfileStuff.UserProfile"
-            android:theme="@style/UserProfileTheme"/>
+        <activity
+            android:name=".UserProfileStuff.UserProfile"
+            android:theme="@style/UserProfileTheme" />
         <activity
             android:name=".Activities.session_details"
             android:theme="@style/SessionFitSystem" />
@@ -106,18 +104,19 @@
 
         <activity android:name=".Activities.RegisterActivity" />
         <activity android:name=".SearchStuffs.SearchableActivity">
-
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
 
-            <meta-data android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
 
-            <!--<meta-data android:name="android.support.PARENT_ACTIVITY"-->
-                <!--android:value=".Activities.FirstActivity"/>-->
+            <!-- <meta-data android:name="android.support.PARENT_ACTIVITY" -->
+            <!-- android:value=".Activities.FirstActivity"/> -->
 
         </activity>
+        <activity android:name=".UserProfileStuff.UserPostAndSessionActivity"></activity>
     </application>
 
 </manifest>

@@ -420,6 +420,38 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         return cr;
     }
 
+    public ArrayList<PostFeed> readPostForUserProfile(int userID, DatabaseOperations databaseOperations) {   SQLiteDatabase sqLiteDatabase = databaseOperations.getReadableDatabase();
+        ArrayList<PostFeed> newsFeedList = new ArrayList<>();
+        String query ="select * from " + html_test_const.getTable_name() + " where " + html_test_const.getUid() + " = " + userID +" order by date desc ;";
+        Cursor cursor = sqLiteDatabase.rawQuery(query,null);
+        if (cursor != null && cursor.moveToFirst()) {
+            L.m("loading entries " + cursor.getCount() + new Date(System.currentTimeMillis()));
+            do {
+
+                //create a new object and retrieve the data from the cursor to be stored in this object
+                PostFeed postFeed = new PostFeed();
+                postFeed.setTitle(cursor.getString(cursor.getColumnIndex(html_test_const.getTitle())));
+                postFeed.setLink(cursor.getString(cursor.getColumnIndex(html_test_const.getLink())));
+                postFeed.setDescription(cursor.getString(cursor.getColumnIndex(html_test_const.getDescription())));
+                long dateOfPost = cursor.getLong(cursor.getColumnIndex(html_test_const.getDate()));
+                postFeed.setDop(new java.sql.Date(dateOfPost));
+                postFeed.setUser_name(cursor.getString(cursor.getColumnIndex(html_test_const.getUser_name())));
+                postFeed.setPid(cursor.getInt(cursor.getColumnIndex(html_test_const.getSr_key())));
+                postFeed.setUp(cursor.getInt(cursor.getColumnIndex(html_test_const.getUp_down())));
+                postFeed.setComment_count(cursor.getInt(cursor.getColumnIndex(html_test_const.getComment_count())));
+                postFeed.setUid(cursor.getInt(cursor.getColumnIndex(html_test_const.getUid())));
+                postFeed.setPostPicUrl(cursor.getString(cursor.getColumnIndex(html_test_const.getPost_pic())));
+                postFeed.setUser_pic(cursor.getString(cursor.getColumnIndex(html_test_const.getUser_pic())));
+                postFeed.setUser_status(cursor.getString(cursor.getColumnIndex(html_test_const.getUser_status())));
+                newsFeedList.add(postFeed);
+
+            } while (cursor.moveToNext());
+        }
+
+        return newsFeedList;
+
+    }
+
     public class Comments_Const {
         String comment_id = "comment_id";
         String pid = "pid";

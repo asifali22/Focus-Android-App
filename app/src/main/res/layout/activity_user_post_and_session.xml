@@ -8,15 +8,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <android.support.design.widget.AppBarLayout
-            android:id="@+id/search_appbar_layout"
+            android:id="@+id/appbar_layoutUserData"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:elevation="6dp">
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/search_toolbar"
+                android:id="@+id/userDataToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -24,22 +26,26 @@
                 android:minHeight="?attr/actionBarSize"
                 app:elevation="0dp"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
         </android.support.design.widget.AppBarLayout>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/searchRecyclerView"
+            android:id="@+id/userProfileRecyclerView_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/search_appbar_layout" />
+            android:layout_below="@+id/appbar_layoutUserData"
+            android:layout_gravity="center" />
 
         <TextView
-            android:id="@+id/noSearchResultsTV"
+            android:id="@+id/noDataUserProfile"
             android:textSize="18sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No results found!"
-            android:visibility="gone"
             android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"/>
+            android:visibility="gone"
+            android:layout_centerHorizontal="true"
+            android:text="Nothing available here!"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </RelativeLayout>
+
+
 </android.support.design.widget.CoordinatorLayout>

@@ -74,13 +74,14 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
         trendingRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefreshForTrendingPost);
         trendingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        trendingRecyclerView.setHasFixedSize(true);
+        trendingRecyclerView.setHasFixedSize(false);
         mRecyclerTrendingAdapter = new RecyclerTrendingAdapter(getActivity(), newsFeedsList);
         mRecyclerTrendingAdapter.setCallback(new RecyclerTrendingAdapter.ClickCallback() {
             @Override
             public void openProfile(PostFeed postFeed, RecyclerTrendingAdapter.ViewholderPostFeed viewHolder) {
                 Intent myIntent = new Intent(getActivity(), UserProfile.class);
                 myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                myIntent.putExtra("UID",postFeed.getUid());
                 myIntent.putExtra("NAME",postFeed.getUser_name());
                 myIntent.putExtra("PIC", postFeed.getUser_pic());
                 myIntent.putExtra("STATUS", postFeed.getUser_status());

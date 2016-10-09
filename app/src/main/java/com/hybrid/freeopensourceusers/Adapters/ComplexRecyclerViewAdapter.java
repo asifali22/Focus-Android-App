@@ -11,10 +11,12 @@ import com.bumptech.glide.Glide;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.PojoClasses.Feeds;
 import com.hybrid.freeopensourceusers.PojoClasses.PostFeed;
+import com.hybrid.freeopensourceusers.PojoClasses.RecyclerHeader;
 import com.hybrid.freeopensourceusers.PojoClasses.SessionFeed;
 import com.hybrid.freeopensourceusers.R;
 import com.hybrid.freeopensourceusers.SearchStuffs.ViewHolder1;
 import com.hybrid.freeopensourceusers.SearchStuffs.ViewHolder2;
+import com.hybrid.freeopensourceusers.SearchStuffs.ViewHolder3;
 import com.hybrid.freeopensourceusers.Utility.MyTextDrawable;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
 
@@ -37,7 +39,7 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private RequestQueue requestQueue;
     private MyApplication myApplication;
     private RecyclerTrendingAdapter.ClickCallback clickCallback;
-    private final int POSTFEED = 0, SESSIONFEED = 1;
+    private final int POSTFEED = 0, SESSIONFEED = 1, HEADER = 3;
 
 
     public ComplexRecyclerViewAdapter(Context context, ArrayList<Feeds> feedsArrayList) {
@@ -67,10 +69,15 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 View v1 = inflater.inflate(R.layout.trending_row_layout, parent, false);
                 viewHolder = new ViewHolder1(v1);
                 break;
+            case HEADER:
+                View v3 = inflater.inflate(R.layout.header_layout, parent, false);
+                viewHolder = new ViewHolder3(v3);
+                break;
             case SESSIONFEED:
                 View v2 = inflater.inflate(R.layout.session_row_layout, parent, false);
                 viewHolder = new ViewHolder2(v2);
                 break;
+
 
         }
         return viewHolder;
@@ -85,11 +92,24 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 ViewHolder1 vh1 = (ViewHolder1) viewHolder;
                 configureViewHolder1(vh1, position);
                 break;
+            case HEADER:
+                ViewHolder3 vh3 = (ViewHolder3) viewHolder;
+                configureViewHolder3(vh3, position);
+                break;
             case SESSIONFEED:
                 ViewHolder2 vh2 = (ViewHolder2) viewHolder;
                 configureViewHolder2(vh2, position);
                 break;
+
         }
+    }
+
+    private void configureViewHolder3(ViewHolder3 vh3, int position) {
+
+        final RecyclerHeader header = feedsArrayList.get(position).getRecyclerHeader();
+
+        vh3.headerTVforHeader.setText(header.getmHeader());
+
     }
 
 
@@ -204,6 +224,8 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             return POSTFEED;
         else if (feedsArrayList.get(position).isSessionFeed())
             return SESSIONFEED;
+        else if (feedsArrayList.get(position).isRecyclerHeader())
+            return HEADER;
         else return -1;
 
     }

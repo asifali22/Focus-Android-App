@@ -209,6 +209,47 @@ public class DatabaseOperations_Session extends SQLiteOpenHelper {
         }
         return newsFeedList;
     }
+
+    public ArrayList<SessionFeed> readSessionForUserProfile(int userID, DatabaseOperations_Session databaseOperations_session) {
+
+        SQLiteDatabase sqLiteDatabase = databaseOperations_session.getReadableDatabase();
+        ArrayList<SessionFeed> newsFeedList = new ArrayList<>();
+        String query ="select * from " + session_class.getTable_name() + " where " + session_class.getUid()+ " = " + userID +" order by Dosp desc ;";
+        Cursor cursor = sqLiteDatabase.rawQuery(query,null);
+        if (cursor != null && cursor.moveToFirst()) {
+            L.m("loading entries " + cursor.getCount() + new Date(System.currentTimeMillis()));
+            do {
+
+                //create a new object and retrieve the data from the cursor to be stored in this object
+                SessionFeed sessionFeed = new SessionFeed();
+                sessionFeed.setSession_id(cursor.getInt(cursor.getColumnIndex(session_class.getSession_id())));
+                sessionFeed.setSession_title(cursor.getString(cursor.getColumnIndex(session_class.getS_title())));
+                sessionFeed.setSession_description(cursor.getString(cursor.getColumnIndex(session_class.getS_description())));
+                sessionFeed.setSession_image(cursor.getString(cursor.getColumnIndex(session_class.getS_picurl())));
+                sessionFeed.setS_venue(cursor.getString(cursor.getColumnIndex(session_class.getS_venue())));
+                sessionFeed.setS_coordinator(cursor.getString(cursor.getColumnIndex(session_class.getS_coordinator())));
+                sessionFeed.setS_c_email(cursor.getString(cursor.getColumnIndex(session_class.getS_c_email())));
+                sessionFeed.setS_c_phone(cursor.getString(cursor.getColumnIndex(session_class.getS_c_phone())));
+                sessionFeed.setResource_person(cursor.getString(cursor.getColumnIndex(session_class.getResource_person())));
+                sessionFeed.setRp_desg(cursor.getString(cursor.getColumnIndex(session_class.getRp_desg())));
+                sessionFeed.setTime_and_date(cursor.getString(cursor.getColumnIndex(session_class.getDate_time())));
+                sessionFeed.setAddress(cursor.getString(cursor.getColumnIndex(session_class.getAddress())));
+                sessionFeed.setRoom(cursor.getString(cursor.getColumnIndex(session_class.getRoom())));
+                long dateOfPost = cursor.getLong(cursor.getColumnIndex(session_class.getDosp()));
+                sessionFeed.setDosp(new Date(dateOfPost));
+                sessionFeed.setUser_name(cursor.getString(cursor.getColumnIndex(session_class.getUser_name())));
+                sessionFeed.setUser_pic(cursor.getString(cursor.getColumnIndex(session_class.getUser_pic())));
+                sessionFeed.setUser_status(cursor.getString(cursor.getColumnIndex(session_class.getUser_status())));
+                sessionFeed.setUid(cursor.getInt(cursor.getColumnIndex(session_class.getUid())));
+                newsFeedList.add(sessionFeed);
+            } while (cursor.moveToNext());
+        }
+
+
+        return newsFeedList;
+
+    }
+
     public class Session_Class{
         String table_name="session";
         String session_id="session_id";

@@ -1,20 +1,28 @@
 package com.hybrid.freeopensourceusers.UserProfileStuff;
 
+import android.annotation.TargetApi;
+import android.content.Intent;
 import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.transition.Transition;
 import android.view.Menu;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
+
 import com.hybrid.freeopensourceusers.R;
+
 import com.hybrid.freeopensourceusers.Utility.MyTextDrawable;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -31,10 +39,11 @@ public class UserProfile extends AppCompatActivity
     private boolean mIsTheTitleContainerVisible = true;
 
     private LinearLayout mTitleContainer;
-    private TextView mTitle, mTitleBehindPhoto, mStatus, mDescription;
+    private TextView mTitle, mTitleBehindPhoto, mStatus;
     private AppBarLayout mAppBarLayout;
     private Toolbar mToolbar;
     private String name, profilepic, status;
+    private int userID;
     private CircleImageView avatar;
     private ImageView timeLine;
 
@@ -47,13 +56,8 @@ public class UserProfile extends AppCompatActivity
 
         bindActivity();
 
-        mToolbar.setTitle("");
-        mAppBarLayout.addOnOffsetChangedListener(this);
-
-        setSupportActionBar(mToolbar);
-        startAlphaAnimation(mTitle, 0, View.INVISIBLE);
-
         Bundle bundle = getIntent().getExtras();
+        userID = bundle.getInt("UID");
         name = bundle.getString("NAME");
         profilepic = bundle.getString("PIC");
         status = bundle.getString("STATUS");
@@ -76,6 +80,15 @@ public class UserProfile extends AppCompatActivity
                 .load(R.drawable.geometry)
                 .centerCrop()
                 .into(timeLine);
+
+
+        mToolbar.setTitle("");
+        mAppBarLayout.addOnOffsetChangedListener(this);
+
+        setSupportActionBar(mToolbar);
+        startAlphaAnimation(mTitle, 0, View.INVISIBLE);
+
+
     }
 
     private void bindActivity() {
@@ -85,9 +98,9 @@ public class UserProfile extends AppCompatActivity
         mAppBarLayout   = (AppBarLayout) findViewById(R.id.main_appbar);
         mTitleBehindPhoto = (TextView) findViewById(R.id.behind_Image_TextView);
         mStatus         = (TextView)findViewById(R.id.user_status);
-        mDescription    = (TextView)findViewById(R.id.user_desc);
         avatar          = (CircleImageView) findViewById(R.id.user_profile_image_userActivity);
         timeLine        = (ImageView) findViewById(R.id.timeLineImageView);
+
     }
 
     @Override
@@ -146,6 +159,13 @@ public class UserProfile extends AppCompatActivity
         alphaAnimation.setDuration(duration);
         alphaAnimation.setFillAfter(true);
         v.startAnimation(alphaAnimation);
+    }
+
+    public void openUserPostAndSession(View view) {
+        Intent intent = new Intent(this, UserPostAndSessionActivity.class);
+        intent.putExtra("UID", userID);
+        intent.putExtra("USERNAME", name);
+        startActivity(intent);
     }
 }
 
