@@ -20,10 +20,10 @@ public  class ViewHolder1 extends RecyclerView.ViewHolder {
 
 
     public CircleImageView circleImageView;
-    public TextView user_name, user_share_time, post_title, post_description, like_count, comment_count;
+    public TextView user_name, user_share_time, post_title, post_description, like_count, comment_count, postTitleNoImage,postDescriptionNOImage,post_descriptionCustom;
     public ImageView post_pic, comment_button;
     public RelativeLayout post_header;
-    public LinearLayout post_body;
+    public LinearLayout post_body, postBodyNoImage;
     public LikeButton plus_like, minus_dislike;
 
     public ViewHolder1(View itemView) {
@@ -41,6 +41,10 @@ public  class ViewHolder1 extends RecyclerView.ViewHolder {
         comment_button = (ImageView) itemView.findViewById(R.id.comment_button);
         post_header = (RelativeLayout) itemView.findViewById(R.id.post_header);
         post_body = (LinearLayout) itemView.findViewById(R.id.post_body);
+        postTitleNoImage = (TextView) itemView.findViewById(R.id.post_titleForNoImage);
+        postDescriptionNOImage = (TextView) itemView.findViewById(R.id.post_descriptionForNoImage);
+        postBodyNoImage = (LinearLayout) itemView.findViewById(R.id.post_bodyForNoImage);
+        post_descriptionCustom = (TextView) itemView.findViewById(R.id.post_descriptionCustom);
     }
 
     public CircleImageView getCircleImageView() {
