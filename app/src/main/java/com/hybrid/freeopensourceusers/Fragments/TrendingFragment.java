@@ -229,6 +229,9 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
                     new TaskLoadPostFeed(this).execute();
                 }
             }
+            if(resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there is no result
+            }
         }
     }
 }
