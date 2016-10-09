@@ -36,7 +36,7 @@ import java.util.concurrent.TimeoutException;
  * Created by adarsh on 6/9/16.
  */
 
-public class TaskLoadSessionFeed extends AsyncTask<Void, Void, ArrayList<SessionFeed>> {
+    public class TaskLoadSessionFeed extends AsyncTask<Void, Void, ArrayList<SessionFeed>> {
 
     SessionFeedLoadingListener myComponent;
     private VolleySingleton mVolleySingleton;
@@ -151,7 +151,6 @@ public class TaskLoadSessionFeed extends AsyncTask<Void, Void, ArrayList<Session
         } catch (TimeoutException e) {
             L.m(e + "");
         }
-        Log.e("ADARSH",response.toString());
         return response;
 
     }

@@ -1,6 +1,7 @@
 package com.hybrid.freeopensourceusers.Fragments;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -50,6 +51,7 @@ import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
  */
 public class TrendingFragment extends Fragment implements PostFeedLoadingListener,FabClickListener{
 
+    private static final int REQUEST_CODE = 100;
     private ArrayList<PostFeed> newsFeedsList = new ArrayList<>();
 
     private RecyclerView trendingRecyclerView;
@@ -182,14 +184,9 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
     @Override
     public void fabListener() {
         if(isLoggedIn()) {
-//            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user_details", MODE_PRIVATE);
-//            String api_key = sharedPreferences.getString("api_key", null);
             Intent intent = new Intent(getContext(), New_Post.class);
-//            intent.putExtra("API_KEY", api_key);
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CODE);
         }
-//        else if(!isOnline())
-//            Toast.makeText(getActivity(),"No Network",Toast.LENGTH_SHORT).show();
         else
             showAlertDialog(getView());
 
@@ -222,4 +219,16 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE){
+            if (resultCode == Activity.RESULT_OK){
+                String result = data.getStringExtra("result");
+                if (result.equals("true")){
+                    swipeRefreshLayout.setRefreshing(true);
+                    new TaskLoadPostFeed(this).execute();
+                }
+            }
+        }
+    }
 }
