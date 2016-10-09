@@ -66,6 +66,7 @@ public class Comment_Actiivity extends AppCompatActivity {
 
     public String api_key;
     public String pid;
+    int flag_extra;
     EditText commentAdd;
     FloatingActionButton button;
     DatabaseOperations dp;
@@ -99,6 +100,8 @@ public class Comment_Actiivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         pid = extras.getString("PID_VALUE");
         api_key = extras.getString("API_KEY");
+        flag_extra = extras.getInt("FLAG");
+        Toast.makeText(this,Integer.toString(flag_extra),Toast.LENGTH_SHORT).show();
         if (savedInstanceState != null) {
             commentsFeedsList = savedInstanceState.getParcelableArrayList(COMMENTS_FEED);
         } else {
@@ -167,6 +170,7 @@ public class Comment_Actiivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("pid", pid);
+                params.put("flag",Integer.toString(flag_extra));
                 return params;
             }
 
@@ -255,6 +259,7 @@ public class Comment_Actiivity extends AppCompatActivity {
                 public void onResponse(String response) {
                     if (response != null && response.length() != 0) {
                         try {
+                            Log.e("ADARSH",response);
                             JSONObject jObject = new JSONObject(response);
                             int comment_id = jObject.getInt("comment_id");
                             int user_id = jObject.getInt("user_id");
@@ -306,6 +311,7 @@ public class Comment_Actiivity extends AppCompatActivity {
                     Map<String, String> params = new HashMap<>();
                     params.put("pid", pid);
                     params.put("comment", commentText);
+                    params.put("flag",Integer.toString(flag_extra));
                     return params;
                 }
 

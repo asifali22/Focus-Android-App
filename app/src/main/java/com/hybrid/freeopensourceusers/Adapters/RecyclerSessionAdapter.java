@@ -1,6 +1,10 @@
 package com.hybrid.freeopensourceusers.Adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,6 +18,8 @@ import android.widget.TextView;
 import com.android.volley.RequestQueue;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.hybrid.freeopensourceusers.Activities.Comment_Actiivity;
+import com.hybrid.freeopensourceusers.Activities.LoginActivity;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.PojoClasses.SessionFeed;
 import com.hybrid.freeopensourceusers.R;
@@ -125,10 +131,59 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
                 clickCallback.openProfile(sessionFeed, holder);
             }
         });
+        holder.session_comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!isLoggedIn())
+                    showAlertDialog(view);
+                else {
+                    String api_key = getApiKey();
+                    Intent myIntent = new Intent(myApplication.getApplicationContext(), Comment_Actiivity.class);
+                    myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    myIntent.putExtra("PID_VALUE", sessionFeed.getSession_id() + "");
+                    myIntent.putExtra("API_KEY", api_key);
+                    myIntent.putExtra("FLAG",1);
+                    myApplication.getApplicationContext().startActivity(myIntent);
+                }
+            }
+        });
 
 
     }
+    public boolean isLoggedIn() {
+        SharedPreferences sharedPreferences = myApplication.getApplicationContext().getSharedPreferences("user_details", myApplication.getApplicationContext().MODE_PRIVATE);
+        boolean status = sharedPreferences.getBoolean("logged_in", false);
+        return status;
 
+    }
+    public void showAlertDialog(View view) {
+        new AlertDialog.Builder(view.getContext())
+                .setTitle("Sign up?")
+                .setMessage("Join us to explore more!")
+                .setPositiveButton("SURE", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent myIntent = new Intent(myApplication.getApplicationContext(), LoginActivity.class);
+                        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        myApplication.getApplicationContext().startActivity(myIntent);
+                    }
+                })
+                .setNegativeButton("NOT NOW", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .show();
+    }
+    public String getApiKey() {
+
+        SharedPreferences sharedPreferences = myApplication.getApplicationContext().getSharedPreferences("user_details", myApplication.getApplicationContext().MODE_PRIVATE);
+        String api_key = sharedPreferences.getString("api_key", null);
+
+        if (!api_key.isEmpty()) {
+            return api_key;
+        } else
+            return null;
+    }
     public void setCallback(ClickCallback callback) {
         this.clickCallback = callback;
     }
@@ -153,6 +208,8 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
         public TextView user_name;
         public TextView date;
         public CircleImageView circleImageView;
+        public ImageView session_comment;
+        public TextView session_comment_count;
         public ViewholderSessionFeed(View view) {
             super(view);
             cardView = (CardView) view.findViewById(R.id.card_view_session);
@@ -164,6 +221,8 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
             circleImageView = (CircleImageView) view.findViewById(R.id.user_profile_image_session);
             post_body = (LinearLayout) view.findViewById(R.id.post_body_session);
             post_header = (RelativeLayout) view.findViewById(R.id.post_header_session);
+            session_comment = (ImageView) view.findViewById(R.id.comment_button_session);
+            session_comment_count = (TextView) view.findViewById(R.id.comment_count_session);
         }
     }
 

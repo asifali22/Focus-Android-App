@@ -3,6 +3,7 @@ package com.hybrid.freeopensourceusers.Activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -73,6 +74,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class New_Post extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String RESULT_CODE = "true";
     private Toolbar newPostToolbar;
     private Connection connection;
     private Document document;
@@ -387,6 +389,9 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                     @Override
                     public void onResponse(String response) {
                         Toast.makeText(myApplication.getApplicationContext(), "Post added", Toast.LENGTH_LONG).show();
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("result", RESULT_CODE);
+                        setResult(Activity.RESULT_OK, returnIntent);
                         finish();
                     }
                 }, new Response.ErrorListener() {
@@ -435,6 +440,9 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                             //Disimissing the progress dialog
                             loading.dismiss();
                             Toast.makeText(myApplication.getApplicationContext(), "Post Added", Toast.LENGTH_LONG).show();
+                            Intent returnIntent = new Intent();
+                            returnIntent.putExtra("result", RESULT_CODE);
+                            setResult(Activity.RESULT_OK, returnIntent);
                             finish();
                             //Showing toast message of the response
 

@@ -124,7 +124,6 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
         holder.like_count.setText(postFeed.getUp() + "");
         holder.comment_count.setText(postFeed.getComment_count() + "");
         holder.postTitleNoImage.setText(postFeed.getTitle());
-
         final String avatar = postFeed.getUser_pic();
         final String postpic = postFeed.getPostPicUrl();
         if (button(postFeed.getPid()) == -1) {
@@ -223,6 +222,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                     myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     myIntent.putExtra("PID_VALUE", postFeed.getPid() + "");
                     myIntent.putExtra("API_KEY", api_key);
+                    myIntent.putExtra("FLAG",0);
                     myApplication.getApplicationContext().startActivity(myIntent);
                 }
             }
@@ -276,6 +276,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                 }
             }
         });
+
 
         holder.minus_dislike.setOnClickListener(new View.OnClickListener() {
             @Override

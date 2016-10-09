@@ -149,8 +149,6 @@ public class RecyclerTrendingCommentAdapter extends RecyclerView.Adapter<Recycle
             body = (LinearLayout) itemView.findViewById(R.id.body);
 
         }
-
-
     }
 
 }
