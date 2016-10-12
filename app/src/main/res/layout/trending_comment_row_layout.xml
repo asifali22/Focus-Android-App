@@ -11,8 +11,7 @@
         android:id="@+id/miniProfile"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        app:civ_border_overlay="true"
-        app:civ_border_width="4dp"
+        app:civ_border_width="2dp"
         app:civ_border_color="#fff"
         android:layout_marginLeft="4dp"
         android:src="@drawable/blank_person_final" />
@@ -31,6 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:text="Name"
+            android:fontFamily="sans-serif-condensed"
             android:textAppearance="@android:style/TextAppearance.Holo.Small"
             android:textColor="#000" />
 

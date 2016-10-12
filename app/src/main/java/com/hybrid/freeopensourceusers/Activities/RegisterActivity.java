@@ -53,7 +53,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RegisterActivity extends FragmentActivity implements View.OnClickListener{
 
-    private static final int REQUEST_PICK_IMAGE = 10011;
     private ProgressDialog mProgressDialog;
 
     private static final String TAG = RegisterActivity.class.getSimpleName();
@@ -102,15 +101,7 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
 
     }
 
-//    public void changeProfile(View view) {
-//
-//        getSupportFragmentManager()
-//                .beginTransaction()
-//                .add(R.id.container, MainFragment.getInstance(),"frag")
-//                .commit();
-//
-//
-//    }
+
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -200,9 +191,9 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
     public void parseJson(String response){
         try{
             JSONObject jsonObject = new JSONObject(response);
-            if(jsonObject.getBoolean("error")==false)
+            if(!jsonObject.getBoolean("error"))
                 Toast.makeText(RegisterActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
-            else if(jsonObject.getBoolean("error")==true)
+            else if(jsonObject.getBoolean("error"))
                 Toast.makeText(this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
 
         }catch (JSONException e){
@@ -238,22 +229,10 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-//        getSupportFragmentManager()
-//                .beginTransaction()
-//                .add(R.id.container, MainFragment.getInstance(),"frag")
-//                .commit();
-
-        // startActivityForResult(new Intent(Intent.ACTION_GET_CONTENT).setType("image/*"), REQUEST_PICK_IMAGE);
-        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        getIntent.setType("image/*");
-
-        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        pickIntent.setType("image/*");
-
-        Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
-
-        startActivityForResult(chooserIntent, REQUEST_PICK_IMAGE);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.container, MainFragment.getInstance(),"frag")
+                .commit();
     }
 
     public static class LoadScaledImageTask implements Runnable {

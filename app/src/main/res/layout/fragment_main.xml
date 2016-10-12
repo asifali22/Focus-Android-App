@@ -92,6 +92,36 @@
                 style="@style/AppTheme.Button.Borderless"/>
 
             <Button
+                android:id="@+id/buttonFree"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="4dp"
+                android:padding="4dp"
+                android:text="FREE"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/AppTheme.Button.Borderless"/>
+
+            <Button
+                android:id="@+id/buttonCircle"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="4dp"
+                android:padding="4dp"
+                android:text="CIRCLE"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/AppTheme.Button.Borderless"/>
+
+            <Button
+                android:id="@+id/buttonShowCircleButCropAsSquare"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="4dp"
+                android:padding="4dp"
+                android:text="CIRCLE_SQUARE"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/AppTheme.Button.Borderless"/>
+
+            <Button
                 android:id="@+id/button3_4"
                 android:layout_gravity="center_vertical"
                 android:layout_margin="4dp"
@@ -138,35 +168,7 @@
                 android:layout_height="wrap_content"
                 style="@style/AppTheme.Button.Borderless"/>
 
-            <Button
-                android:id="@+id/buttonFree"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="4dp"
-                android:padding="4dp"
-                android:text="FREE"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/AppTheme.Button.Borderless"/>
 
-            <Button
-                android:id="@+id/buttonCircle"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="4dp"
-                android:padding="4dp"
-                android:text="CIRCLE"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/AppTheme.Button.Borderless"/>
-
-            <Button
-                android:id="@+id/buttonShowCircleButCropAsSquare"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="4dp"
-                android:padding="4dp"
-                android:text="CIRCLE_SQUARE"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/AppTheme.Button.Borderless"/>
 
         </LinearLayout>
     </HorizontalScrollView>
