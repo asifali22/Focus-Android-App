@@ -52,7 +52,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class FirstActivity extends AppCompatActivity implements
+public class                                                                FirstActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
 
@@ -75,7 +75,7 @@ public class FirstActivity extends AppCompatActivity implements
 
         //setupJob();
         bindViews();
-//        setUpSearchView();
+//        setUpSearchView();                                
         if(isLoggedIn()&&isOnline()){
             FirebaseMessaging.getInstance().subscribeToTopic("fcm_token");
             MyFireBaseInstanceIdService myFireBaseInstanceIdService = new MyFireBaseInstanceIdService();

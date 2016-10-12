@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.hybrid.freeopensourceusers.Logging.L;
+import com.hybrid.freeopensourceusers.PojoClasses.CommentFeed;
 import com.hybrid.freeopensourceusers.PojoClasses.Feeds;
 import com.hybrid.freeopensourceusers.PojoClasses.PostFeed;
 import com.hybrid.freeopensourceusers.PojoClasses.SessionFeed;
@@ -26,6 +27,7 @@ public class DatabaseOperations_Session extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION=1;
     public Context context;
     private Session_Class session_class= new Session_Class();
+    private Comments_Const comments_const = new Comments_Const();
     private String create_session="CREATE TABLE IF NOT EXISTS " + session_class.getTable_name() + "(" +
             session_class.getS_title() + " VARCHAR(50)," +
             session_class.getS_description() + " VARCHAR(200)," +
@@ -45,6 +47,14 @@ public class DatabaseOperations_Session extends SQLiteOpenHelper {
             session_class.getUid()+" INTEGER,"+
             session_class.getUser_pic()+" VARCHAR(400),"+
             session_class.getUser_status()+" VARCHAR(100));";
+    String create_comment = "CREATE TABLE " + comments_const.getTable_name() + "(" +
+            comments_const.getComment_id() + " INTEGER," +
+            comments_const.getUid() + " INTEGER," +
+            comments_const.getPid() + " INTEGER," +
+            comments_const.getComment() + " VARCHAR(200),"+
+            comments_const.getDoc() + " DATE, " +
+            comments_const.getUser_name() + " VARCHAR(200),"+
+            comments_const.getUser_pic()+" VARCHAR(200));";
 
     public DatabaseOperations_Session(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -54,12 +64,66 @@ public class DatabaseOperations_Session extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(create_session);
+        sqLiteDatabase.execSQL(create_comment);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
     }
+
+    public void delete_commentbyPid(String pid,DatabaseOperations_Session databaseOperations) {
+        SQLiteDatabase sqLiteDatabase = databaseOperations.getWritableDatabase();
+        sqLiteDatabase.execSQL("delete from " + comments_const.getTable_name() + " where " + comments_const.getPid() +" = " + pid +";");
+    }
+
+    public void putInfo_Comment(DatabaseOperations_Session dop, int comment_id, int uid, int pid, String comment, long doc, String user_name, String user_pic) {
+        SQLiteDatabase sqLiteDatabase = dop.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(comments_const.getComment_id(), comment_id);
+        cv.put(comments_const.getUid(), uid);
+        cv.put(comments_const.getPid(), pid);
+        cv.put(comments_const.getComment(), comment);
+        cv.put(comments_const.getDoc(),doc);
+        cv.put(comments_const.getUser_name(), user_name);
+        cv.put(comments_const.getUser_pic(), user_pic);
+        sqLiteDatabase.insert(comments_const.getTable_name(), null, cv);
+    }
+
+    public ArrayList<CommentFeed> readCommentDataForPost(String pid, DatabaseOperations_Session dop){
+        SQLiteDatabase sqLiteDatabase = dop.getReadableDatabase();
+        ArrayList<CommentFeed> newsFeedList = new ArrayList<>();
+
+
+
+        String query ="select * from " + comments_const.getTable_name() + " where " + comments_const.getPid() +" = " + pid +" order by doc desc " +";";
+        Cursor cursor = sqLiteDatabase.rawQuery(query,null);
+        if (cursor != null && cursor.moveToFirst()) {
+            L.m("loading entries " + cursor.getCount() + new Date(System.currentTimeMillis()));
+            do {
+
+                //create a new object and retrieve the data from the cursor to be stored in this object
+                CommentFeed commentFeed = new CommentFeed();
+                commentFeed.setComment_id(cursor.getInt(cursor.getColumnIndex(comments_const.getComment_id())));
+                commentFeed.setUser_id(cursor.getInt(cursor.getColumnIndex(comments_const.getUid())));
+                commentFeed.setPid(cursor.getInt(cursor.getColumnIndex(comments_const.getPid())));
+                commentFeed.setComment(cursor.getString(cursor.getColumnIndex(comments_const.getComment())));
+                long dateOfcomment = cursor.getLong(cursor.getColumnIndex(comments_const.getDoc()));
+                Log.e("Date from sql:", dateOfcomment+"");
+                commentFeed.setDoc(new java.sql.Date(dateOfcomment));
+                commentFeed.setUser_name(cursor.getString(cursor.getColumnIndex(comments_const.getUser_name())));
+                commentFeed.setUser_pic(cursor.getString(cursor.getColumnIndex(comments_const.getUser_pic())));
+
+                newsFeedList.add(commentFeed);
+
+            }while (cursor.moveToNext());
+
+
+        }
+
+        return newsFeedList;
+    }
+
     public boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager)  context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -348,7 +412,68 @@ public class DatabaseOperations_Session extends SQLiteOpenHelper {
         }
     }
 
+    public class Comments_Const {
+        String comment_id = "comment_id";
+        String pid = "pid";
+        String uid = "uid";
+        String comment = "comment";
+        String doc = "doc";
+        String user_name = "user_name";
+        String user_pic = "user_pic";
 
+        public String getUser_name() {
+            return user_name;
+        }
+
+        public void setUser_name(String user_name) {
+            this.user_name = user_name;
+        }
+
+        public String getUser_pic() {
+            return user_pic;
+        }
+
+        public void setUser_pic(String user_pic) {
+            this.user_pic = user_pic;
+        }
+
+        String table_name = "comments";
+
+
+        public String getComment_id() {
+            return comment_id;
+        }
+
+        public void setComment_id(String comment_id) {
+            this.comment_id = comment_id;
+        }
+
+        public String getDoc() {
+            return doc;
+        }
+
+        public void setDoc(String doc) {
+            this.doc = doc;
+        }
+
+
+
+        public String getTable_name() {
+            return table_name;
+        }
+
+        public String getPid() {
+            return pid;
+        }
+
+        public String getUid() {
+            return uid;
+        }
+
+        public String getComment() {
+            return comment;
+        }
+    }
 
 
 }

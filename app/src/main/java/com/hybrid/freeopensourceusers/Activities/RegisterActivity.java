@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -37,6 +38,11 @@ import com.hybrid.freeopensourceusers.Utility.Utility;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
 import com.isseiaoki.simplecropview.util.Utils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -55,8 +61,9 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
     private VolleySingleton volleySingleton;
     private RequestQueue requestQueue;
     private AppCompatButton changeProfile;
+    private static Bitmap bitmap;
 
-    private static final String REGISTER_URL = Utility.getIPADDRESS()+"register.php";
+    private static final String REGISTER_URL = Utility.getIPADDRESS()+"register";
     public static final String KEY_NAME = "user_name";
     public static final String KEY_USERNAME = "user_email";
     public static final String KEY_PASSWORD = "user_password";
@@ -124,7 +131,7 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
 
         final String email = input_emailRegister.getText().toString().trim();
         if (email.isEmpty()) {
-            input_emailRegister.setError("Email can't be emplty!");
+            input_emailRegister.setError("Email can't be empty!");
             return;
         }
 
@@ -153,17 +160,9 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
                         @Override
                         public void onResponse(String response) {
 
-                            if (response.equals("Registration Success")) {
-                                Toast.makeText(RegisterActivity.this, response, Toast.LENGTH_LONG).show();
-//                                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-//                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                                hideProgressDialog();
-//                                startActivity(intent);
-                                finish();
-                            } else {
-                                hideProgressDialog();
-                                Toast.makeText(RegisterActivity.this, "Error", Toast.LENGTH_LONG).show();
-                            }
+                            hideProgressDialog();
+                            parseJson(response);
+                            finish();
                         }
                     },
                     new Response.ErrorListener() {
@@ -180,9 +179,10 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<>();
-                    params.put(KEY_NAME, name);
-                    params.put(KEY_USERNAME, email);
-                    params.put(KEY_PASSWORD, password);
+                    params.put("name", name);
+                    params.put("email", email);
+                    params.put("password", password);
+                    params.put("image",getStringImage(bitmap));
                     return params;
                 }
 
@@ -196,7 +196,18 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
         }
 
     }
+    public void parseJson(String response){
+        try{
+            JSONObject jsonObject = new JSONObject(response);
+            if(jsonObject.getBoolean("error")==false)
+                Toast.makeText(RegisterActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+            else if(jsonObject.getBoolean("error")==true)
+                Toast.makeText(this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
 
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+    }
     public void startResultActivity(Uri uri) {
         if (isFinishing()) return;
         // Start ResultActivity
@@ -254,6 +265,7 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
             int requestSize = Math.min(width, maxSize);
             try {
                 final Bitmap sampledBitmap = Utils.decodeSampledBitmapFromUri(context, uri, requestSize);
+                setBitMap(sampledBitmap);
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -268,7 +280,9 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
             }
         }
     }
-
+    public static void setBitMap(Bitmap bm){
+        bitmap = bm;
+    }
     @Override
     public void onBackPressed() {
         if(getSupportFragmentManager().findFragmentByTag("frag") != null){
@@ -305,6 +319,14 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnected();
+    }
+
+    public String getStringImage(Bitmap bmp){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG,80, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        return encodedImage;
     }
 
 

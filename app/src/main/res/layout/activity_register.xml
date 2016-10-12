@@ -194,7 +194,7 @@
                     android:textColorHint="@android:color/white" />
             </RelativeLayout>
 
-            <android.support.v7.widget.AppCompatButton
+            <Button
                 android:id="@+id/btn_register"
                 android:layout_width="fill_parent"
                 android:layout_height="55dp"
