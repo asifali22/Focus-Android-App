@@ -104,7 +104,6 @@ public class Comment_Actiivity extends AppCompatActivity {
         pid = extras.getString("PID_VALUE");
         api_key = extras.getString("API_KEY");
         flag_extra = extras.getInt("FLAG");
-        Toast.makeText(this,Integer.toString(flag_extra),Toast.LENGTH_SHORT).show();
         if (savedInstanceState != null) {
             commentsFeedsList = savedInstanceState.getParcelableArrayList(COMMENTS_FEED);
         } else {
