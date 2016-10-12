@@ -147,7 +147,28 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
                 }
             }
         });
-
+        holder.session_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "Hello Folks...\nBelow are the details of yet another GLUG session" +
+                        "\nSession:"+sessionFeed.getSession_title()+
+                        "\nDescription:"+sessionFeed.getSession_description()+
+                        "\nVenue:"+sessionFeed.getS_venue()+
+                        "\nCoordinator:"+sessionFeed.getS_coordinator()+
+                        "\nCoordinator's Email:"+sessionFeed.getS_c_email()+
+                        "\nCoordinator's Phone:"+sessionFeed.getS_c_phone()+
+                        "\nResource Person:"+sessionFeed.getResource_person()+
+                        "\nDesignation:"+sessionFeed.getRp_desg()+
+                        "\nTime:"+sessionFeed.getTime_and_date()+
+                        "\nAddress:"+sessionFeed.getAddress()+
+                        "\nRoom:"+sessionFeed.getRoom()+
+                        "\nThank You");
+                sendIntent.setType("text/plain");
+                context.startActivity(Intent.createChooser(sendIntent, "Share via..."));
+            }
+        });
 
     }
     public boolean isLoggedIn() {
@@ -210,6 +231,7 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
         public CircleImageView circleImageView;
         public ImageView session_comment;
         public TextView session_comment_count;
+        public ImageView session_share;
         public ViewholderSessionFeed(View view) {
             super(view);
             cardView = (CardView) view.findViewById(R.id.card_view_session);
@@ -223,6 +245,7 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
             post_header = (RelativeLayout) view.findViewById(R.id.post_header_session);
             session_comment = (ImageView) view.findViewById(R.id.comment_button_session);
             session_comment_count = (TextView) view.findViewById(R.id.comment_count_session);
+            session_share = (ImageView) view.findViewById(R.id.session_share);
         }
     }
 

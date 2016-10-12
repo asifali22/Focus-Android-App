@@ -1,5 +1,7 @@
 package com.hybrid.freeopensourceusers.Activities;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -23,11 +25,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
@@ -45,14 +55,20 @@ import com.hybrid.freeopensourceusers.Fragments.SessionFragment;
 import com.hybrid.freeopensourceusers.Fragments.TrendingFragment;
 import com.hybrid.freeopensourceusers.SearchStuffs.SearchableProvider;
 import com.hybrid.freeopensourceusers.Services.MyFireBaseInstanceIdService;
+import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 
-public class FirstActivity extends AppCompatActivity implements
+public class                                                                FirstActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
 
@@ -65,6 +81,8 @@ public class FirstActivity extends AppCompatActivity implements
     SharedPreferences user_details;
     private FloatingActionButton mFab;
     private final String TAG_TRENDING_FRAGMENT = "trending_fragment";
+    RequestQueue requestQueue;
+    VolleySingleton volleySingleton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,10 +90,12 @@ public class FirstActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_first);
 
         myApplication = MyApplication.getInstance();
+        volleySingleton = VolleySingleton.getInstance();
+        requestQueue = volleySingleton.getRequestQueue();
 
         //setupJob();
         bindViews();
-//        setUpSearchView();
+//        setUpSearchView();                                
         if(isLoggedIn()&&isOnline()){
             FirebaseMessaging.getInstance().subscribeToTopic("fcm_token");
             MyFireBaseInstanceIdService myFireBaseInstanceIdService = new MyFireBaseInstanceIdService();
@@ -216,13 +236,8 @@ public class FirstActivity extends AppCompatActivity implements
                 startActivity(new Intent(this, LoginActivity.class));
                 return true;
             case R.id.action_settings_logged_out:
-                FacebookSdk.sdkInitialize(getApplicationContext());
-                LoginManager.getInstance().logOut();
-                signOut();
-                SharedPreferences sharedPreferences = getSharedPreferences("user_details", MODE_PRIVATE);
-                sharedPreferences.edit().putBoolean("logged_in",false).apply();
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
+                custom_signout();
+
                 break;
 
 
@@ -235,6 +250,52 @@ public class FirstActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    private void custom_signout(){
+        String UPLOAD_URL = "http://focusvce.com/api/v1/signout";
+        final ProgressDialog loading = ProgressDialog.show(this,"Signing Out...","Please wait...",false,false);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String s) {
+                       try{
+                           loading.dismiss();
+                           JSONObject jsonObject = new JSONObject(s);
+                           if(jsonObject.getBoolean("error")==false){
+                               FacebookSdk.sdkInitialize(getApplicationContext());
+                               LoginManager.getInstance().logOut();
+                               signOut();
+                               SharedPreferences sharedPreferences = getSharedPreferences("user_details", MODE_PRIVATE);
+                               sharedPreferences.edit().putBoolean("logged_in",false).apply();
+                               startActivity(new Intent(FirstActivity.this, LoginActivity.class));
+                               finish();
+                           }
+                           else
+                               Toast.makeText(FirstActivity.this,"Sign Out Failed.",Toast.LENGTH_LONG).show();
+                       } catch (JSONException e){
+                           e.printStackTrace();
+                       }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        //Dismissing the progress dialog
+                        loading.dismiss();
+
+                        //Showing toast
+                        Toast.makeText(FirstActivity.this,"Error occurred! Try again.", Toast.LENGTH_LONG).show();
+                        Log.e("Error", volleyError.toString());
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization",   getApiKey());
+                return params;
+            }
+        };
+        requestQueue.add(stringRequest);
+    }
 
     private void signOut() {
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
@@ -245,6 +306,17 @@ public class FirstActivity extends AppCompatActivity implements
 
                     }
                 });
+    }
+
+    public String getApiKey() {
+
+        SharedPreferences sharedPreferences = myApplication.getApplicationContext().getSharedPreferences("user_details", myApplication.getApplicationContext().MODE_PRIVATE);
+        String api_key = sharedPreferences.getString("api_key", null);
+
+        if (!api_key.isEmpty()) {
+            return api_key;
+        } else
+            return null;
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

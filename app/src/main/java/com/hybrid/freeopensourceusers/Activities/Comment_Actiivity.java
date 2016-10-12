@@ -35,6 +35,7 @@ import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.PojoClasses.CommentFeed;
 import com.hybrid.freeopensourceusers.R;
 import com.hybrid.freeopensourceusers.Sqlite.DatabaseOperations;
+import com.hybrid.freeopensourceusers.Sqlite.DatabaseOperations_Session;
 import com.hybrid.freeopensourceusers.Task.TaskLoadPostFeed;
 import com.hybrid.freeopensourceusers.Utility.Utility;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
@@ -70,6 +71,7 @@ public class Comment_Actiivity extends AppCompatActivity {
     EditText commentAdd;
     FloatingActionButton button;
     DatabaseOperations dp;
+    DatabaseOperations_Session dops;
     public SwipeRefreshLayout swipeRefreshLayoutForCommentsTrending;
 
     @Override
@@ -86,6 +88,7 @@ public class Comment_Actiivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         dp = new DatabaseOperations(this);
+        dops = new DatabaseOperations_Session(this);
         commentsFeedRecycler = (RecyclerView) findViewById(R.id.comment_recyclerView);
         swipeRefreshLayoutForCommentsTrending = (SwipeRefreshLayout) findViewById(R.id.swiperefreshForTrending);
         commentAdd = (EditText) findViewById(R.id.getComment);
@@ -101,13 +104,16 @@ public class Comment_Actiivity extends AppCompatActivity {
         pid = extras.getString("PID_VALUE");
         api_key = extras.getString("API_KEY");
         flag_extra = extras.getInt("FLAG");
-        Toast.makeText(this,Integer.toString(flag_extra),Toast.LENGTH_SHORT).show();
         if (savedInstanceState != null) {
             commentsFeedsList = savedInstanceState.getParcelableArrayList(COMMENTS_FEED);
         } else {
 
             DatabaseOperations dop = new DatabaseOperations(MyApplication.getAppContext());
+            DatabaseOperations_Session dops = new DatabaseOperations_Session(MyApplication.getAppContext());
+            if(flag_extra==0)
             commentsFeedsList = MyApplication.getDatabase().readCommentDataForPost(pid,dop);
+            else
+            commentsFeedsList = MyApplication.getMsDatabase().readCommentDataForPost(pid,dops);
             if (commentsFeedsList.isEmpty()) {
                 sendJsonrequest();
             }
@@ -180,7 +186,10 @@ public class Comment_Actiivity extends AppCompatActivity {
     }
 
     private ArrayList<CommentFeed> parseJsonResponse(String response) {
+        if(flag_extra==0)
         dp.delete_commentbyPid(pid,dp);
+        else
+        dops.delete_commentbyPid(pid,dops);
         ArrayList<CommentFeed> commentsFeedsList = new ArrayList<>();
         if (response != null && response.length() != 0) {
             try {
@@ -206,7 +215,10 @@ public class Comment_Actiivity extends AppCompatActivity {
                     commentFeedObject.setDoc(dateOfPost);
                     commentFeedObject.setUser_name(user_name);
                     commentFeedObject.setUser_pic(user_pic);
+                    if(flag_extra==0)
                     dp.putInfo_Comment(dp,comment_id,user_id,pid,comment,commentTimeStamp,user_name,user_pic);
+                    else
+                    dops.putInfo_Comment(dops,comment_id,user_id,pid,comment,commentTimeStamp,user_name,user_pic);
                     commentsFeedsList.add(commentFeedObject);
                 }
 
@@ -280,7 +292,10 @@ public class Comment_Actiivity extends AppCompatActivity {
                             commentFeedObject.setDoc(dateOfPost);
                             commentFeedObject.setUser_name(user_name);
                             commentFeedObject.setUser_pic(user_pic);
+                            if(flag_extra==0)
                             dp.putInfo_Comment(dp,comment_id,user_id,pid,comment,commentTimeStamp,user_name,user_pic);
+                            else
+                            dops.putInfo_Comment(dops,comment_id,user_id,pid,comment,commentTimeStamp,user_name,user_pic);
                             commentsFeedsList.add(0, commentFeedObject);
                             recyclerTrendingCommentAdapter.setNewCommentFeed(commentsFeedsList);
                             commentsFeedRecycler.smoothScrollToPosition(0);

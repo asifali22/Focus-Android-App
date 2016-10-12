@@ -3,25 +3,17 @@ package com.hybrid.freeopensourceusers.Sqlite;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.provider.ContactsContract;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.hybrid.freeopensourceusers.Activities.FirstActivity;
-import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.Logging.L;
 import com.hybrid.freeopensourceusers.PojoClasses.CommentFeed;
 import com.hybrid.freeopensourceusers.PojoClasses.Likes;
 import com.hybrid.freeopensourceusers.PojoClasses.PostFeed;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -104,20 +96,6 @@ public class DatabaseOperations extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-    }
-
-    public void delete_post(DatabaseOperations databaseOperations) {
-        SQLiteDatabase sqLiteDatabase = databaseOperations.getWritableDatabase();
-        sqLiteDatabase.execSQL("delete from " + html_test_const.getTable_name());
-    }
-
-    public void delete_all(DatabaseOperations databaseOperations) {
-        SQLiteDatabase sqLiteDatabase = databaseOperations.getWritableDatabase();
-        sqLiteDatabase.execSQL("delete from " + search_suggestion_const.getTable_name());
-        sqLiteDatabase.execSQL("delete from " + html_test_const.getTable_name());
-        sqLiteDatabase.execSQL("delete from " + user_const.getTable_name());
-        sqLiteDatabase.execSQL("delete from " + likes_const.getTable_name());
-        sqLiteDatabase.execSQL("delete from " + comments_const.getTable_name());
     }
     public void insertLikes(DatabaseOperations dop, ArrayList<Likes> likes,boolean clearPrevious){
         SQLiteDatabase sqLiteDatabase = dop.getWritableDatabase();
@@ -337,87 +315,9 @@ public class DatabaseOperations extends SQLiteOpenHelper {
 
     }
 
-    public void putInfo_Like(DatabaseOperations dop, int uid, int pid, int flag, int flagd) {
-        SQLiteDatabase sqLiteDatabase = dop.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put(likes_const.getUser_id(), uid);
-        cv.put(likes_const.getPid(), pid);
-        cv.put(likes_const.getFlag(), flag);
-        cv.put(likes_const.getFlagd(), flagd);
-        sqLiteDatabase.insert(likes_const.getTable_name(), null, cv);
-    }
-
-    public void putInfo_Users(DatabaseOperations dop, String uname, String uemail, String upass, String ustatus, String udesc, String upic) {
-        SQLiteDatabase sqLiteDatabase = dop.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put(user_const.getUser_name(), uname);
-        cv.put(user_const.getUser_email(), uemail);
-        cv.put(user_const.getUser_password(), upass);
-        cv.put(user_const.getUser_status(), ustatus);
-        cv.put(user_const.getUser_description(), udesc);
-        cv.put(user_const.getUser_pic(), upic);
-        sqLiteDatabase.insert(user_const.getTable_name(), null, cv);
-    }
-
-    public void putInfo_HtmlTest(DatabaseOperations dp, String title, String link, String description, String dop
-            , String user_name, int sr_key, int up, int comment_count, int uid, String post_pic,String user_pic) {
-        SQLiteDatabase sqLiteDatabase = dp.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put(html_test_const.getTitle(), title);
-        cv.put(html_test_const.getLink(), link);
-        cv.put(html_test_const.getDescription(), description);
-        cv.put(html_test_const.getDate(), dop);
-        cv.put(html_test_const.getUser_name(), user_name);
-        cv.put(html_test_const.getSr_key(), sr_key);
-        cv.put(html_test_const.getUp_down(), up);
-        cv.put(html_test_const.getComment_count(), comment_count);
-        cv.put(html_test_const.getUid(), uid);
-        cv.put(html_test_const.getPost_pic(), post_pic);
-        cv.put(html_test_const.getUser_pic(),user_pic);
-        sqLiteDatabase.insert(html_test_const.getTable_name(), null, cv);
-    }
-
     public void delete_commentbyPid(String pid,DatabaseOperations databaseOperations) {
         SQLiteDatabase sqLiteDatabase = databaseOperations.getWritableDatabase();
         sqLiteDatabase.execSQL("delete from " + comments_const.getTable_name() + " where " + comments_const.getPid() +" = " + pid +";");
-    }
-
-    public Cursor getInfo_Comment(String pid,DatabaseOperations dop) {
-      /*  SQLiteDatabase sqLiteDatabase = dop.getReadableDatabase();
-        String columns[] = {comments_const.getComment_id(),comments_const.getUid(), comments_const.getPid(), comments_const.getComment(), comments_const.getDoc(), comments_const.getUser_name(),comments_const.getUser_pic()};
-        Cursor cr = sqLiteDatabase.query(comments_const.getTable_name(), columns, null, null, null, null, null);
-        return cr;*/
-        Cursor cursor = null;
-        SQLiteDatabase sqLiteDatabase = dop.getReadableDatabase();
-        String Query ="select * from " + comments_const.getTable_name() + " where " + comments_const.getPid() +" = " + pid +" order by doc desc " +";";
-        cursor = sqLiteDatabase.rawQuery(Query,null);
-        return cursor;
-    }
-
-    public Cursor getInfo_Like(DatabaseOperations dop) {
-        SQLiteDatabase sqLiteDatabase = dop.getReadableDatabase();
-        String columns[] = {likes_const.getUser_id(), likes_const.getPid(),
-                likes_const.getFlag(), likes_const.getFlagd()};
-        Cursor cr = sqLiteDatabase.query(likes_const.getTable_name(), columns, null, null, null, null, null);
-        return cr;
-    }
-
-    public Cursor getInfo_Users(DatabaseOperations dop) {
-        SQLiteDatabase sqLiteDatabase = dop.getReadableDatabase();
-        String columns[] = {user_const.getUser_id(), user_const.getUser_name(), user_const.getUser_email(),
-                user_const.getUser_password(), user_const.getUser_status(), user_const.getUser_description(),
-                user_const.getUser_pic()};
-        Cursor cr = sqLiteDatabase.query(user_const.getTable_name(), columns, null, null, null, null, null);
-        return cr;
-    }
-
-    public Cursor getInfo_HmtlTest(DatabaseOperations dop) {
-        SQLiteDatabase sqLiteDatabase = dop.getReadableDatabase();
-        String columns[] = {html_test_const.getTitle(), html_test_const.getLink(), html_test_const.getDescription(),
-                html_test_const.getDate(), html_test_const.getUser_name(), html_test_const.getSr_key(), html_test_const.getUp_down(),
-                html_test_const.getComment_count(), html_test_const.getUid(), html_test_const.getPost_pic(),html_test_const.getUser_pic()};
-        Cursor cr = sqLiteDatabase.query(html_test_const.getTable_name(), columns, null, null, null, null, html_test_const.getDate()+" desc");
-        return cr;
     }
 
     public ArrayList<PostFeed> readPostForUserProfile(int userID, DatabaseOperations databaseOperations) {   SQLiteDatabase sqLiteDatabase = databaseOperations.getReadableDatabase();
