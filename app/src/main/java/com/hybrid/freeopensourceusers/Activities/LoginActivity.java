@@ -52,12 +52,12 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
-        View.OnClickListener{
+        View.OnClickListener {
 
     VolleySingleton volleySingleton;
     RequestQueue requestQueue;
-    String SOCIAL_REGISTER = Utility.getIPADDRESS()+"socialRegister";
-    String LOGIN = Utility.getIPADDRESS()+"login";
+    String SOCIAL_REGISTER = Utility.getIPADDRESS() + "socialRegister";
+    String LOGIN = Utility.getIPADDRESS() + "login";
     StringRequest stringRequest = null;
     ImageView logoImage;
     GoogleApiClient mGoogleApiClient;
@@ -68,6 +68,7 @@ public class LoginActivity extends AppCompatActivity implements
     private ProgressDialog mProgressDialog;
     Button Login;
     CallbackManager callbackManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +87,6 @@ public class LoginActivity extends AppCompatActivity implements
         Login = (Button) findViewById(R.id.btn_login);
         Login.setOnClickListener(this);
         Glide.with(this).load(R.drawable.focus).into(logoImage);
-
 
 
         // Configure sign-in to request the user's ID, email address, and basic
@@ -115,6 +115,7 @@ public class LoginActivity extends AppCompatActivity implements
 
         findViewById(R.id.google_sign_in_button).setOnClickListener(this);
     }
+
     /*
         Initialize the facebook sdk and then callback manager will handle the login responses.
      */
@@ -149,7 +150,8 @@ public class LoginActivity extends AppCompatActivity implements
             }
         });
     }
-    protected void getUserInfo(LoginResult login_result){
+
+    protected void getUserInfo(LoginResult login_result) {
 
         GraphRequest data_request = GraphRequest.newMeRequest(
                 login_result.getAccessToken(),
@@ -164,10 +166,10 @@ public class LoginActivity extends AppCompatActivity implements
 
                         Log.e("JSONDATA", json_object.toString());
                         try {
-                            final String user_name,user_email,pic_url;
+                            final String user_name, user_email, pic_url;
                             JSONObject resp = new JSONObject(json_object.toString());
-                            user_name=resp.get("name").toString();
-                            user_email=resp.get("email").toString();
+                            user_name = resp.get("name").toString();
+                            user_email = resp.get("email").toString();
                             JSONObject profile_pic_data = new JSONObject(resp.get("picture").toString());
                             JSONObject profile_pic_url = new JSONObject(profile_pic_data.getString("data"));
                             pic_url = profile_pic_url.getString("url");
@@ -176,24 +178,24 @@ public class LoginActivity extends AppCompatActivity implements
                                         @Override
                                         public void onResponse(String response) {
 
-                                            if (response!=null) {
+                                            if (response != null) {
                                                 try {
                                                     JSONObject jsonObject = new JSONObject(response);
                                                     SharedPreferences sharedPreferences = getSharedPreferences("user_details", MODE_PRIVATE);
-                                                    sharedPreferences.edit().putString("user_name",user_name).apply();
-                                                    sharedPreferences.edit().putString("user_email",user_email).apply();
-                                                    sharedPreferences.edit().putString("api_key",jsonObject.get("api_key").toString()).apply();
-                                                    sharedPreferences.edit().putString("fcm_token",jsonObject.get("fcm_token").toString()).apply();
+                                                    sharedPreferences.edit().putString("user_name", user_name).apply();
+                                                    sharedPreferences.edit().putString("user_email", user_email).apply();
+                                                    sharedPreferences.edit().putString("api_key", jsonObject.get("api_key").toString()).apply();
+                                                    sharedPreferences.edit().putString("fcm_token", jsonObject.get("fcm_token").toString()).apply();
                                                     sharedPreferences.edit().putBoolean("logged_in", true).apply();
                                                     Toast.makeText(LoginActivity.this, "Welcome " + user_name, Toast.LENGTH_LONG).show();
                                                     startActivity(new Intent(LoginActivity.this, FirstActivity.class));
                                                     finish();
-                                                }catch (JSONException e){
+                                                } catch (JSONException e) {
 //                                                    Toast.makeText(LoginActivity.this,"CATCH",Toast.LENGTH_LONG).show();
-                                                    Log.e(TAG,e.toString());
+                                                    Log.e(TAG, e.toString());
                                                     e.printStackTrace();
                                                 }
-                                                Log.e(TAG,response);
+                                                Log.e(TAG, response);
                                                 hideProgressDialog();
                                             } else {
                                                 invalidPop.setText("Could not login through Facebook.");
@@ -213,17 +215,16 @@ public class LoginActivity extends AppCompatActivity implements
                                     Map<String, String> params = new HashMap<>();
                                     params.put("email", user_email);
                                     params.put("name", user_name);
-                                    params.put("picurl",pic_url);
+                                    params.put("picurl", pic_url);
                                     return params;
                                 }
 
                             };
 
-                        }catch (JSONException e){
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                         requestQueue.add(stringRequest);
-
 
 
                         //startActivity(intent);
@@ -235,6 +236,7 @@ public class LoginActivity extends AppCompatActivity implements
         data_request.executeAsync();
 
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -243,7 +245,7 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
 
-    public void navigateToRegister(View view){
+    public void navigateToRegister(View view) {
         startActivity(new Intent(this, RegisterActivity.class));
     }
 
@@ -271,31 +273,35 @@ public class LoginActivity extends AppCompatActivity implements
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-
-                            if (response!=null) {
+                            if (response != null && !errorPresent(response)) {
                                 try {
                                     JSONObject jsonObject = new JSONObject(response);
                                     SharedPreferences sharedPreferences = getSharedPreferences("user_details", MODE_PRIVATE);
-                                    sharedPreferences.edit().putString("user_name",jsonObject.get("name").toString()).apply();
-                                    sharedPreferences.edit().putString("user_email",jsonObject.get("email").toString()).apply();
-                                    sharedPreferences.edit().putString("api_key",jsonObject.get("apiKey").toString()).apply();
-                                    sharedPreferences.edit().putString("fcm_token",jsonObject.get("fcm_token").toString()).apply();
-                                    sharedPreferences.edit().putBoolean("logged_in",true).apply();
-                                    Toast.makeText(LoginActivity.this,"Welcome "+jsonObject.get("name").toString(),Toast.LENGTH_LONG).show();
+                                    sharedPreferences.edit().putString("user_name", jsonObject.get("name").toString()).apply();
+                                    sharedPreferences.edit().putString("user_email", jsonObject.get("email").toString()).apply();
+                                    sharedPreferences.edit().putString("api_key", jsonObject.get("apiKey").toString()).apply();
+                                    sharedPreferences.edit().putString("fcm_token", jsonObject.get("fcm_token").toString()).apply();
+                                    sharedPreferences.edit().putBoolean("logged_in", true).apply();
+                                    Toast.makeText(LoginActivity.this, "Welcome " + jsonObject.get("name").toString(), Toast.LENGTH_LONG).show();
                                     hideProgressDialog();
                                     startActivity(new Intent(LoginActivity.this, FirstActivity.class));
                                     finish();
-                                }catch (JSONException e){
+                                } catch (JSONException e) {
 //                                    Toast.makeText(LoginActivity.this,"CATCH",Toast.LENGTH_LONG).show();
-                                    Log.e(TAG,e.toString());
+                                    Log.e(TAG, e.toString());
                                     e.printStackTrace();
                                 }
-                                Log.e(TAG,response);
+                                Log.e(TAG, response);
                                 hideProgressDialog();
-                            } else {
+
+                            } else if (errorPresent(response)) {
+                                hideProgressDialog();
                                 invalidPop.setText("Invalid email or password!");
+
+
+                            } else {
                                 hideProgressDialog();
-                                Toast.makeText(LoginActivity.this, response, Toast.LENGTH_LONG).show();
+                                Toast.makeText(LoginActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                             }
                         }
                     },
@@ -327,6 +333,24 @@ public class LoginActivity extends AppCompatActivity implements
         }
 
     }
+
+    private Boolean errorPresent(String response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            if (!jsonObject.getBoolean("error")) {
+                Log.e("wops", jsonObject.getBoolean("error") + "");
+                return false;
+            } else if (jsonObject.getBoolean("error")) {
+                Log.e("man", jsonObject.getBoolean("error") + "");
+                return true;
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -376,7 +400,8 @@ public class LoginActivity extends AppCompatActivity implements
             });
         }
     }
-    public void SingInIntent(){
+
+    public void SingInIntent() {
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
         if (opr.isDone()) {
             // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
@@ -409,31 +434,29 @@ public class LoginActivity extends AppCompatActivity implements
             //get details and start an activity for results
 
 
-
-
             stringRequest = new StringRequest(Request.Method.POST, SOCIAL_REGISTER,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
 
-                            if (response!=null) {
+                            if (response != null) {
                                 try {
                                     JSONObject jsonObject = new JSONObject(response);
                                     SharedPreferences sharedPreferences = getSharedPreferences("user_details", MODE_PRIVATE);
-                                    sharedPreferences.edit().putString("user_name",acct.getDisplayName()).apply();
-                                    sharedPreferences.edit().putString("user_email",acct.getEmail()).apply();
-                                    sharedPreferences.edit().putString("api_key",jsonObject.get("api_key").toString()).apply();
-                                    sharedPreferences.edit().putString("fcm_token",jsonObject.get("fcm_token").toString()).apply();
+                                    sharedPreferences.edit().putString("user_name", acct.getDisplayName()).apply();
+                                    sharedPreferences.edit().putString("user_email", acct.getEmail()).apply();
+                                    sharedPreferences.edit().putString("api_key", jsonObject.get("api_key").toString()).apply();
+                                    sharedPreferences.edit().putString("fcm_token", jsonObject.get("fcm_token").toString()).apply();
                                     sharedPreferences.edit().putBoolean("logged_in", true).apply();
                                     Toast.makeText(LoginActivity.this, "Welcome " + acct.getDisplayName(), Toast.LENGTH_LONG).show();
                                     startActivity(new Intent(LoginActivity.this, FirstActivity.class));
                                     finish();
-                                }catch (JSONException e){
+                                } catch (JSONException e) {
 //                                    Toast.makeText(LoginActivity.this,"CATCH",Toast.LENGTH_LONG).show();
-                                    Log.e(TAG,e.toString());
+                                    Log.e(TAG, e.toString());
                                     e.printStackTrace();
                                 }
-                                Log.e(TAG,response);
+                                Log.e(TAG, response);
                                 hideProgressDialog();
                             } else {
                                 invalidPop.setText("Could not login through Google.");
@@ -453,12 +476,12 @@ public class LoginActivity extends AppCompatActivity implements
                     Map<String, String> params = new HashMap<>();
                     params.put("email", acct.getEmail());
                     params.put("name", acct.getDisplayName());
-                    if(acct.getPhotoUrl()==null)
-                    Log.e("ADARSH","ADARSH");
-                    if(acct.getPhotoUrl()!=null)
-                        params.put("picurl",acct.getPhotoUrl().toString());
+                    if (acct.getPhotoUrl() == null)
+                        Log.e("ADARSH", "ADARSH");
+                    if (acct.getPhotoUrl() != null)
+                        params.put("picurl", acct.getPhotoUrl().toString());
                     else
-                        params.put("picurl","https://www.google.co.in/imgres?imgurl=http%3A%2F%2Fpreviews.123rf.com%2Fimages%2Fanwarsikumbang%2Fanwarsikumbang1402%2Fanwarsikumbang140200057%2F25705833-geek-cartoon-Stock-Vector.jpg&imgrefurl=http%3A%2F%2Fwww.123rf.com%2Fphoto_25705833_geek-cartoon.html&docid=vdyw3cqi_Mo6aM&tbnid=NPV6ZZ97Ihjy8M%3A&w=1300&h=1300&bih=678&biw=1323&ved=0ahUKEwjvps6nltHPAhWHOo8KHfRSBBwQMwg-KBIwEg&iact=mrc&uact=8                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ");
+                        params.put("picurl", "https://www.google.co.in/imgres?imgurl=http%3A%2F%2Fpreviews.123rf.com%2Fimages%2Fanwarsikumbang%2Fanwarsikumbang1402%2Fanwarsikumbang140200057%2F25705833-geek-cartoon-Stock-Vector.jpg&imgrefurl=http%3A%2F%2Fwww.123rf.com%2Fphoto_25705833_geek-cartoon.html&docid=vdyw3cqi_Mo6aM&tbnid=NPV6ZZ97Ihjy8M%3A&w=1300&h=1300&bih=678&biw=1323&ved=0ahUKEwjvps6nltHPAhWHOo8KHfRSBBwQMwg-KBIwEg&iact=mrc&uact=8                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ");
                     return params;
                 }
 
@@ -472,9 +495,8 @@ public class LoginActivity extends AppCompatActivity implements
         }
 
 
-
-
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -486,11 +508,13 @@ public class LoginActivity extends AppCompatActivity implements
                 break;
         }
     }
+
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
         SingInIntent();
     }
+
     public boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

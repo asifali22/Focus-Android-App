@@ -28,6 +28,17 @@
                 android:layout_marginBottom="15dp"
                 android:scaleType="centerCrop" />
 
+
+            <TextView
+                android:id="@+id/invalidPop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:text=""
+                android:textColor="#FFFB00"
+                android:textSize="14sp" />
+
             <!-- Email Label -->
 
             <RelativeLayout
@@ -49,15 +60,7 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true" />
                 <!-- End of dummy layout -->
-                <TextView
-                    android:id="@+id/invalidPop"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_gravity="center_horizontal"
-                    android:text=""
-                    android:textColor="@android:color/holo_red_light"
-                    android:textSize="14sp" />
+
                 <EditText
                     android:id="@+id/input_email"
                     android:layout_width="match_parent"
@@ -136,11 +139,13 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/noAccount"
                     android:clickable="true"
-                    android:padding="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:paddingRight="8dp"
                     android:gravity="center"
                     android:onClick="navigateToRegister"
-                    android:text=" CLICK HERE"
-                    android:textColor="@android:color/holo_blue_bright"
+                    android:text=" Click Here"
+                    android:textColor="#FFFB00"
                     android:textSize="16sp" />
             </RelativeLayout>
             <RelativeLayout
