@@ -1,12 +1,19 @@
 package com.hybrid.freeopensourceusers.Activities;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -38,12 +45,14 @@ public class new_session_add extends AppCompatActivity {
 
 
     private int PICK_IMAGE_REQUEST = 1;
+    private int TRANSACTION_REQUEST = 2;
     Bitmap bitmap;
     ImageView ses_image;
     MyApplication myApplication;
     public VolleySingleton volleySingleton;
     public RequestQueue requestQueue;
     EditText title,desc,venue,coord,email,phone,rp,rpd,d_t,addr,room;
+    FloatingActionButton addImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +62,7 @@ public class new_session_add extends AppCompatActivity {
         myApplication = MyApplication.getInstance();
         volleySingleton = VolleySingleton.getInstance();
         requestQueue = volleySingleton.getRequestQueue();
+        addImage = (FloatingActionButton) findViewById(R.id.ses_add_image);
         ses_image = (ImageView) findViewById(R.id.ses_image);
         title = (EditText) findViewById(R.id.ses_title);
         desc = (EditText) findViewById(R.id.ses_description);
@@ -65,6 +75,12 @@ public class new_session_add extends AppCompatActivity {
         d_t = (EditText) findViewById(R.id.ses_date_time);
         addr = (EditText) findViewById(R.id.ses_address);
         room = (EditText) findViewById(R.id.ses_room);
+        addImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showFileChooser();
+            }
+        });
     }
     public void addSesImage(View view){
         showFileChooser();
@@ -90,13 +106,55 @@ public class new_session_add extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+        int result=0;
+        if (requestCode == TRANSACTION_REQUEST) {
+            if(resultCode == Activity.RESULT_OK){
+                result =data.getIntExtra("success",0);
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+
+            if(result==1)
+                finish();
+        }
 
 
     }
     public void submit_ses(View view){
 
+        String stitle,sdesc,svenue,scoord,semail,sphone,srp,srpd,sd_t,saddr,sroom;
+        stitle = title.getText().toString();
+        sdesc = desc.getText().toString();
+        svenue = venue.getText().toString();
+        scoord = coord.getText().toString();
+        semail = email.getText().toString();
+        sphone = phone.getText().toString();
+        srp = rp.getText().toString();
+        srpd = rpd.getText().toString();
+        sd_t = d_t.getText().toString();
+        saddr = addr.getText().toString();
+        sroom = room.getText().toString();
 
-        String UPLOAD_URL = "http://focusvce.com/api/v1/upload_session";
+        Intent intent = new Intent(this,session_details.class);
+        intent.putExtra("id",0);
+        intent.putExtra("title",stitle);
+        intent.putExtra("desc",sdesc);
+        intent.putExtra("picurl",getImageUri(this,bitmap).toString());
+        Toast.makeText(this,getImageUri(this,bitmap).toString(),Toast.LENGTH_SHORT).show();
+        intent.putExtra("venue",svenue);
+        intent.putExtra("coord",scoord);
+        intent.putExtra("email",semail);
+        intent.putExtra("phone",sphone);
+        intent.putExtra("rp",srp);
+        intent.putExtra("rpd",srpd);
+        intent.putExtra("addr",saddr);
+        intent.putExtra("date_time",sd_t);
+        intent.putExtra("room",sroom);
+        startActivityForResult(intent,TRANSACTION_REQUEST);
+
+
+        /*String UPLOAD_URL = "http://focusvce.com/api/v1/upload_session";
         final ProgressDialog loading = ProgressDialog.show(this,"Uploading...","Please wait...",false,false);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
                 new Response.Listener<String>() {
@@ -193,7 +251,29 @@ public class new_session_add extends AppCompatActivity {
 
         //Adding request to the queue
         requestQueue.add(stringRequest);
+        */
     }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        if (Build.VERSION.SDK_INT >= 23) {
+            //do your check here
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+                return Uri.parse(path);
+            }
+            else
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
+        else{
+            String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+            return Uri.parse(path);
+        }
+
+        return null;
+    }
+
     public String getApiKey() {
 
         SharedPreferences sharedPreferences = myApplication.getApplicationContext().getSharedPreferences("user_details", myApplication.getApplicationContext().MODE_PRIVATE);
@@ -211,4 +291,5 @@ public class new_session_add extends AppCompatActivity {
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
         return encodedImage;
     }
+
 }
