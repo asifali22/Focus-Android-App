@@ -331,4 +331,6 @@ public class session_details extends AppCompatActivity {
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
         return encodedImage;
     }
+
+    // le bc
 }
