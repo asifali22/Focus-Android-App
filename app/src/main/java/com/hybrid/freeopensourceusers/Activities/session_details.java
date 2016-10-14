@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.MediaStore;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -39,6 +37,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.R;
+import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
 import com.hybrid.freeopensourceusers.Utility.MyTextDrawable;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
 
@@ -66,6 +65,7 @@ public class session_details extends AppCompatActivity {
     private VolleySingleton volleySingleton;
     private RequestQueue requestQueue;
     private CoordinatorLayout coordinatorLayout;
+    private SharedPrefManager sharedPrefManager;
 
 
     @Override
@@ -73,6 +73,7 @@ public class session_details extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_session_details);
         myApplication = MyApplication.getInstance();
+        sharedPrefManager = new SharedPrefManager(this);
         MyTextDrawable myTextDrawable = new MyTextDrawable();
         collapsingToolbarLayout = (CollapsingToolbarLayout)  findViewById(R.id.collapsing_toolbarSession);
         toolbar = (Toolbar) findViewById(R.id.toolbarSession);
@@ -173,7 +174,7 @@ public class session_details extends AppCompatActivity {
                     @Override
                     public Map<String, String> getHeaders() throws AuthFailureError {
                         Map<String, String> params = new HashMap<>();
-                        params.put("Authorization", getApiKey() + "");
+                        params.put("Authorization", sharedPrefManager.getApiKey() + "");
                         return params;
                     }
 
@@ -185,7 +186,7 @@ public class session_details extends AppCompatActivity {
                         //Creating parameters
                         Map<String, String> params = new Hashtable<>();
 
-                        String api_key = getApiKey();
+                        String api_key = sharedPrefManager.getApiKey();
                         String name = api_key + "-" + Long.toString(System.currentTimeMillis());
                         //Adding parameters
 
@@ -255,16 +256,7 @@ public class session_details extends AppCompatActivity {
 
     }
 
-    public String getApiKey() {
 
-        SharedPreferences sharedPreferences = myApplication.getApplicationContext().getSharedPreferences("user_details", myApplication.getApplicationContext().MODE_PRIVATE);
-        String api_key = sharedPreferences.getString("api_key", null);
-
-        if (!api_key.isEmpty()) {
-            return api_key;
-        } else
-            return null;
-    }
 
     public Bitmap StringToBitMap(String encodedString){
         try {

@@ -2,6 +2,7 @@ package com.hybrid.freeopensourceusers.Sqlite;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -106,14 +107,19 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         for (int i = 0; i < likes.size(); i++) {
             Likes l = likes.get(i);
-            /*cv.put(likes_const.getUser_id(),l.getUser_id());
-            cv.put(likes_const.getPid(),l.getPid());
-            cv.put(likes_const.getFlag(),l.getFlag());
-            cv.put(likes_const.getFlagd(),l.getFlagd());
-            sqLiteDatabase.insert(likes_const.getTable_name(), null, cv);*/
             sqLiteDatabase.execSQL("insert into "+likes_const.getTable_name()+" values("+l.getUser_id()+
             ","+l.getPid()+","+l.getFlag()+","+l.getFlagd()+")");
         }
+    }
+    public void setCommentCount(DatabaseOperations dop,int pid,int count){
+        SQLiteDatabase sqLiteDatabase = dop.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(html_test_const.getUp_down(),count);
+        Log.e("ADARSH", Integer.toString(sqLiteDatabase.update(html_test_const.getTable_name(),cv,html_test_const.getSr_key()+"="+pid,null)));
+        //Log.e("ADARSH","update "+html_test_const.getTable_name()+" set "+html_test_const.getComment_count()+"='"+count+"' where "+html_test_const.getSr_key()+"='"+pid+"'");
+        //sqLiteDatabase.execSQL("update "+html_test_const.getTable_name()+" set "+html_test_const.getComment_count()+"= ? where "+html_test_const.getSr_key()+"= ?",new String[] { Integer.toString(count),Integer.toString(pid)});
+        //sqLiteDatabase.rawQuery("update "+html_test_const.getTable_name()+" set "+html_test_const.getComment_count()+"="+count+" where "+html_test_const.getSr_key()+"="+pid,null);
+        sqLiteDatabase.close();
     }
     public int getfbypid(DatabaseOperations dop,int pid){
         SQLiteDatabase sqLiteDatabase = dop.getReadableDatabase();
@@ -141,6 +147,7 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = dop.getWritableDatabase();
         sqLiteDatabase.execSQL("update "+likes_const.getTable_name()+" set flag="+flag+" where "+likes_const.getPid()+"="+pid);
         sqLiteDatabase.execSQL("update "+likes_const.getTable_name()+" set flagd="+flagd+" where "+likes_const.getPid()+"="+pid);
+        sqLiteDatabase.close();
     }
 
     public void insertPosts(DatabaseOperations dop, ArrayList<PostFeed> newsFeedList, boolean clearPrevious){

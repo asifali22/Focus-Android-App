@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -279,16 +278,6 @@ public class new_session_add extends AppCompatActivity {
         return null;
     }
 
-    public String getApiKey() {
-
-        SharedPreferences sharedPreferences = myApplication.getApplicationContext().getSharedPreferences("user_details", myApplication.getApplicationContext().MODE_PRIVATE);
-        String api_key = sharedPreferences.getString("api_key", null);
-
-        if (!api_key.isEmpty()) {
-            return api_key;
-        } else
-            return null;
-    }
 
     public String getStringImage(Bitmap bmp) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
