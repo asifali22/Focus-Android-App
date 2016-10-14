@@ -128,7 +128,10 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
         holder.post_header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isLoggedIn())
                 clickCallback.openProfile(sessionFeed, holder);
+                else
+                    showAlertDialog(v);
             }
         });
         holder.session_comment.setOnClickListener(new View.OnClickListener() {
@@ -153,18 +156,18 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, "Hello Folks...\nBelow are the details of yet another GLUG session" +
-                        "\nSession:"+sessionFeed.getSession_title()+
-                        "\nDescription:"+sessionFeed.getSession_description()+
-                        "\nVenue:"+sessionFeed.getS_venue()+
-                        "\nCoordinator:"+sessionFeed.getS_coordinator()+
-                        "\nCoordinator's Email:"+sessionFeed.getS_c_email()+
-                        "\nCoordinator's Phone:"+sessionFeed.getS_c_phone()+
-                        "\nResource Person:"+sessionFeed.getResource_person()+
-                        "\nDesignation:"+sessionFeed.getRp_desg()+
-                        "\nTime:"+sessionFeed.getTime_and_date()+
-                        "\nAddress:"+sessionFeed.getAddress()+
-                        "\nRoom:"+sessionFeed.getRoom()+
-                        "\nThank You");
+                        "\n\nSession:"+sessionFeed.getSession_title()+
+                        "\n\nDescription:"+sessionFeed.getSession_description()+
+                        "\n\nVenue:"+sessionFeed.getS_venue()+
+                        "\n\nCoordinator:"+sessionFeed.getS_coordinator()+
+                        "\n\nCoordinator's Email:"+sessionFeed.getS_c_email()+
+                        "\n\nCoordinator's Phone:"+sessionFeed.getS_c_phone()+
+                        "\n\nResource Person:"+sessionFeed.getResource_person()+
+                        "\n\nDesignation:"+sessionFeed.getRp_desg()+
+                        "\n\nTime:"+sessionFeed.getTime_and_date()+
+                        "\n\nAddress:"+sessionFeed.getAddress()+
+                        "\n\nRoom:"+sessionFeed.getRoom()+
+                        "\n\nThank you - shared via FOCUS App, download now @link ");
                 sendIntent.setType("text/plain");
                 context.startActivity(Intent.createChooser(sendIntent, "Share via..."));
             }
