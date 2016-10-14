@@ -69,8 +69,7 @@ public class SearchableActivity extends AppCompatActivity {
                 searchRecyclerView.setVisibility(View.VISIBLE);
                 noSearchResults.setVisibility(View.GONE);
                 mComplexRecyclerViewAdapter = new ComplexRecyclerViewAdapter(this, feedsArrayList);
-                AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(mComplexRecyclerViewAdapter);
-                searchRecyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
+                searchRecyclerView.setAdapter(mComplexRecyclerViewAdapter);
                 mComplexRecyclerViewAdapter.setFeed(feedsArrayList);
             }else {
                 searchRecyclerView.setVisibility(View.GONE);

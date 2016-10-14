@@ -8,6 +8,7 @@
     tools:ignore="RtlHardcoded">
 
     <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinatorUserProfileMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -58,9 +59,9 @@
                             android:layout_gravity="center_horizontal"
                             android:gravity="bottom|center"
                             android:text="Name"
-                            android:transitionName="user_name"
                             android:textColor="@android:color/white"
-                            android:textSize="30sp" />
+                            android:textSize="30sp"
+                            android:transitionName="user_name" />
 
                         <TextView
                             android:id="@+id/user.status"
@@ -88,32 +89,81 @@
             app:behavior_overlapTop="30dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <android.support.v7.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="8dp"
-                app:cardCornerRadius="2dp"
-                app:cardElevation="8dp"
-                app:contentPadding="16dp">
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/user.desc"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:onClick="openUserPostAndSession"
+                <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:lineSpacingExtra="8dp"
-                    android:text="No description available!"
-                    android:textSize="18sp" />
+                    android:layout_height="match_parent"
+                    android:layout_margin="8dp"
+                    app:cardCornerRadius="2dp"
+                    app:cardElevation="4dp"
+                    app:contentPadding="8dp">
 
-                <!--<android.support.v7.widget.RecyclerView-->
-                    <!--android:id="@+id/userProfileRecyclerView"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:transitionGroup="true"-->
-                    <!--android:layout_height="match_parent"/>-->
-            </android.support.v7.widget.CardView>
+                    <TextView
+                        android:id="@+id/user_feed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:gravity="center"
+                        android:lineSpacingExtra="8dp"
+                        android:onClick="openUserPostAndSession"
+                        android:padding="8dp"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="8dp"
+                    app:cardCornerRadius="2dp"
+                    app:cardElevation="4dp"
+                    app:contentPadding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:lineSpacingExtra="8dp"
+                            android:padding="8dp"
+                            android:text="About"
+                            android:textColor="@color/colorAccentUserProfile"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/user_desc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:fontFamily="sans-serif"
+                            android:lineSpacingExtra="8dp"
+                            android:padding="8dp"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/su_user"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif-condensed"
+                            android:padding="8dp"
+                            android:textColor="#88000000"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
 
         <android.support.v7.widget.Toolbar
@@ -140,8 +190,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="8dp"
-                    android:text="Name"
                     android:gravity="center_vertical"
+                    android:text="Name"
                     android:textColor="@android:color/white"
                     android:textSize="20sp" />
             </LinearLayout>
@@ -152,8 +202,8 @@
             android:layout_width="@dimen/image_width"
             android:layout_height="@dimen/image_width"
             android:layout_gravity="center"
-            android:transitionName="profile"
             android:src="@drawable/blank_person_final"
+            android:transitionName="profile"
             app:civ_border_color="@android:color/white"
             app:civ_border_width="2dp"
             app:layout_behavior="com.hybrid.freeopensourceusers.UserProfileStuff.AvatarImageBehavior" />

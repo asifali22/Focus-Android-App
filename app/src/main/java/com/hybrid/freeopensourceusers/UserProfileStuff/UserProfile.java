@@ -1,16 +1,23 @@
 package com.hybrid.freeopensourceusers.UserProfileStuff;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Transition;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -19,11 +26,28 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 
+import com.hybrid.freeopensourceusers.Activities.session_details;
+import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.R;
 
 import com.hybrid.freeopensourceusers.Utility.MyTextDrawable;
+import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -39,13 +63,16 @@ public class UserProfile extends AppCompatActivity
     private boolean mIsTheTitleContainerVisible = true;
 
     private LinearLayout mTitleContainer;
-    private TextView mTitle, mTitleBehindPhoto, mStatus;
+    private TextView mTitle, mTitleBehindPhoto, mStatus, mFeed, user_desc, su_user;
     private AppBarLayout mAppBarLayout;
     private Toolbar mToolbar;
     private String name, profilepic, status;
     private int userID;
     private CircleImageView avatar;
     private ImageView timeLine;
+    private VolleySingleton volleySingleton;
+    private RequestQueue requestQueue;
+    private CoordinatorLayout coordinatorLayout;
 
 
 
@@ -56,6 +83,9 @@ public class UserProfile extends AppCompatActivity
 
         bindActivity();
 
+        volleySingleton = VolleySingleton.getInstance();
+        requestQueue = volleySingleton.getRequestQueue();
+
         Bundle bundle = getIntent().getExtras();
         userID = bundle.getInt("UID");
         name = bundle.getString("NAME");
@@ -65,6 +95,8 @@ public class UserProfile extends AppCompatActivity
         mTitle.setText(name);
         mTitleBehindPhoto.setText(name);
         mStatus.setText(status);
+
+        mFeed.setText(name + "'s feed");
 
         MyTextDrawable myTextDrawable = new MyTextDrawable();
 
@@ -88,6 +120,96 @@ public class UserProfile extends AppCompatActivity
         setSupportActionBar(mToolbar);
         startAlphaAnimation(mTitle, 0, View.INVISIBLE);
 
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                letsFetchData();
+
+            }
+        }, 1000);
+
+
+
+
+    }
+
+    private void letsFetchData() {
+        String UPLOAD_URL = "http://focusvce.com/api/v1/userDetails";
+        final ProgressDialog loading = ProgressDialog.show(UserProfile.this, "Updating...", "Please wait...", false, false);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String s) {
+                        //Disimissing the progress dialog
+                        loading.dismiss();
+                        JSONObject jsonObject = null;
+                        try {
+                            jsonObject = new JSONObject(s);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            if (!jsonObject.getBoolean("error")){
+                                JSONArray jsonArray = jsonObject.getJSONArray("user_details");
+                                JSONObject finalObject = jsonArray.getJSONObject(0);
+                                String u_status = finalObject.getString("user_status");
+                                String about_user = finalObject.getString("about_user");
+                                String memORCo = finalObject.getString("su_user");
+                                user_desc.setText(about_user+"");
+                                mStatus.setText(u_status+"");
+
+                                if (memORCo.equals("0"))
+                                    su_user.setText("Member");
+                                else
+                                    su_user.setText("Coordinator");
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        //Showing toast message of the response
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        //Dismissing the progress dialog
+                        loading.dismiss();
+
+                        //Showing toast
+                        Snackbar.make(coordinatorLayout,"Failed to update : Try again",Snackbar.LENGTH_SHORT).show();
+                        Log.e("Error", volleyError.toString());
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", getApiKey() + "");
+                return params;
+            }@Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                //Converting Bitmap to String
+
+
+                //Creating parameters
+                Map<String, String> params = new Hashtable<>();
+
+
+
+                params.put("user_id", userID+"");
+
+
+                //returning parameters
+                return params;
+            }
+        };
+
+
+        requestQueue.add(stringRequest);
+
 
     }
 
@@ -100,7 +222,10 @@ public class UserProfile extends AppCompatActivity
         mStatus         = (TextView)findViewById(R.id.user_status);
         avatar          = (CircleImageView) findViewById(R.id.user_profile_image_userActivity);
         timeLine        = (ImageView) findViewById(R.id.timeLineImageView);
-
+        mFeed           = (TextView) findViewById(R.id.user_feed);
+        su_user         =  (TextView) findViewById(R.id.su_user);
+        user_desc       =  (TextView) findViewById(R.id.user_desc);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorUserProfileMain);
     }
 
     @Override
@@ -167,5 +292,18 @@ public class UserProfile extends AppCompatActivity
         intent.putExtra("USERNAME", name);
         startActivity(intent);
     }
+
+
+    public String getApiKey() {
+
+        SharedPreferences sharedPreferences = MyApplication.getAppContext().getSharedPreferences("user_details", MyApplication.getAppContext().MODE_PRIVATE);
+        String api_key = sharedPreferences.getString("api_key", null);
+
+        if (!api_key.isEmpty()) {
+            return api_key;
+        } else
+            return null;
+    }
+
 }
 

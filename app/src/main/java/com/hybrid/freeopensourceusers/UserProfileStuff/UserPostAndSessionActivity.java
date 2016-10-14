@@ -77,8 +77,7 @@ public class UserPostAndSessionActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setHasFixedSize(false);
         mComplexRecyclerViewAdapter = new ComplexRecyclerViewAdapter(this, feedsArrayList);
-        AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(mComplexRecyclerViewAdapter);
-        mRecyclerView.setAdapter( new ScaleInAnimationAdapter(alphaAdapter));
+        mRecyclerView.setAdapter( mComplexRecyclerViewAdapter);
         mComplexRecyclerViewAdapter.setFeed(feedsArrayList);
         }
 
