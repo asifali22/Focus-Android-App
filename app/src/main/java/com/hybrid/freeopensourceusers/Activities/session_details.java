@@ -58,7 +58,7 @@ public class session_details extends AppCompatActivity {
     int id;
 
     private String title,desc,picurl,venue,coord,email,phone,rp,rpd,addr,date_time,room;
-    private TextView des,resource_person,respd,ven,d_t,add,roo,coo,ph,em;
+    private TextView des,resource_person,respd,ven,d_t,add,roo,coo;
     private ImageView sessionPic;
     private FloatingActionButton addd;
     private VolleySingleton volleySingleton;
@@ -79,8 +79,8 @@ public class session_details extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         addd = (FloatingActionButton) findViewById(R.id.fab_add_session);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.session_detail_coordinatorlayout);
-        ph = (TextView) findViewById(R.id.phone_ses_details);
-        em = (TextView) findViewById(R.id.email_ses_details);
+
+
         Bundle bundle = getIntent().getExtras();
         id=bundle.getInt("id");
         title=bundle.getString("title");
@@ -98,12 +98,7 @@ public class session_details extends AppCompatActivity {
 
         if(id==0) {
             addd.setVisibility(View.VISIBLE);
-            ph.setVisibility(View.VISIBLE);
-            em.setVisibility(View.VISIBLE);
-            if (Build.VERSION.SDK_INT >= 21)
-                Snackbar.make(coordinatorLayout, "Make sure the details are correct", Snackbar.LENGTH_LONG).show();
-            else
-                Toast.makeText(this, "Make sure the details are correct", Toast.LENGTH_LONG).show();
+            Snackbar.make(coordinatorLayout, "Make sure the details are correct", Snackbar.LENGTH_LONG).show();
         }
 
 
@@ -129,10 +124,6 @@ public class session_details extends AppCompatActivity {
         add.setText(addr);
         roo.setText(room);
         coo.setText(coord);
-        if(id==0){
-            ph.setText(phone);
-            em.setText(email);
-        }
 
         if(id!=0)
         Glide.with(this)
@@ -332,5 +323,5 @@ public class session_details extends AppCompatActivity {
         return encodedImage;
     }
 
-    // le bc
+
 }

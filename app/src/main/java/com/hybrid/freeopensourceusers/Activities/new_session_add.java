@@ -12,12 +12,20 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -32,6 +40,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.R;
+import com.hybrid.freeopensourceusers.Utility.MyTextDrawable;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
 
 import java.io.ByteArrayOutputStream;
@@ -46,13 +55,16 @@ public class new_session_add extends AppCompatActivity {
 
     private int PICK_IMAGE_REQUEST = 1;
     private int TRANSACTION_REQUEST = 2;
-    Bitmap bitmap;
-    ImageView ses_image;
-    MyApplication myApplication;
-    public VolleySingleton volleySingleton;
-    public RequestQueue requestQueue;
-    EditText title,desc,venue,coord,email,phone,rp,rpd,d_t,addr,room;
-    FloatingActionButton addImage;
+    private Bitmap bitmap;
+    private ImageView ses_image;
+    private MyApplication myApplication;
+    private VolleySingleton volleySingleton;
+    private RequestQueue requestQueue;
+    private EditText title, desc, venue, coord, email, phone, rp, rpd, d_t, addr, room;
+    private FloatingActionButton addImage;
+    private Toolbar mToolbar;
+    private CoordinatorLayout coordinatorLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +75,8 @@ public class new_session_add extends AppCompatActivity {
         volleySingleton = VolleySingleton.getInstance();
         requestQueue = volleySingleton.getRequestQueue();
         addImage = (FloatingActionButton) findViewById(R.id.ses_add_image);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.new_session_add_container);
+        mToolbar = (Toolbar) findViewById(R.id.toolbarSession);
         ses_image = (ImageView) findViewById(R.id.ses_image);
         title = (EditText) findViewById(R.id.ses_title);
         desc = (EditText) findViewById(R.id.ses_description);
@@ -81,16 +95,51 @@ public class new_session_add extends AppCompatActivity {
                 showFileChooser();
             }
         });
+
+        if(mToolbar != null)
+            setSupportActionBar(mToolbar);
+
+        getSupportActionBar().setTitle(" ");
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        MyTextDrawable myTextDrawable = new MyTextDrawable();
+        ses_image.setImageDrawable(myTextDrawable.setTextDrawableForPost("Dark", "Image"));
+
+
+        final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbarSession);
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layoutSession);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    collapsingToolbarLayout.setTitle("Add session");
+                    isShow = true;
+                } else if(isShow) {
+                    collapsingToolbarLayout.setTitle(" ");//careful there should a space between double quote otherwise it wont work
+                    isShow = false;
+                }
+            }
+        });
     }
-    public void addSesImage(View view){
+
+    public void addSesImage(View view) {
         showFileChooser();
     }
+
     private void showFileChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -106,152 +155,104 @@ public class new_session_add extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        int result=0;
+        int result = 0;
         if (requestCode == TRANSACTION_REQUEST) {
-            if(resultCode == Activity.RESULT_OK){
-                result =data.getIntExtra("success",0);
+            if (resultCode == Activity.RESULT_OK) {
+                result = data.getIntExtra("success", 0);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
             }
 
-            if(result==1)
+            if (result == 1)
                 finish();
         }
 
 
     }
-    public void submit_ses(View view){
 
-        String stitle,sdesc,svenue,scoord,semail,sphone,srp,srpd,sd_t,saddr,sroom;
-        stitle = title.getText().toString();
-        sdesc = desc.getText().toString();
-        svenue = venue.getText().toString();
-        scoord = coord.getText().toString();
-        semail = email.getText().toString();
-        sphone = phone.getText().toString();
-        srp = rp.getText().toString();
-        srpd = rpd.getText().toString();
-        sd_t = d_t.getText().toString();
-        saddr = addr.getText().toString();
-        sroom = room.getText().toString();
+    public void submit_ses(View view) {
 
-        Intent intent = new Intent(this,session_details.class);
-        intent.putExtra("id",0);
-        intent.putExtra("title",stitle);
-        intent.putExtra("desc",sdesc);
-        intent.putExtra("picurl",getImageUri(this,bitmap).toString());
-        Toast.makeText(this,getImageUri(this,bitmap).toString(),Toast.LENGTH_SHORT).show();
-        intent.putExtra("venue",svenue);
-        intent.putExtra("coord",scoord);
-        intent.putExtra("email",semail);
-        intent.putExtra("phone",sphone);
-        intent.putExtra("rp",srp);
-        intent.putExtra("rpd",srpd);
-        intent.putExtra("addr",saddr);
-        intent.putExtra("date_time",sd_t);
-        intent.putExtra("room",sroom);
-        startActivityForResult(intent,TRANSACTION_REQUEST);
+        String stitle, sdesc, svenue, scoord, semail, sphone, srp, srpd, sd_t, saddr, sroom;
+        stitle = title.getText().toString().trim();
+        sdesc = desc.getText().toString().trim();
+        svenue = venue.getText().toString().trim();
+        scoord = coord.getText().toString().trim();
+        semail = email.getText().toString().trim();
+        sphone = phone.getText().toString().trim();
+        srp = rp.getText().toString().trim();
+        srpd = rpd.getText().toString().trim();
+        sd_t = d_t.getText().toString().trim();
+        saddr = addr.getText().toString().trim();
+        sroom = room.getText().toString().trim();
 
+        if (stitle.isEmpty()) {
+            title.setError("Field can't be empty");
+            return;
+        }
+        if (sdesc.isEmpty()) {
+            desc.setError("Field can't be empty");
+            return;
+        }
+        if (svenue.isEmpty()) {
+            venue.setError("Field can't be empty");
+            return;
+        }
+        if (scoord.isEmpty()) {
+            coord.setError("Field can't be empty");
+            return;
+        }
+        if (semail.isEmpty()) {
+            email.setError("Field can't can't be empty");
+            return;
+        }
+        if (sphone.isEmpty()) {
+            phone.setError("Field can't can't be empty");
+            return;
+        }
+        if (srp.isEmpty()) {
+            rp.setError("Field can't be empty");
+            return;
+        }
+        if (srpd.isEmpty()) {
+            rpd.setError("Field can't be empty");
+            return;
+        }
+        if (sd_t.isEmpty()) {
+            d_t.setError("Field can't be empty");
+            return;
+        }
+        if (saddr.isEmpty()) {
+            addr.setError("Field can't be empty");
+            return;
+        }
+        if (sroom.isEmpty()) {
+            room.setError("Field can't be empty");
+            return;
+        }
 
-        /*String UPLOAD_URL = "http://focusvce.com/api/v1/upload_session";
-        final ProgressDialog loading = ProgressDialog.show(this,"Uploading...","Please wait...",false,false);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String s) {
-                        //Disimissing the progress dialog
-                        loading.dismiss();
-                        Toast.makeText(myApplication.getApplicationContext(), "Post Added", Toast.LENGTH_LONG).show();
-                        finish();
-                        //Showing toast message of the response
+        if (bitmap == null || getImageUri(this, bitmap).toString().isEmpty()){
+            Snackbar.make(coordinatorLayout,"Please select an image for the session", Snackbar.LENGTH_SHORT).show();
+            return;
+        }
 
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        //Dismissing the progress dialog
-                        loading.dismiss();
-
-                        //Showing toast
-                        Toast.makeText(new_session_add.this, volleyError.toString(), Toast.LENGTH_LONG).show();
-                        Log.e("Error", volleyError.toString());
-                    }
-                }){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("Authorization", getApiKey() + "");
-                return params;
-            }
-
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                //Converting Bitmap to String
-                String stitle,sdesc,svenue,scoord,semail,sphone,srp,srpd,sd_t,saddr,sroom;
-                stitle = title.getText().toString();
-                sdesc = desc.getText().toString();
-                svenue = venue.getText().toString();
-                scoord = coord.getText().toString();
-                semail = email.getText().toString();
-                sphone = phone.getText().toString();
-                srp = rp.getText().toString();
-                srpd = rpd.getText().toString();
-                sd_t = d_t.getText().toString();
-                saddr = addr.getText().toString();
-                sroom = room.getText().toString();
-                String api_key = getApiKey();
-                String name = api_key+"-"+Long.toString(System.currentTimeMillis());
-                String image = getStringImage(bitmap);
+        Intent intent = new Intent(this, session_details.class);
+        intent.putExtra("id", 0);
+        intent.putExtra("title", stitle);
+        intent.putExtra("desc", sdesc);
+        intent.putExtra("picurl", getImageUri(this, bitmap).toString());
+        intent.putExtra("venue", svenue);
+        intent.putExtra("coord", scoord);
+        intent.putExtra("email", semail);
+        intent.putExtra("phone", sphone);
+        intent.putExtra("rp", srp);
+        intent.putExtra("rpd", srpd);
+        intent.putExtra("addr", saddr);
+        intent.putExtra("date_time", sd_t);
+        intent.putExtra("room", sroom);
+        startActivityForResult(intent, TRANSACTION_REQUEST);
 
 
-
-
-                //Creating parameters
-                Map<String,String> params = new Hashtable<>();
-
-                //Adding parameters
-
-                params.put("title", stitle);
-                params.put("desc", sdesc);
-                params.put("image",image);
-                params.put("name",name);
-                params.put("venue",svenue);
-                params.put("coord",scoord);
-                params.put("email",semail);
-                params.put("phone",sphone);
-                params.put("rp",srp);
-                params.put("rpd",srpd);
-                params.put("addr",saddr);
-                params.put("room",sroom);
-                params.put("dos",sd_t);
-
-                //returning parameters
-                return params;
-            }
-        };
-        stringRequest.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
-            }
-
-            @Override
-            public int getCurrentRetryCount() {
-                return 50000;
-            }
-
-            @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
-        });
-
-
-        //Adding request to the queue
-        requestQueue.add(stringRequest);
-        */
     }
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {
@@ -262,11 +263,9 @@ public class new_session_add extends AppCompatActivity {
             if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
                 return Uri.parse(path);
-            }
-            else
+            } else
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-        }
-        else{
+        } else {
             String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
             return Uri.parse(path);
         }
@@ -284,12 +283,42 @@ public class new_session_add extends AppCompatActivity {
         } else
             return null;
     }
-    public String getStringImage(Bitmap bmp){
+
+    public String getStringImage(Bitmap bmp) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] imageBytes = baos.toByteArray();
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
         return encodedImage;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case android.R.id.home:
+                finish();
+                return true;
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+
+        inflater.inflate(R.menu.new_post_activity_menu, menu);
+
+        return true;
     }
 
 }

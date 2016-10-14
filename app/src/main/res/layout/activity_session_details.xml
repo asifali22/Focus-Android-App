@@ -83,10 +83,9 @@
                         android:id="@+id/sd_desc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:ellipsize="end"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="1.6dp"
-                        android:text="This section contains the details about the session shown above. I'm just tping some junk to test it for now."
+                        android:text="About the session"
                         android:textColor="#000"
                         android:textSize="16sp" />
                 </LinearLayout>
@@ -121,7 +120,7 @@
                         android:layout_marginBottom="4dp"
                         android:ellipsize="end"
                         android:fontFamily="sans-serif"
-                        android:text="Mr. XYZ abc"
+                        android:text="Mr. XYZ"
                         android:textColor="#000"
                         android:textSize="16sp" />
 
@@ -131,7 +130,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:fontFamily="sans-serif-condensed"
-                        android:text="CEO at Facebook"
+                        android:text="CEO at SVCE"
                         android:textColor="#88000000"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -312,32 +311,6 @@
                             android:clickable="true"
                             android:onClick="mailButtonClicked"
                             android:src="@drawable/ic_communication_email" />
-                        <TextView
-                            android:id="@+id/phone_ses_details"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:lineSpacingExtra="1.6dp"
-                            android:text="Asif Ali"
-                            android:textColor="#000"
-                            android:textSize="16sp"
-                            android:layout_below="@+id/nameOfCoordinator"
-                            android:visibility="gone"/>
-                        <TextView
-                            android:id="@+id/email_ses_details"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:lineSpacingExtra="1.6dp"
-                            android:text="Asif Ali"
-                            android:textColor="#000"
-                            android:textSize="16sp"
-                            android:layout_below="@+id/phone_ses_details"
-                            android:visibility="gone"/>
 
 
                     </RelativeLayout>
@@ -353,7 +326,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_done_black_24dp"
-        android:layout_gravity="bottom"
+        app:layout_anchor="@id/app_bar_layoutSession"
+        app:layout_anchorGravity="bottom|end"
         android:layout_margin="10dp"
         android:visibility="gone"
         android:id="@+id/fab_add_session"/>

@@ -91,7 +91,10 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".Activities.new_session_add" />
+        <activity android:name=".Activities.new_session_add"
+            android:theme="@style/SessionFitSystem"
+            android:windowSoftInputMode="adjustPan"
+            />
 
         <service android:name=".Services.MyFirebaseMessagingService">
             <intent-filter>

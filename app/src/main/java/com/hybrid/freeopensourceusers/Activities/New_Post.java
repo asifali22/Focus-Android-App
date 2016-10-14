@@ -561,7 +561,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
 
         switch (id) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+               finish();
                 return true;
 
         }
