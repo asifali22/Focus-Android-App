@@ -53,6 +53,7 @@ import java.util.Map;
 public class new_session_add extends AppCompatActivity {
 
 
+    private static final String RESULT_CODE = "true";
     private int PICK_IMAGE_REQUEST = 1;
     private int TRANSACTION_REQUEST = 2;
     private Bitmap bitmap;
@@ -96,7 +97,7 @@ public class new_session_add extends AppCompatActivity {
             }
         });
 
-        if(mToolbar != null)
+        if (mToolbar != null)
             setSupportActionBar(mToolbar);
 
         getSupportActionBar().setTitle(" ");
@@ -121,7 +122,7 @@ public class new_session_add extends AppCompatActivity {
                 if (scrollRange + verticalOffset == 0) {
                     collapsingToolbarLayout.setTitle("Add session");
                     isShow = true;
-                } else if(isShow) {
+                } else if (isShow) {
                     collapsingToolbarLayout.setTitle(" ");//careful there should a space between double quote otherwise it wont work
                     isShow = false;
                 }
@@ -159,13 +160,18 @@ public class new_session_add extends AppCompatActivity {
         if (requestCode == TRANSACTION_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
                 result = data.getIntExtra("success", 0);
+
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
             }
 
-            if (result == 1)
+            if (result == 1) {
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("result", RESULT_CODE);
+                setResult(Activity.RESULT_OK, returnIntent);
                 finish();
+            }
         }
 
 
@@ -231,8 +237,8 @@ public class new_session_add extends AppCompatActivity {
             return;
         }
 
-        if (bitmap == null || getImageUri(this, bitmap).toString().isEmpty()){
-            Snackbar.make(coordinatorLayout,"Please select an image for the session", Snackbar.LENGTH_SHORT).show();
+        if (bitmap == null || getImageUri(this, bitmap).toString().isEmpty()) {
+            Snackbar.make(coordinatorLayout, "Please select an image for the session", Snackbar.LENGTH_SHORT).show();
             return;
         }
 

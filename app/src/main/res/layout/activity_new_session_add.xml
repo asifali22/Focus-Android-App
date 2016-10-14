@@ -107,6 +107,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:text="Description"
+                        android:inputType="textCapSentences"
                         android:textColor="@color/colorPrimary"
                         android:textSize="18sp" />
 
@@ -188,6 +189,7 @@
                         android:layout_width="match_parent"
                         android:inputType="textCapSentences"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:hint="Venue" />
 
 
@@ -195,15 +197,15 @@
                         android:id="@+id/ses_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="8dp"
                         android:inputType="textCapSentences"
                         android:hint="Landmark - shown in map" />
 
                     <EditText
                         android:id="@+id/ses_room"
                         android:layout_width="match_parent"
+                        android:layout_marginBottom="8dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
                         android:inputType="textCapWords"
                         android:hint="Room" />
 
@@ -211,8 +213,8 @@
                     <EditText
                         android:id="@+id/ses_date_time"
                         android:layout_width="match_parent"
+                        android:inputType=""
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
                         android:hint="Date and Time" />
 
                 </LinearLayout>

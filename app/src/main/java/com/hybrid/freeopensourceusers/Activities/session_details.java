@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -98,7 +100,7 @@ public class session_details extends AppCompatActivity {
 
         if(id==0) {
             addd.setVisibility(View.VISIBLE);
-            Snackbar.make(coordinatorLayout, "Make sure the details are correct", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(coordinatorLayout, "Preview : Make sure the details are correct", Snackbar.LENGTH_LONG).show();
         }
 
 
@@ -139,8 +141,9 @@ public class session_details extends AppCompatActivity {
         addd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(isOnline()){
                 String UPLOAD_URL = "http://focusvce.com/api/v1/upload_session";
-                final ProgressDialog loading = ProgressDialog.show(session_details.this,"Uploading...","Please wait...",false,false);
+                final ProgressDialog loading = ProgressDialog.show(session_details.this, "Uploading...", "Please wait...", false, false);
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
                         new Response.Listener<String>() {
                             @Override
@@ -149,8 +152,8 @@ public class session_details extends AppCompatActivity {
                                 loading.dismiss();
                                 Toast.makeText(myApplication.getApplicationContext(), "Session Added", Toast.LENGTH_LONG).show();
                                 Intent returnIntent = getIntent();
-                                returnIntent.putExtra("success",1);
-                                setResult(Activity.RESULT_OK,returnIntent);
+                                returnIntent.putExtra("success", 1);
+                                setResult(Activity.RESULT_OK, returnIntent);
                                 finish();
                                 //Showing toast message of the response
 
@@ -163,10 +166,10 @@ public class session_details extends AppCompatActivity {
                                 loading.dismiss();
 
                                 //Showing toast
-                                Toast.makeText(session_details.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(session_details.this, "Error occurred!", Toast.LENGTH_LONG).show();
                                 Log.e("Error", volleyError.toString());
                             }
-                        }){
+                        }) {
                     @Override
                     public Map<String, String> getHeaders() throws AuthFailureError {
                         Map<String, String> params = new HashMap<>();
@@ -179,28 +182,26 @@ public class session_details extends AppCompatActivity {
                         //Converting Bitmap to String
 
 
-
-
                         //Creating parameters
-                        Map<String,String> params = new Hashtable<>();
+                        Map<String, String> params = new Hashtable<>();
 
                         String api_key = getApiKey();
-                        String name = api_key+"-"+Long.toString(System.currentTimeMillis());
+                        String name = api_key + "-" + Long.toString(System.currentTimeMillis());
                         //Adding parameters
 
                         params.put("title", title);
                         params.put("desc", desc);
-                        params.put("image",getStringImage(UriToBitmap(picurl)));
-                        params.put("name",name);
-                        params.put("venue",venue);
-                        params.put("coord",coord);
-                        params.put("email",email);
-                        params.put("phone",phone);
-                        params.put("rp",rp);
-                        params.put("rpd",rpd);
-                        params.put("addr",addr);
-                        params.put("room",room);
-                        params.put("dos",date_time);
+                        params.put("image", getStringImage(UriToBitmap(picurl)));
+                        params.put("name", name);
+                        params.put("venue", venue);
+                        params.put("coord", coord);
+                        params.put("email", email);
+                        params.put("phone", phone);
+                        params.put("rp", rp);
+                        params.put("rpd", rpd);
+                        params.put("addr", addr);
+                        params.put("room", room);
+                        params.put("dos", date_time);
 
                         //returning parameters
                         return params;
@@ -227,9 +228,20 @@ public class session_details extends AppCompatActivity {
                 //Adding request to the queue
                 requestQueue.add(stringRequest);
             }
+                else
+                    Snackbar.make(coordinatorLayout,"No internet connection",Snackbar.LENGTH_SHORT).show();
+        }
         });
 
     }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) MyApplication.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
 
     public Bitmap UriToBitmap(String uri){
         Uri u = Uri.parse(uri);
@@ -317,7 +329,7 @@ public class session_details extends AppCompatActivity {
 
     public String getStringImage(Bitmap bmp){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bmp.compress(Bitmap.CompressFormat.JPEG, 75, baos);
         byte[] imageBytes = baos.toByteArray();
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
         return encodedImage;

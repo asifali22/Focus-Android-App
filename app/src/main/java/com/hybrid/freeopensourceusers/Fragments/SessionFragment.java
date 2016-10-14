@@ -1,8 +1,11 @@
 package com.hybrid.freeopensourceusers.Fragments;
 
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -10,6 +13,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.hybrid.freeopensourceusers.Activities.LoginActivity;
 import com.hybrid.freeopensourceusers.Activities.new_session_add;
 import com.hybrid.freeopensourceusers.Activities.session_details;
 import com.hybrid.freeopensourceusers.Adapters.RecyclerSessionAdapter;
@@ -45,6 +50,7 @@ import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
  */
 public class SessionFragment extends Fragment implements SessionFeedLoadingListener, FabClickListener{
 
+    private static final int RESULT_CONSTANT = 1011;
     private RecyclerView recyclerView;
     private RecyclerSessionAdapter recyclerSessionAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -160,6 +166,53 @@ public class SessionFragment extends Fragment implements SessionFeedLoadingListe
 
     @Override
     public void fabListener() {
-        startActivity(new Intent(getActivity(),new_session_add.class));
+        if (isLoggedIn()) {
+            Intent intent = new Intent(getActivity(), new_session_add.class);
+            startActivityForResult(intent, RESULT_CONSTANT);
+        }else
+            showAlertDialog(getView());
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RESULT_CONSTANT){
+            if (resultCode == Activity.RESULT_OK){
+                String result = data.getStringExtra("result");
+                if (result.equals("true")){
+                    swipeRefreshLayout.setRefreshing(true);
+                    new TaskLoadSessionFeed(this).execute();
+                }
+            }
+            if(resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there is no result
+            }
+        }
+
+    }
+
+    public boolean isLoggedIn() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user_details", getActivity().MODE_PRIVATE);
+        boolean status = sharedPreferences.getBoolean("logged_in", false);
+        return status;
+    }
+
+    private void showAlertDialog(View view) {
+        new AlertDialog.Builder(view.getContext())
+                .setTitle("Sign up?")
+                .setMessage("Join us to explore more!")
+                .setPositiveButton("SURE", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent myIntent = new Intent(MyApplication.getAppContext(), LoginActivity.class);
+                        startActivity(myIntent);
+                    }
+                })
+                .setNegativeButton("NOT NOW", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .show();
+    }
+
+
 }
