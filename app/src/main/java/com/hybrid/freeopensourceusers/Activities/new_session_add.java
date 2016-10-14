@@ -105,7 +105,7 @@ public class new_session_add extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         MyTextDrawable myTextDrawable = new MyTextDrawable();
-        ses_image.setImageDrawable(myTextDrawable.setTextDrawableForPost("Dark", "Image"));
+        ses_image.setImageDrawable(myTextDrawable.setTextDrawableForPost("Zebra", "Image"));
 
 
         final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbarSession);

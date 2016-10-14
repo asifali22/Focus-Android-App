@@ -107,13 +107,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:text="Description"
-                        android:inputType="textCapSentences"
                         android:textColor="@color/colorPrimary"
                         android:textSize="18sp" />
 
                     <EditText
                         android:id="@+id/ses_description"
                         android:layout_width="match_parent"
+                        android:inputType="textCapSentences"
                         android:layout_height="wrap_content"
                         android:hint="About the session" />
                 </LinearLayout>
@@ -213,9 +213,9 @@
                     <EditText
                         android:id="@+id/ses_date_time"
                         android:layout_width="match_parent"
-                        android:inputType=""
+                        android:inputType="textCapWords"
                         android:layout_height="wrap_content"
-                        android:hint="Date and Time" />
+                        android:hint="Date, @Time" />
 
                 </LinearLayout>
 
@@ -295,6 +295,6 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:onClick="submit_ses"
-        android:src="@drawable/ic_add_white_24dp" />
+        android:src="@drawable/ic_navigate_next" />
 
 </android.support.design.widget.CoordinatorLayout>
