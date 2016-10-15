@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -33,6 +32,7 @@ import com.hybrid.freeopensourceusers.Callback.SessionFeedLoadingListener;
 import com.hybrid.freeopensourceusers.PojoClasses.PostFeed;
 import com.hybrid.freeopensourceusers.PojoClasses.SessionFeed;
 import com.hybrid.freeopensourceusers.R;
+import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
 import com.hybrid.freeopensourceusers.Sqlite.DatabaseOperations;
 import com.hybrid.freeopensourceusers.Sqlite.DatabaseOperations_Session;
 import com.hybrid.freeopensourceusers.Task.TaskLoadPostFeed;
@@ -56,6 +56,7 @@ public class SessionFragment extends Fragment implements SessionFeedLoadingListe
     private SwipeRefreshLayout swipeRefreshLayout;
     private ArrayList<SessionFeed> newsFeedsList = new ArrayList<>();
     private static final String SESSION_FEED = "session_feed";
+    private SharedPrefManager sharedPrefManager;
     public SessionFragment() {
         // Required empty public constructor
     }
@@ -66,6 +67,7 @@ public class SessionFragment extends Fragment implements SessionFeedLoadingListe
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_session, container, false);
+        sharedPrefManager = new SharedPrefManager(getContext());
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_session);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefreshForSessionPost);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -166,9 +168,14 @@ public class SessionFragment extends Fragment implements SessionFeedLoadingListe
 
     @Override
     public void fabListener() {
-        if (isLoggedIn()) {
-            Intent intent = new Intent(getActivity(), new_session_add.class);
-            startActivityForResult(intent, RESULT_CONSTANT);
+        if (sharedPrefManager.isLoggedIn()) {
+            SharedPrefManager sharedPrefManager = new SharedPrefManager(getContext());
+            if(sharedPrefManager.getSu_User().equals("1")) {
+                Intent intent = new Intent(getActivity(), new_session_add.class);
+                startActivityForResult(intent, RESULT_CONSTANT);
+            }
+            else
+                Toast.makeText(getContext(),"You are not authorized to add session",Toast.LENGTH_LONG).show();
         }else
             showAlertDialog(getView());
     }
@@ -190,11 +197,7 @@ public class SessionFragment extends Fragment implements SessionFeedLoadingListe
 
     }
 
-    public boolean isLoggedIn() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user_details", getActivity().MODE_PRIVATE);
-        boolean status = sharedPreferences.getBoolean("logged_in", false);
-        return status;
-    }
+
 
     private void showAlertDialog(View view) {
         new AlertDialog.Builder(view.getContext())

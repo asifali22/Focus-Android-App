@@ -9,18 +9,16 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.EdgeEffectCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
@@ -54,6 +52,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.R;
+import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
 import com.hybrid.freeopensourceusers.Utility.MyTextDrawable;
 import com.hybrid.freeopensourceusers.Utility.Utility;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
@@ -96,6 +95,9 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
     private RelativeLayout revealLayout, toggleLayout;
     private ScrollView simpleLayout;
     private AppCompatButton advancedButton;
+    private SharedPrefManager sharedPrefManager;
+    Uri filePath;
+    int flag_for_image=0;
 
 
     @Override
@@ -115,6 +117,8 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
         advancedButton = (AppCompatButton) findViewById(R.id.testAdvanced);
         simpleLayout = (ScrollView) findViewById(R.id.simpleRelative);
         toggleLayout = (RelativeLayout) findViewById(R.id.toggleLayout);
+        sharedPrefManager = new SharedPrefManager(this);
+        filePath = null;
 
         linkPhoto.setImageDrawable(myTextDrawable.setTextDrawableForPost("Zebra", "Image"));
         if( newPostToolbar != null)
@@ -147,7 +151,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
         volleySingleton = VolleySingleton.getInstance();
         requestQueue = volleySingleton.getRequestQueue();
         //Bundle extras = getIntent().getExtras();
-        api_key = getApiKey();//extras.getString("API_KEY");
+        api_key = sharedPrefManager.getApiKey();//extras.getString("API_KEY");
     }
 
     /**
@@ -268,16 +272,28 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                 if (finalDesc.isEmpty() || finalDesc == null || finalDesc.equals(""))
                     finalDesc = title;
 
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showDialog("", sharedPrefManager.getUserName(), title, finalDesc, getImageUrl);
+                    }
+                });
 
-                showDialog("", getUserName(), title, finalDesc, getImageUrl);
 
 
             }
         }else if (flag ==2){
-                String title = input_title.getText().toString();
-                String desc = input_desc.getText().toString();
-                if(!(title.isEmpty() || desc.isEmpty()))
-                     showDialog("", getUserName(), title, desc, "");
+                final String title = input_title.getText().toString();
+                final String desc = input_desc.getText().toString();
+                if(!(title.isEmpty() || desc.isEmpty())) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showDialog("", sharedPrefManager.getUserName(), title, desc, "");
+                        }
+                    });
+
+                }
                 else if (title.isEmpty())
                     input_title.setError("Title can't be empty");
                 else if (desc.isEmpty())
@@ -431,6 +447,9 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
             else
                 photoLink = input;
 
+            if(flag_for_image==0)
+                Toast.makeText(New_Post.this,"No Image",Toast.LENGTH_SHORT).show();
+
             String UPLOAD_URL = "http://focusvce.com/api/v1/upload";
             final ProgressDialog loading = ProgressDialog.show(this,"Uploading...","Please wait...",false,false);
             StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
@@ -536,12 +555,13 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Uri filePath = data.getData();
+             filePath = data.getData();
             try {
                 //Getting the Bitmap from Gallery
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 //Setting the Bitmap to ImageView
                 linkPhoto.setImageBitmap(bitmap);
+                flag_for_image=1;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -579,27 +599,9 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
         return true;
     }
 
-    public String getApiKey() {
 
-        SharedPreferences sharedPreferences = myApplication.getApplicationContext().getSharedPreferences("user_details", myApplication.getApplicationContext().MODE_PRIVATE);
-        String api_key = sharedPreferences.getString("api_key", null);
 
-        if (!api_key.isEmpty()) {
-            return api_key;
-        } else
-            return null;
-    }
 
-    public String getUserName() {
-
-        SharedPreferences sharedPreferences = myApplication.getApplicationContext().getSharedPreferences("user_details", myApplication.getApplicationContext().MODE_PRIVATE);
-        String user_name_from_sf = sharedPreferences.getString("user_name", null);
-
-        if (!user_name_from_sf.isEmpty()) {
-            return user_name_from_sf;
-        } else
-            return null;
-    }
 
     public String getUserprofilePicFromSharedPref(){
         // NOTE:
@@ -629,7 +631,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.submit_button:
-                submitButton();
+                new BackGroundTask().execute("submit_button");
                 break;
 
             case R.id.testAdvanced:
@@ -799,6 +801,30 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
             return ContextCompat.getColor(context, id);
         } else {
             return context.getResources().getColor(id);
+        }
+    }
+
+    private class BackGroundTask extends AsyncTask<String, Integer, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            if(params[0].equals("submit_button"))
+                submitButton();
+
+            return "All Done!";
+        }
+
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
         }
     }
 

@@ -5,13 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -34,6 +32,7 @@ import com.hybrid.freeopensourceusers.Callback.FabClickListener;
 import com.hybrid.freeopensourceusers.Callback.PostFeedLoadingListener;
 import com.hybrid.freeopensourceusers.PojoClasses.PostFeed;
 import com.hybrid.freeopensourceusers.R;
+import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
 import com.hybrid.freeopensourceusers.Sqlite.DatabaseOperations;
 import com.hybrid.freeopensourceusers.Task.TaskLoadPostFeed;
 import com.hybrid.freeopensourceusers.UserProfileStuff.UserProfile;
@@ -53,6 +52,7 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
 
     private static final int REQUEST_CODE = 100;
     private ArrayList<PostFeed> newsFeedsList = new ArrayList<>();
+    private SharedPrefManager sharedPrefManager;
 
     private RecyclerView trendingRecyclerView;
     private RecyclerTrendingAdapter mRecyclerTrendingAdapter;
@@ -70,7 +70,7 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_trending, container, false);
 
-
+        sharedPrefManager = new SharedPrefManager(getContext());
         trendingRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefreshForTrendingPost);
         trendingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -184,7 +184,7 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
 
     @Override
     public void fabListener() {
-        if(isLoggedIn()) {
+        if(sharedPrefManager.isLoggedIn()) {
             Intent intent = new Intent(getContext(), New_Post.class);
             startActivityForResult(intent, REQUEST_CODE);
         }
@@ -213,12 +213,7 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
     }
 
 
-    public boolean isLoggedIn() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user_details", getActivity().MODE_PRIVATE);
-        boolean status = sharedPreferences.getBoolean("logged_in", false);
-        return status;
 
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

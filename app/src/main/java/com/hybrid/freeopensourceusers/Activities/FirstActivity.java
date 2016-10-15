@@ -55,6 +55,7 @@ import com.hybrid.freeopensourceusers.Fragments.SessionFragment;
 import com.hybrid.freeopensourceusers.Fragments.TrendingFragment;
 import com.hybrid.freeopensourceusers.SearchStuffs.SearchableProvider;
 import com.hybrid.freeopensourceusers.Services.MyFireBaseInstanceIdService;
+import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
 
 
@@ -78,11 +79,11 @@ public class                                                                Firs
     private TabLayout mTabLayout;
     private ViewPagerAdapter  mAdapter   =    new ViewPagerAdapter(getSupportFragmentManager());
     GoogleApiClient mGoogleApiClient;
-    SharedPreferences user_details;
     private FloatingActionButton mFab;
     private final String TAG_TRENDING_FRAGMENT = "trending_fragment";
     RequestQueue requestQueue;
     VolleySingleton volleySingleton;
+    SharedPrefManager sharedPrefManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +93,7 @@ public class                                                                Firs
         myApplication = MyApplication.getInstance();
         volleySingleton = VolleySingleton.getInstance();
         requestQueue = volleySingleton.getRequestQueue();
+        sharedPrefManager = new SharedPrefManager(this);
 
         //setupJob();
         bindViews();
@@ -101,10 +103,9 @@ public class                                                                Firs
             MyFireBaseInstanceIdService myFireBaseInstanceIdService = new MyFireBaseInstanceIdService();
             myFireBaseInstanceIdService.registerToken(FirebaseInstanceId.getInstance().getToken());
         }
-        user_details = getSharedPreferences("user_details", MODE_PRIVATE);
-        if(getSharedPreferences("com.hybrid.freeopensourceusers", MODE_PRIVATE).getBoolean("firstrun",true)) {
-            user_details.edit().putBoolean("logged_in", false).apply();
-            getSharedPreferences("com.hybrid.freeopensourceusers", MODE_PRIVATE).edit().putBoolean("firstrun",false).apply();
+        if(sharedPrefManager.getFirstRunStatus()) {
+            sharedPrefManager.setLoggedInStatus(false);
+            sharedPrefManager.setFirstRunStatus(false);
         }
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -126,16 +127,7 @@ public class                                                                Firs
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
-    public String getFcmToken() {
 
-        SharedPreferences sharedPreferences = myApplication.getApplicationContext().getSharedPreferences("user_details", myApplication.getApplicationContext().MODE_PRIVATE);
-        String api_key = sharedPreferences.getString("fcm_token", null);
-
-        if (!api_key.isEmpty()) {
-            return api_key;
-        } else
-            return null;
-    }
     private void bindViews() {
 
         mToolbar   =    (Toolbar) findViewById(R.id.m_toolbar);
@@ -322,7 +314,7 @@ public class                                                                Firs
     public boolean onCreateOptionsMenu(Menu menu) {
 
         MenuInflater inflater = getMenuInflater();
-        if(user_details.getBoolean("logged_in",false)) {
+        if(sharedPrefManager.getLoggedinStatus()) {
             inflater.inflate(R.menu.menu_main_logged_out, menu);
 
 

@@ -3,7 +3,6 @@ package com.hybrid.freeopensourceusers.Adapters;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +22,7 @@ import com.hybrid.freeopensourceusers.Activities.LoginActivity;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.PojoClasses.SessionFeed;
 import com.hybrid.freeopensourceusers.R;
+import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
 import com.hybrid.freeopensourceusers.Utility.MyTextDrawable;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
 
@@ -46,6 +46,7 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
     public VolleySingleton volleySingleton;
     public RequestQueue requestQueue;
     public MyApplication myApplication;
+    private SharedPrefManager sharedPrefManager;
   //  public ImageLoader imageLoader;
     public Context context;
     public DateFormat dateFormat = new SimpleDateFormat("EEE, MMM dd 'at' h:mm a");
@@ -58,6 +59,7 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
         requestQueue = volleySingleton.getRequestQueue();
        // imageLoader = volleySingleton.getImageLoader();
         this.context=context;
+        sharedPrefManager = new SharedPrefManager(context);
         setCallback(clickCallback);
     }
     public void setFeed(ArrayList<SessionFeed> newsFeedArrayList) {
@@ -128,7 +130,7 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
         holder.post_header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isLoggedIn())
+                if (sharedPrefManager.isLoggedIn())
                 clickCallback.openProfile(sessionFeed, holder);
                 else
                     showAlertDialog(v);
@@ -137,10 +139,10 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
         holder.session_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isLoggedIn())
+                if (!sharedPrefManager.isLoggedIn())
                     showAlertDialog(view);
                 else {
-                    String api_key = getApiKey();
+                    String api_key = sharedPrefManager.getApiKey();
                     Intent myIntent = new Intent(myApplication.getApplicationContext(), Comment_Actiivity.class);
                     myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     myIntent.putExtra("PID_VALUE", sessionFeed.getSession_id() + "");
@@ -174,12 +176,7 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
         });
 
     }
-    public boolean isLoggedIn() {
-        SharedPreferences sharedPreferences = myApplication.getApplicationContext().getSharedPreferences("user_details", myApplication.getApplicationContext().MODE_PRIVATE);
-        boolean status = sharedPreferences.getBoolean("logged_in", false);
-        return status;
 
-    }
     public void showAlertDialog(View view) {
         new AlertDialog.Builder(view.getContext())
                 .setTitle("Sign up?")
@@ -198,16 +195,7 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
                 })
                 .show();
     }
-    public String getApiKey() {
 
-        SharedPreferences sharedPreferences = myApplication.getApplicationContext().getSharedPreferences("user_details", myApplication.getApplicationContext().MODE_PRIVATE);
-        String api_key = sharedPreferences.getString("api_key", null);
-
-        if (!api_key.isEmpty()) {
-            return api_key;
-        } else
-            return null;
-    }
     public void setCallback(ClickCallback callback) {
         this.clickCallback = callback;
     }

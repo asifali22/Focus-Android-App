@@ -3,7 +3,6 @@ package com.hybrid.freeopensourceusers.Adapters;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
@@ -34,6 +33,7 @@ import com.hybrid.freeopensourceusers.Activities.LoginActivity;
 import com.hybrid.freeopensourceusers.Activities.WebViewActivity;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.PojoClasses.Likes;
+import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
 import com.hybrid.freeopensourceusers.Sqlite.DatabaseOperations;
 import com.hybrid.freeopensourceusers.Utility.MyTextDrawable;
 import com.hybrid.freeopensourceusers.PojoClasses.PostFeed;
@@ -68,12 +68,16 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
     private VolleySingleton volleySingleton;
     private RequestQueue requestQueue;
     private MyApplication myApplication;
+    private SharedPrefManager sharedPrefManager;
     //    public ImageLoader imageLoader;
     private DatabaseOperations dop;
     private ClickCallback clickCallback;
+    private Context context;
 
     public RecyclerTrendingAdapter(Context context, ArrayList<PostFeed> newsFeedArrayList) {
         // Below is for getting application context
+        this.context = context;
+        sharedPrefManager = new SharedPrefManager(context);
         myApplication = MyApplication.getInstance();
         layoutInflater = LayoutInflater.from(context);
         volleySingleton = VolleySingleton.getInstance();
@@ -214,10 +218,10 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
         holder.comment_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                if (!isLoggedIn())
+                if (!sharedPrefManager.isLoggedIn())
                     showAlertDialog(view);
                 else {
-                    String api_key = getApiKey();
+                    String api_key = sharedPrefManager.getApiKey();
                     Intent myIntent = new Intent(myApplication.getApplicationContext(), Comment_Actiivity.class);
                     myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     myIntent.putExtra("PID_VALUE", postFeed.getPid() + "");
@@ -231,7 +235,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
         holder.plus_like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                if (!isLoggedIn())
+                if (!sharedPrefManager.isLoggedIn())
                     showAlertDialog(view);
                 else {
                     int count = Integer.parseInt(holder.like_count.getText().toString());
@@ -248,18 +252,21 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                         holder.minus_dislike.setLiked(false);
                         holder.plus_like.setLiked(false);
                         holder.like_count.setText(Integer.toString(count - 1));
+                        dop.setCommentCount(dop,postFeed.getPid(),count-1);
                         dop.setflagandflagd(dop, 0, 0, postFeed.getPid());
                         up_net(postFeed);
                     } else if (button(postFeed.getPid()) == 1) {
                         holder.minus_dislike.setLiked(false);
                         holder.plus_like.setLiked(true);
                         holder.like_count.setText(Integer.toString(count + 2));
+                        dop.setCommentCount(dop,postFeed.getPid(),count+2);
                         dop.setflagandflagd(dop, 1, 0, postFeed.getPid());
                         up_net(postFeed);
                     } else if (button(postFeed.getPid()) == 0) {
                         holder.minus_dislike.setLiked(false);
                         holder.plus_like.setLiked(true);
                         holder.like_count.setText(Integer.toString(count + 1));
+                        dop.setCommentCount(dop,postFeed.getPid(),count+1);
                         dop.setflagandflagd(dop, 1, 0, postFeed.getPid());
                         up_net(postFeed);
                     } else if (button(postFeed.getPid()) == -1) {
@@ -281,7 +288,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
         holder.minus_dislike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                if (!isLoggedIn())
+                if (!sharedPrefManager.isLoggedIn())
                     showAlertDialog(view);
                 else {
                     int count = Integer.parseInt(holder.like_count.getText().toString());
@@ -289,6 +296,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                         holder.minus_dislike.setLiked(true);
                         holder.plus_like.setLiked(false);
                         holder.like_count.setText(Integer.toString(count - 2));
+                        dop.setCommentCount(dop,postFeed.getPid(),count-2);
                         dop.setflagandflagd(dop, 0, 1, postFeed.getPid());
                         down_net(postFeed);
                     } else if (button(postFeed.getPid()) == 1) {
@@ -296,11 +304,13 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                         holder.plus_like.setLiked(false);
                         holder.like_count.setText(Integer.toString(count + 1));
                         dop.setflagandflagd(dop, 0, 0, postFeed.getPid());
+                        dop.setCommentCount(dop,postFeed.getPid(),count+1);
                         down_net(postFeed);
                     } else if (button(postFeed.getPid()) == 0) {
                         holder.minus_dislike.setLiked(true);
                         holder.plus_like.setLiked(false);
                         holder.like_count.setText(Integer.toString(count - 1));
+                        dop.setCommentCount(dop,postFeed.getPid(),count-1);
                         dop.setflagandflagd(dop, 0, 1, postFeed.getPid());
                         down_net(postFeed);
                     } else if (button(postFeed.getPid()) == -1) {
@@ -340,7 +350,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
         holder.post_header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isLoggedIn())
+                if (!sharedPrefManager.isLoggedIn())
                     showAlertDialog(v);
                 else {
                     clickCallback.openProfile(postFeed, holder);
@@ -378,7 +388,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("Authorization", getApiKey());
+                params.put("Authorization", sharedPrefManager.getApiKey());
                 return params;
             }
 
@@ -403,6 +413,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                 //holder.minus_dislike.setLiked(true);
                 holder.plus_like.setLiked(false);
                 holder.like_count.setText(Integer.toString(count - 1));
+                dop.setCommentCount(dop,postFeed.getPid(),count-1);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -413,7 +424,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("Authorization", getApiKey());
+                params.put("Authorization", sharedPrefManager.getApiKey());
                 return params;
             }
 
@@ -446,7 +457,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("Authorization", getApiKey());
+                params.put("Authorization", sharedPrefManager.getApiKey());
                 return params;
             }
 
@@ -471,6 +482,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                 //holder.plus_like.setLiked(true);
                 holder.minus_dislike.setLiked(false);
                 holder.like_count.setText(Integer.toString(count + 1));
+                dop.setCommentCount(dop,postFeed.getPid(),count+1);
 
             }
         }, new Response.ErrorListener() {
@@ -482,7 +494,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("Authorization", getApiKey());
+                params.put("Authorization", sharedPrefManager.getApiKey());
                 return params;
             }
 
@@ -577,23 +589,9 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                 .show();
     }
 
-    public String getApiKey() {
 
-        SharedPreferences sharedPreferences = myApplication.getApplicationContext().getSharedPreferences("user_details", myApplication.getApplicationContext().MODE_PRIVATE);
-        String api_key = sharedPreferences.getString("api_key", null);
 
-        if (!api_key.isEmpty()) {
-            return api_key;
-        } else
-            return null;
-    }
 
-    public boolean isLoggedIn() {
-        SharedPreferences sharedPreferences = myApplication.getApplicationContext().getSharedPreferences("user_details", myApplication.getApplicationContext().MODE_PRIVATE);
-        boolean status = sharedPreferences.getBoolean("logged_in", false);
-        return status;
-
-    }
 
     // For Search
 
@@ -671,8 +669,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                SharedPreferences sharedPreferences = MyApplication.getAppContext().getSharedPreferences("user_details", Context.MODE_PRIVATE);
-                String api_key = sharedPreferences.getString("api_key", null);
+                String api_key = sharedPrefManager.getApiKey();
                 Map<String, String> params = new HashMap<>();
                 params.put("Authorization", api_key);
                 return params;
