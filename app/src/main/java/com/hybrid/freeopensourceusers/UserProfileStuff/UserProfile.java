@@ -128,7 +128,6 @@ public class UserProfile extends AppCompatActivity
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Snackbar.make(coordinatorLayout,"Updating...", Snackbar.LENGTH_SHORT).show();
                 letsFetchData();
 
             }
@@ -149,7 +148,7 @@ public class UserProfile extends AppCompatActivity
                     public void onResponse(String s) {
                         //Disimissing the progress dialog
                         //    loading.dismiss();
-
+                        Snackbar.make(coordinatorLayout,"Updating...", Snackbar.LENGTH_SHORT).show();
                         JSONObject jsonObject = null;
                         try {
                             jsonObject = new JSONObject(s);

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -359,6 +360,14 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
             }
         });
 
+        holder.post_body.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                showDeleteReportDialog(v);
+                return true;
+            }
+        });
+
     }
 
     public void setCallback(ClickCallback callback) {
@@ -570,6 +579,29 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
 //    }
 
 
+
+    public void showDeleteReportDialog(final View view) {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(view.getContext());
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                view.getContext(),
+                R.layout.dialog_delete_report);
+
+        arrayAdapter.add("Delete");
+        arrayAdapter.add("Report");
+
+        builderSingle.setAdapter(
+                arrayAdapter,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String strName = arrayAdapter.getItem(which);
+                        Toast.makeText(myApplication.getApplicationContext(), strName, Toast.LENGTH_SHORT).show();
+                    }
+                });
+        builderSingle.show();
+
+    }
 
 
 
