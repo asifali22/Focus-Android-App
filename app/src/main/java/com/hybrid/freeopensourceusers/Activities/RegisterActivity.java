@@ -34,6 +34,7 @@ import com.android.volley.toolbox.Volley;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.Fragments.MainFragment;
 import com.hybrid.freeopensourceusers.R;
+import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
 import com.hybrid.freeopensourceusers.Utility.Utility;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
 import com.isseiaoki.simplecropview.util.Utils;
@@ -62,6 +63,7 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
     private RequestQueue requestQueue;
     private AppCompatButton changeProfile;
     private static Bitmap bitmap;
+    private SharedPrefManager sharedPrefManager;
 
     private static final String REGISTER_URL = Utility.getIPADDRESS()+"register";
     public static final String KEY_NAME = "user_name";
@@ -83,6 +85,7 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
         myApplication = MyApplication.getInstance();
         volleySingleton = VolleySingleton.getInstance();
         requestQueue = volleySingleton.getRequestQueue();
+        sharedPrefManager = new SharedPrefManager(this);
 
         circleImageView = (CircleImageView) findViewById(R.id.userProfile);
         changeProfile = (AppCompatButton) findViewById(R.id.btn_change);
@@ -161,7 +164,7 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             hideProgressDialog();
-                            if(!isOnline())
+                            if(!sharedPrefManager.isOnline())
                                 Toast.makeText(RegisterActivity.this, "No internet connection!", Toast.LENGTH_LONG).show();
                             else
                                 Toast.makeText(RegisterActivity.this, "Error Occurred!", Toast.LENGTH_LONG).show();
@@ -306,12 +309,7 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
             mProgressDialog.hide();
         }
     }
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnected();
-    }
+
 
     public String getStringImage(Bitmap bmp){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

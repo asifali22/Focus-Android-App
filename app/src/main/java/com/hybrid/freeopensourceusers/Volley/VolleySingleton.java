@@ -31,7 +31,7 @@ public class VolleySingleton {
     }
 
     // Request queue getter
-    public RequestQueue getRequestQueue() {
+    public static synchronized RequestQueue getRequestQueue() {
         return mRequestQueue;
     }
 

@@ -219,7 +219,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
             @Override
             public void onClick(final View view) {
                 if (!sharedPrefManager.isLoggedIn())
-                    showAlertDialog(view);
+                    sharedPrefManager.showAlertDialog(view);
                 else {
                     String api_key = sharedPrefManager.getApiKey();
                     Intent myIntent = new Intent(myApplication.getApplicationContext(), Comment_Actiivity.class);
@@ -236,7 +236,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
             @Override
             public void onClick(final View view) {
                 if (!sharedPrefManager.isLoggedIn())
-                    showAlertDialog(view);
+                    sharedPrefManager.showAlertDialog(view);
                 else {
                     int count = Integer.parseInt(holder.like_count.getText().toString());
 //                    holder.plus_like.setIcon(IconType.Star);
@@ -289,7 +289,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
             @Override
             public void onClick(final View view) {
                 if (!sharedPrefManager.isLoggedIn())
-                    showAlertDialog(view);
+                    sharedPrefManager.showAlertDialog(view);
                 else {
                     int count = Integer.parseInt(holder.like_count.getText().toString());
                     if (button(postFeed.getPid()) == 2) {
@@ -351,7 +351,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
             @Override
             public void onClick(View v) {
                 if (!sharedPrefManager.isLoggedIn())
-                    showAlertDialog(v);
+                    sharedPrefManager.showAlertDialog(v);
                 else {
                     clickCallback.openProfile(postFeed, holder);
 
@@ -570,24 +570,6 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
 //    }
 
 
-    public void showAlertDialog(View view) {
-        new AlertDialog.Builder(view.getContext())
-                .setTitle("Sign up?")
-                .setMessage("Join us to explore more!")
-                .setPositiveButton("SURE", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent myIntent = new Intent(myApplication.getApplicationContext(), LoginActivity.class);
-                        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        myApplication.getApplicationContext().startActivity(myIntent);
-                    }
-                })
-                .setNegativeButton("NOT NOW", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
-                    }
-                })
-                .show();
-    }
 
 
 

@@ -4,7 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.NavUtils;
 import android.support.v4.util.Pair;
@@ -15,6 +17,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -34,6 +37,7 @@ import com.hybrid.freeopensourceusers.Adapters.RecyclerTrendingCommentAdapter;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.PojoClasses.CommentFeed;
 import com.hybrid.freeopensourceusers.R;
+import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
 import com.hybrid.freeopensourceusers.Sqlite.DatabaseOperations;
 import com.hybrid.freeopensourceusers.Sqlite.DatabaseOperations_Session;
 import com.hybrid.freeopensourceusers.Task.TaskLoadPostFeed;
@@ -72,12 +76,14 @@ public class Comment_Actiivity extends AppCompatActivity {
     FloatingActionButton button;
     DatabaseOperations dp;
     DatabaseOperations_Session dops;
+    private SharedPrefManager sharedPrefManager;
     public SwipeRefreshLayout swipeRefreshLayoutForCommentsTrending;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment_actiivity);
+
         newCommentToolbar = (Toolbar) findViewById(R.id.newCommentToolbar);
         if (newCommentToolbar != null)
             setSupportActionBar(newCommentToolbar);
@@ -86,6 +92,13 @@ public class Comment_Actiivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Discuss");
 
 
+
+        Toast toast= Toast.makeText(this,
+                "Please refresh to load newer comments", Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.TOP| Gravity.CENTER_HORIZONTAL, 0, 250);
+        toast.show();
+
+        sharedPrefManager = new SharedPrefManager(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         dp = new DatabaseOperations(this);
         dops = new DatabaseOperations_Session(this);
@@ -96,6 +109,7 @@ public class Comment_Actiivity extends AppCompatActivity {
 
         volleySingleton = VolleySingleton.getInstance();
         requestQueue = volleySingleton.getRequestQueue();
+
         commentsFeedRecycler.setLayoutManager(new LinearLayoutManager(this));
         commentsFeedRecycler.setHasFixedSize(true);
         recyclerTrendingCommentAdapter = new RecyclerTrendingCommentAdapter(this);
@@ -125,7 +139,7 @@ public class Comment_Actiivity extends AppCompatActivity {
         swipeRefreshLayoutForCommentsTrending.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(isOnline()) {
+                if(sharedPrefManager.isOnline()) {
                     swipeRefreshLayoutForCommentsTrending.setRefreshing(true);
                     sendJsonrequest();
                 }
@@ -264,7 +278,7 @@ public class Comment_Actiivity extends AppCompatActivity {
 
     public void commentFabClicked(View v) {
         final String commentText = commentAdd.getText().toString().trim();
-        if (!commentText.isEmpty()&&isOnline()) {
+        if (!commentText.isEmpty()&& sharedPrefManager.isOnline()) {
             String POSTCOMMENT_URL = Utility.getIPADDRESS() + "comments";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, POSTCOMMENT_URL, new Response.Listener<String>() {
                 @Override
@@ -348,11 +362,5 @@ public class Comment_Actiivity extends AppCompatActivity {
         }
     }
 
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager)  getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
 
 }

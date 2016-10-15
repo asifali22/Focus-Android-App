@@ -2,6 +2,7 @@ package com.hybrid.freeopensourceusers.Fragments;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -57,6 +58,7 @@ public class SessionFragment extends Fragment implements SessionFeedLoadingListe
     private ArrayList<SessionFeed> newsFeedsList = new ArrayList<>();
     private static final String SESSION_FEED = "session_feed";
     private SharedPrefManager sharedPrefManager;
+    private ProgressDialog progressDialog;
     public SessionFragment() {
         // Required empty public constructor
     }
@@ -68,6 +70,7 @@ public class SessionFragment extends Fragment implements SessionFeedLoadingListe
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_session, container, false);
         sharedPrefManager = new SharedPrefManager(getContext());
+        progressDialog = new ProgressDialog(getContext());
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_session);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefreshForSessionPost);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -114,18 +117,19 @@ public class SessionFragment extends Fragment implements SessionFeedLoadingListe
         if (savedInstanceState != null) {
             newsFeedsList = savedInstanceState.getParcelableArrayList(SESSION_FEED);
         } else {
-
-            DatabaseOperations_Session dop = new DatabaseOperations_Session(getActivity());
-            newsFeedsList = dop.readSessionData(dop);
+            DatabaseOperations_Session dop = new DatabaseOperations_Session(getContext());
+            newsFeedsList = MyApplication.getMsDatabase().readSessionData(dop);
             if (newsFeedsList.isEmpty()) {
-                if (isOnline())
+                if (sharedPrefManager.isOnline()) {
+                    progressDialog = ProgressDialog.show(getContext(),"Loading","Fetching data...",false,false);
                     new TaskLoadSessionFeed(this).execute();
+                }
             }
         }
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (isOnline()) {
+                if (sharedPrefManager.isOnline()) {
                     swipeRefreshLayout.setRefreshing(true);
                     new TaskLoadSessionFeed(SessionFragment.this).execute();
 
@@ -157,14 +161,11 @@ public class SessionFragment extends Fragment implements SessionFeedLoadingListe
         if (swipeRefreshLayout.isRefreshing()){
             swipeRefreshLayout.setRefreshing(false);
         }
+        if(progressDialog.isShowing())
+            progressDialog.dismiss();
         recyclerSessionAdapter.setFeed(newsFeedLists);
     }
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
+
 
     @Override
     public void fabListener() {
@@ -177,7 +178,7 @@ public class SessionFragment extends Fragment implements SessionFeedLoadingListe
             else
                 Toast.makeText(getContext(),"You are not authorized to add session",Toast.LENGTH_LONG).show();
         }else
-            showAlertDialog(getView());
+            sharedPrefManager.showAlertDialog(getView());
     }
 
     @Override
@@ -199,23 +200,7 @@ public class SessionFragment extends Fragment implements SessionFeedLoadingListe
 
 
 
-    private void showAlertDialog(View view) {
-        new AlertDialog.Builder(view.getContext())
-                .setTitle("Sign up?")
-                .setMessage("Join us to explore more!")
-                .setPositiveButton("SURE", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent myIntent = new Intent(MyApplication.getAppContext(), LoginActivity.class);
-                        startActivity(myIntent);
-                    }
-                })
-                .setNegativeButton("NOT NOW", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
-                    }
-                })
-                .show();
-    }
+
 
 
 }

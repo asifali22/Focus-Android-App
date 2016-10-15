@@ -110,9 +110,9 @@ public class SearchableActivity extends AppCompatActivity {
 
     public ArrayList<Feeds> readAllPostForSearch(String searchText){
         //get postfeeds
-        ArrayList<PostFeed> postfeeds = databaseOperations.readPostForSearch(searchText, databaseOperations);
+        ArrayList<PostFeed> postfeeds = MyApplication.getDatabase().readPostForSearch(searchText, databaseOperations);
         //get sessionfeeds
-        ArrayList<SessionFeed> sessionfeeds = databaseOperations_session.readSessionForSearch(searchText, databaseOperations_session);
+        ArrayList<SessionFeed> sessionfeeds = MyApplication.getMsDatabase().readSessionForSearch(searchText, databaseOperations_session);
 
         RecyclerHeader recyclerHeaderPost = new RecyclerHeader("Posts");
         RecyclerHeader recyclerHeaderSession = new RecyclerHeader("Sessions");

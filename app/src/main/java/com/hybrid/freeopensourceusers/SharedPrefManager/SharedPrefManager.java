@@ -2,9 +2,16 @@ package com.hybrid.freeopensourceusers.SharedPrefManager;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.support.v7.app.AlertDialog;
+import android.view.View;
 
 import com.google.android.gms.common.api.BooleanResult;
+import com.hybrid.freeopensourceusers.Activities.LoginActivity;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -94,6 +101,32 @@ public class SharedPrefManager {
         boolean status = sharedPreferences.getBoolean("logged_in", false);
         return status;
 
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+
+    public void showAlertDialog(View view) {
+        new AlertDialog.Builder(view.getContext())
+                .setTitle("Sign up?")
+                .setMessage("Join us to explore more!")
+                .setPositiveButton("SURE", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent myIntent = new Intent(MyApplication.getAppContext(), LoginActivity.class);
+                        context.startActivity(myIntent);
+                    }
+                })
+                .setNegativeButton("NOT NOW", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .show();
     }
 
 

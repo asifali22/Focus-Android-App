@@ -311,7 +311,7 @@ public class LoginActivity extends AppCompatActivity implements
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             hideProgressDialog();
-                            if (!isOnline())
+                            if (!sharedPrefManager.isOnline())
                                 Toast.makeText(LoginActivity.this, "No internet connection!", Toast.LENGTH_LONG).show();
                             else
                                 Toast.makeText(LoginActivity.this, "Error Occurred!", Toast.LENGTH_LONG).show();
@@ -517,12 +517,6 @@ public class LoginActivity extends AppCompatActivity implements
         SingInIntent();
     }
 
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnected();
-    }
 
     private void showProgressDialog() {
         if (mProgressDialog == null) {

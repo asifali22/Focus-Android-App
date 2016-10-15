@@ -2,6 +2,7 @@ package com.hybrid.freeopensourceusers.Fragments;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -57,7 +58,8 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
     private RecyclerView trendingRecyclerView;
     private RecyclerTrendingAdapter mRecyclerTrendingAdapter;
     private static final String POST_FEED = "post_feed";
-    SwipeRefreshLayout swipeRefreshLayout;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private ProgressDialog progressDialog ;
 
     public TrendingFragment() {
         // Required empty public constructor
@@ -69,7 +71,7 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_trending, container, false);
-
+        progressDialog = new ProgressDialog(getContext());
         sharedPrefManager = new SharedPrefManager(getContext());
         trendingRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefreshForTrendingPost);
@@ -122,12 +124,13 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
         if (savedInstanceState != null) {
             newsFeedsList = savedInstanceState.getParcelableArrayList(POST_FEED);
         } else {
-
-            DatabaseOperations dop = new DatabaseOperations(MyApplication.getAppContext());
+            DatabaseOperations dop = new DatabaseOperations(getContext());
                     newsFeedsList = MyApplication.getDatabase().readPostData(dop);
                     if (newsFeedsList.isEmpty()) {
-                        if (isOnline())
+                        if (sharedPrefManager.isOnline()) {
+                            progressDialog = ProgressDialog.show(getContext(),"Loading","Fetching data...",false,false);
                             new TaskLoadPostFeed(this).execute();
+                        }
                     }
 
         }
@@ -135,7 +138,7 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (isOnline()) {
+                if (sharedPrefManager.isOnline()) {
                     swipeRefreshLayout.setRefreshing(true);
                     new TaskLoadPostFeed(TrendingFragment.this).execute();
 
@@ -171,15 +174,11 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
     public void onPostFeedLoaded(ArrayList<PostFeed> newsFeedsLists) {
         if (swipeRefreshLayout.isRefreshing())
             swipeRefreshLayout.setRefreshing(false);
+        if (progressDialog.isShowing())
+            progressDialog.dismiss();
         mRecyclerTrendingAdapter.setFeed(newsFeedsLists);
     }
 
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
 
 
     @Override
@@ -189,28 +188,12 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
             startActivityForResult(intent, REQUEST_CODE);
         }
         else
-            showAlertDialog(getView());
+            sharedPrefManager.showAlertDialog(getView());
 
 
     }
 
-    private void showAlertDialog(View view) {
-        new AlertDialog.Builder(view.getContext())
-                .setTitle("Sign up?")
-                .setMessage("Join us to explore more!")
-                .setPositiveButton("SURE", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent myIntent = new Intent(MyApplication.getAppContext(), LoginActivity.class);
-                        startActivity(myIntent);
-                    }
-                })
-                .setNegativeButton("NOT NOW", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
-                    }
-                })
-                .show();
-    }
+
 
 
 

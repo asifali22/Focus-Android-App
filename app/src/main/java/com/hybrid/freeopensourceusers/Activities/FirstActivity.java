@@ -69,7 +69,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class                                                                FirstActivity extends AppCompatActivity implements
+public class FirstActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
 
@@ -98,7 +98,7 @@ public class                                                                Firs
         //setupJob();
         bindViews();
 //        setUpSearchView();                                
-        if(isLoggedIn()&&isOnline()){
+        if(sharedPrefManager.isLoggedIn()&&sharedPrefManager.isOnline()){
             FirebaseMessaging.getInstance().subscribeToTopic("fcm_token");
             MyFireBaseInstanceIdService myFireBaseInstanceIdService = new MyFireBaseInstanceIdService();
             myFireBaseInstanceIdService.registerToken(FirebaseInstanceId.getInstance().getToken());
@@ -121,12 +121,7 @@ public class                                                                Firs
     /*
     Initialize the views
      */
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) MyApplication.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
+
 
     private void bindViews() {
 
@@ -282,7 +277,7 @@ public class                                                                Firs
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("Authorization",   getApiKey());
+                params.put("Authorization",   sharedPrefManager.getApiKey());
                 return params;
             }
         };
@@ -300,16 +295,7 @@ public class                                                                Firs
                 });
     }
 
-    public String getApiKey() {
 
-        SharedPreferences sharedPreferences = myApplication.getApplicationContext().getSharedPreferences("user_details", myApplication.getApplicationContext().MODE_PRIVATE);
-        String api_key = sharedPreferences.getString("api_key", null);
-
-        if (!api_key.isEmpty()) {
-            return api_key;
-        } else
-            return null;
-    }
 
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -371,12 +357,6 @@ public class                                                                Firs
 
     }
 
-    public boolean isLoggedIn() {
-        SharedPreferences sharedPreferences = myApplication.getApplicationContext().getSharedPreferences("user_details", myApplication.getApplicationContext().MODE_PRIVATE);
-        boolean status = sharedPreferences.getBoolean("logged_in", false);
-        return status;
-
-    }
 
 
 }

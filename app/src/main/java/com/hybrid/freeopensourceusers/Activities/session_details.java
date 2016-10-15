@@ -142,7 +142,7 @@ public class session_details extends AppCompatActivity {
         addd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isOnline()){
+                if(sharedPrefManager.isOnline()){
                 String UPLOAD_URL = "http://focusvce.com/api/v1/upload_session";
                 final ProgressDialog loading = ProgressDialog.show(session_details.this, "Uploading...", "Please wait...", false, false);
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
@@ -236,12 +236,6 @@ public class session_details extends AppCompatActivity {
 
     }
 
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) MyApplication.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
 
 
     public Bitmap UriToBitmap(String uri){

@@ -53,6 +53,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.R;
 import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
+import com.hybrid.freeopensourceusers.UserProfileStuff.UserProfile;
 import com.hybrid.freeopensourceusers.Utility.MyTextDrawable;
 import com.hybrid.freeopensourceusers.Utility.Utility;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
@@ -805,10 +806,12 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
     }
 
     private class BackGroundTask extends AsyncTask<String, Integer, String> {
+
+        ProgressDialog loading = null;
+
         @Override
         protected void onPreExecute() {
-            super.onPreExecute();
-
+           loading  = ProgressDialog.show(New_Post.this, "Extracting", "Please wait...", false, false);
         }
 
         @Override
@@ -824,7 +827,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-
+            loading.dismiss();
         }
     }
 

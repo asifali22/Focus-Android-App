@@ -38,6 +38,7 @@ import com.hybrid.freeopensourceusers.Activities.session_details;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.R;
 
+import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
 import com.hybrid.freeopensourceusers.Utility.MyTextDrawable;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
 
@@ -73,6 +74,7 @@ public class UserProfile extends AppCompatActivity
     private VolleySingleton volleySingleton;
     private RequestQueue requestQueue;
     private CoordinatorLayout coordinatorLayout;
+    private SharedPrefManager sharedPrefManager;
 
 
 
@@ -85,6 +87,7 @@ public class UserProfile extends AppCompatActivity
 
         volleySingleton = VolleySingleton.getInstance();
         requestQueue = volleySingleton.getRequestQueue();
+        sharedPrefManager = new SharedPrefManager(this);
 
         Bundle bundle = getIntent().getExtras();
         userID = bundle.getInt("UID");
@@ -120,10 +123,12 @@ public class UserProfile extends AppCompatActivity
         setSupportActionBar(mToolbar);
         startAlphaAnimation(mTitle, 0, View.INVISIBLE);
 
+
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                Snackbar.make(coordinatorLayout,"Updating...", Snackbar.LENGTH_SHORT).show();
                 letsFetchData();
 
             }
@@ -136,13 +141,15 @@ public class UserProfile extends AppCompatActivity
 
     private void letsFetchData() {
         String UPLOAD_URL = "http://focusvce.com/api/v1/userDetails";
-        final ProgressDialog loading = ProgressDialog.show(UserProfile.this, "Updating...", "Please wait...", false, false);
+      //  final ProgressDialog loading = ProgressDialog.show(UserProfile.this, "Updating...", "Please wait...", false, false);
+
         StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String s) {
                         //Disimissing the progress dialog
-                        loading.dismiss();
+                        //    loading.dismiss();
+
                         JSONObject jsonObject = null;
                         try {
                             jsonObject = new JSONObject(s);
@@ -177,7 +184,7 @@ public class UserProfile extends AppCompatActivity
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
                         //Dismissing the progress dialog
-                        loading.dismiss();
+                     //   loading.dismiss();
 
                         //Showing toast
                         Snackbar.make(coordinatorLayout,"Failed to update : Try again",Snackbar.LENGTH_SHORT).show();
@@ -187,7 +194,7 @@ public class UserProfile extends AppCompatActivity
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("Authorization", getApiKey() + "");
+                params.put("Authorization", sharedPrefManager.getApiKey() + "");
                 return params;
             }@Override
             protected Map<String, String> getParams() throws AuthFailureError {
@@ -294,16 +301,7 @@ public class UserProfile extends AppCompatActivity
     }
 
 
-    public String getApiKey() {
 
-        SharedPreferences sharedPreferences = MyApplication.getAppContext().getSharedPreferences("user_details", MyApplication.getAppContext().MODE_PRIVATE);
-        String api_key = sharedPreferences.getString("api_key", null);
-
-        if (!api_key.isEmpty()) {
-            return api_key;
-        } else
-            return null;
-    }
 
 }
 
