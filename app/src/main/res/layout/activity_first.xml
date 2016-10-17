@@ -7,17 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview_search_result"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#FFFFFF"
-        android:elevation="2dp"
-        android:paddingTop="64dp"
-        android:visibility="gone" />
-
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar.layout"
+        android:id="@+id/appbar_layoutFirstAcitivty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"

@@ -13,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.SearchRecentSuggestions;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -50,6 +51,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.Callback.FabClickListener;
+import com.hybrid.freeopensourceusers.Callback.TabClickListener;
 import com.hybrid.freeopensourceusers.R;
 import com.hybrid.freeopensourceusers.Fragments.SessionFragment;
 import com.hybrid.freeopensourceusers.Fragments.TrendingFragment;
@@ -73,17 +75,18 @@ public class FirstActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
 
-    MyApplication myApplication;
+    private MyApplication myApplication;
     private ViewPager mViewPager ;
     private Toolbar mToolbar;
     private TabLayout mTabLayout;
     private ViewPagerAdapter  mAdapter   =    new ViewPagerAdapter(getSupportFragmentManager());
-    GoogleApiClient mGoogleApiClient;
+    private GoogleApiClient mGoogleApiClient;
     private FloatingActionButton mFab;
     private final String TAG_TRENDING_FRAGMENT = "trending_fragment";
-    RequestQueue requestQueue;
-    VolleySingleton volleySingleton;
-    SharedPrefManager sharedPrefManager;
+    private RequestQueue requestQueue;
+    private VolleySingleton volleySingleton;
+    private SharedPrefManager sharedPrefManager;
+    private AppBarLayout appBarLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,9 +129,9 @@ public class FirstActivity extends AppCompatActivity implements
     private void bindViews() {
 
         mToolbar   =    (Toolbar) findViewById(R.id.m_toolbar);
-
+        appBarLayout = (AppBarLayout) findViewById(R.id.appbar_layoutFirstAcitivty);
         mViewPager =    (ViewPager) findViewById(R.id.m_viewpager);
-        mTabLayout =    (TabLayout) findViewById(R.id.tab_layout);
+        mTabLayout =    (TabLayout) ssfindViewById(R.id.tab_layout);
 
         mFab       =    (FloatingActionButton) findViewById(R.id.fabButton);
         mFab.setOnClickListener(this);
@@ -144,8 +147,15 @@ public class FirstActivity extends AppCompatActivity implements
         if(mTabLayout != null)
             mTabLayout.setupWithViewPager(mViewPager);
 
-
-
+        mTabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager){
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                appBarLayout.setExpanded(true, true);
+                Fragment fragment = (Fragment) mAdapter.instantiateItem(mViewPager,mViewPager.getCurrentItem());
+                if (fragment instanceof TabClickListener)
+                    ((TabClickListener) fragment).tabListener();
+            }
+        });
 
     }
 

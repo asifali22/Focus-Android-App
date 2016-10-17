@@ -30,6 +30,7 @@ import com.hybrid.freeopensourceusers.Adapters.RecyclerTrendingAdapter;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.Callback.FabClickListener;
 import com.hybrid.freeopensourceusers.Callback.SessionFeedLoadingListener;
+import com.hybrid.freeopensourceusers.Callback.TabClickListener;
 import com.hybrid.freeopensourceusers.PojoClasses.PostFeed;
 import com.hybrid.freeopensourceusers.PojoClasses.SessionFeed;
 import com.hybrid.freeopensourceusers.R;
@@ -49,7 +50,7 @@ import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SessionFragment extends Fragment implements SessionFeedLoadingListener, FabClickListener{
+public class SessionFragment extends Fragment implements SessionFeedLoadingListener, FabClickListener,TabClickListener{
 
     private static final int RESULT_CONSTANT = 1011;
     private RecyclerView recyclerView;
@@ -199,8 +200,8 @@ public class SessionFragment extends Fragment implements SessionFeedLoadingListe
     }
 
 
-
-
-
-
+    @Override
+    public void tabListener() {
+        recyclerView.smoothScrollToPosition(0);
+    }
 }

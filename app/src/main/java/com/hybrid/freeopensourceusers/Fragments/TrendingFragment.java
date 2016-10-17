@@ -31,6 +31,7 @@ import com.hybrid.freeopensourceusers.Adapters.RecyclerTrendingAdapter;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.Callback.FabClickListener;
 import com.hybrid.freeopensourceusers.Callback.PostFeedLoadingListener;
+import com.hybrid.freeopensourceusers.Callback.TabClickListener;
 import com.hybrid.freeopensourceusers.PojoClasses.PostFeed;
 import com.hybrid.freeopensourceusers.R;
 import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
@@ -49,7 +50,7 @@ import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TrendingFragment extends Fragment implements PostFeedLoadingListener,FabClickListener{
+public class TrendingFragment extends Fragment implements PostFeedLoadingListener,FabClickListener,TabClickListener{
 
     private static final int REQUEST_CODE = 100;
     private ArrayList<PostFeed> newsFeedsList = new ArrayList<>();
@@ -212,5 +213,10 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
                 //Write your code if there is no result
             }
         }
+    }
+
+    @Override
+    public void tabListener() {
+        trendingRecyclerView.smoothScrollToPosition(0);
     }
 }
