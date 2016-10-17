@@ -141,7 +141,7 @@ public class UserProfile extends AppCompatActivity
     private void letsFetchData() {
         String UPLOAD_URL = "http://focusvce.com/api/v1/userDetails";
       //  final ProgressDialog loading = ProgressDialog.show(UserProfile.this, "Updating...", "Please wait...", false, false);
-
+        Snackbar.make(coordinatorLayout,"Refreshing...", Snackbar.LENGTH_SHORT).show();
         StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
                 new Response.Listener<String>() {
                     @Override

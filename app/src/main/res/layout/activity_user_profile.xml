@@ -99,8 +99,7 @@
                     android:layout_height="match_parent"
                     android:layout_margin="8dp"
                     app:cardCornerRadius="2dp"
-                    app:cardElevation="4dp"
-                    app:contentPadding="8dp">
+                    app:cardElevation="4dp">
 
                     <TextView
                         android:id="@+id/user_feed"
@@ -111,7 +110,7 @@
                         android:gravity="center"
                         android:lineSpacingExtra="8dp"
                         android:onClick="openUserPostAndSession"
-                        android:padding="8dp"
+                        android:padding="16dp"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 

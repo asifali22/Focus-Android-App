@@ -5,22 +5,24 @@
     android:background="#FFFFFF">
 
     <ImageView
+        android:id="@+id/image_clock"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:id="@+id/image_clock"
-        android:src="@drawable/ic_action_search_history"
-        android:padding="8dp"/>
+        android:padding="8dp"
+        android:src="@drawable/ic_action_search_history" />
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
         android:id="@+id/textView_suggestion"
-        android:layout_toRightOf="@id/image_clock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/image_clock"
         android:layout_alignBottom="@+id/image_clock"
-        android:gravity="center_vertical"
-        android:fontFamily="sans-serif-condensed"
+        android:layout_alignTop="@+id/image_clock"
+        android:layout_toRightOf="@id/image_clock"
         android:ellipsize="end"
+        android:textColor="#000"
+        android:background="?attr/selectableItemBackground"
+        android:fontFamily="sans-serif"
+        android:gravity="center_vertical"
         android:maxLines="1"
         android:padding="8dp"
         android:text="Suggestion" />
