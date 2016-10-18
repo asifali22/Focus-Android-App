@@ -18,6 +18,7 @@ import com.hybrid.freeopensourceusers.Callback.PostFeedLoadingListener;
 import com.hybrid.freeopensourceusers.Logging.L;
 import com.hybrid.freeopensourceusers.PojoClasses.Likes;
 import com.hybrid.freeopensourceusers.PojoClasses.PostFeed;
+import com.hybrid.freeopensourceusers.PojoClasses.Report;
 import com.hybrid.freeopensourceusers.Sqlite.DatabaseOperations;
 import com.hybrid.freeopensourceusers.Utility.Utility;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
@@ -26,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -64,11 +66,14 @@ public class TaskLoadPostFeed extends AsyncTask<Void, Void, ArrayList<PostFeed>>
     protected ArrayList<PostFeed> doInBackground(Void... params) {
         JSONObject response = sendJsonrequest();
         JSONObject likeResponse = getPids();
+        JSONObject reports = getReportPids();
 
         ArrayList<PostFeed> newsFeedLists = parseJsonResponse(response);
         ArrayList<Likes> likeList = parseLike(likeResponse);
+        ArrayList<Report> reportArrayList = parseReport(reports);
         dop.insertPosts(dop, newsFeedLists, true);
         dop.insertLikes(dop,likeList,true);
+        dop.insertReport(dop,reportArrayList,true);
         return newsFeedLists;
     }
 
@@ -80,6 +85,37 @@ public class TaskLoadPostFeed extends AsyncTask<Void, Void, ArrayList<PostFeed>>
     }
 
     private static String URL = Utility.getIPADDRESS() + "nologin";
+
+    public JSONObject getReportPids(){
+        String URL = Utility.getIPADDRESS()+"getreportbyapi";
+        JSONObject response = null;
+        String stringResponse;
+        RequestFuture<String> requestFuture = RequestFuture.newFuture();
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,URL,requestFuture,requestFuture){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                SharedPreferences sharedPreferences = MyApplication.getAppContext().getSharedPreferences("user_details", Context.MODE_PRIVATE);
+                String api_key = sharedPreferences.getString("api_key", null);
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization",api_key);
+                return params;
+            }
+        };
+        mRequestQueue.add(stringRequest);
+        try{
+            stringResponse = requestFuture.get(30000,TimeUnit.MILLISECONDS);
+            response = new JSONObject(stringResponse);
+        }catch (ExecutionException e){
+            e.printStackTrace();
+        }catch (TimeoutException e){
+            e.printStackTrace();
+        }catch (JSONException e){
+            e.printStackTrace();
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+        return response;
+    }
 
     public JSONObject getPids() {
         String URL = Utility.getIPADDRESS() + "getlikebyapi";
@@ -140,6 +176,23 @@ public class TaskLoadPostFeed extends AsyncTask<Void, Void, ArrayList<PostFeed>>
 //
 //        };
 //        mRequestQueue.add(stringRequest);
+    }
+    private ArrayList<Report> parseReport(JSONObject jsonObject){
+        ArrayList<Report> reports = new ArrayList<>();
+        if(jsonObject!=null && jsonObject.length()!=0){
+            try{
+                JSONArray objectArray = jsonObject.getJSONArray("report");
+                for(int i = objectArray.length()-1;i>=0;i--){
+                    int pid = objectArray.getJSONObject(i).getInt("pid");
+                    int uid = objectArray.getJSONObject(i).getInt("uid");
+                    Report r = new Report(pid,uid);
+                    reports.add(r);
+                }
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+        }
+        return reports;
     }
     private ArrayList<Likes> parseLike(JSONObject jsonObject){
         ArrayList<Likes> likes = new ArrayList<>();

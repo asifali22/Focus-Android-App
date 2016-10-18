@@ -13,6 +13,7 @@ import com.hybrid.freeopensourceusers.Logging.L;
 import com.hybrid.freeopensourceusers.PojoClasses.CommentFeed;
 import com.hybrid.freeopensourceusers.PojoClasses.Likes;
 import com.hybrid.freeopensourceusers.PojoClasses.PostFeed;
+import com.hybrid.freeopensourceusers.PojoClasses.Report;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -31,6 +32,7 @@ public class DatabaseOperations extends SQLiteOpenHelper {
     User_Const user_const = new User_Const();
     Likes_Const likes_const = new Likes_Const();
     Comments_Const comments_const = new Comments_Const();
+    Report_Const report_const = new Report_Const();
     String create_html_test = "CREATE TABLE IF NOT EXISTS " + html_test_const.getTable_name() + "(" +
             html_test_const.getTitle() + " VARCHAR(50)," +
             html_test_const.getLink() + " VARCHAR(200)," +
@@ -71,6 +73,10 @@ public class DatabaseOperations extends SQLiteOpenHelper {
             search_suggestion_const.getSearchSLNo() + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             search_suggestion_const.getLastSearch() + " VARCHAR(100));";
 
+    String create_report = "CREATE TABLE "+report_const.getTable_name()+"("+
+            report_const.getPid()+" INTEGER,"+
+            report_const.getUid()+" INTEGER);";
+
 
 
     // Database Version
@@ -92,11 +98,37 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(create_like);
         sqLiteDatabase.execSQL(create_comment);
         sqLiteDatabase.execSQL(create_search);
+        sqLiteDatabase.execSQL(create_report);
     }
 
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+    }
+
+    public void insertReport(DatabaseOperations dop, ArrayList<Report> report,boolean clearPrevious){
+        SQLiteDatabase sqLiteDatabase = dop.getWritableDatabase();
+        if(clearPrevious){
+            if(isOnline()){
+                sqLiteDatabase.execSQL("delete from "+report_const.getTable_name());
+            }
+        }
+        for(int i=0;i<report.size();i++){
+            Report r = report.get(i);
+            sqLiteDatabase.execSQL("insert into "+report_const.getTable_name()+" values("+r.getPid()+","+r.getUid()+")");
+        }
+    }
+    public void addReportStatus(DatabaseOperations dop,int uid,int pid){
+        SQLiteDatabase sqLiteDatabase = dop.getWritableDatabase();
+        sqLiteDatabase.execSQL("insert into "+report_const.getTable_name()+" values("+pid+","+uid+")");
+        sqLiteDatabase.close();
+    }
+    public int reported(DatabaseOperations dop,int pid){
+        SQLiteDatabase sqLiteDatabase = dop.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from "+report_const.getTable_name()+" where "+report_const.getPid()+"="+pid,null);
+        if(cursor.getCount()==0)
+            return 0;
+        return 1;
     }
     public void insertLikes(DatabaseOperations dop, ArrayList<Likes> likes,boolean clearPrevious){
         SQLiteDatabase sqLiteDatabase = dop.getWritableDatabase();
@@ -183,6 +215,11 @@ public class DatabaseOperations extends SQLiteOpenHelper {
 
     }
 
+    public void deletePostbyPid(DatabaseOperations dop,int pid){
+        SQLiteDatabase sqLiteDatabase = dop.getWritableDatabase();
+        sqLiteDatabase.execSQL("delete from "+html_test_const.getTable_name()+" where "+html_test_const.getSr_key()+"="+pid);
+        sqLiteDatabase.close();
+    }
 
     public ArrayList<PostFeed> readPostData(DatabaseOperations dop){
         SQLiteDatabase sqLiteDatabase = dop.getReadableDatabase();
@@ -521,6 +558,27 @@ public class DatabaseOperations extends SQLiteOpenHelper {
 
         public void setTable_name(String table_name) {
             this.table_name = table_name;
+        }
+    }
+
+    public class Report_Const{
+        String uid = "uid";
+        String pid = "pid";
+        String table_name = "report";
+        Report_Const(){
+
+        }
+
+        public String getTable_name(){
+            return table_name;
+        }
+
+        public String getUid() {
+            return uid;
+        }
+
+        public String getPid() {
+            return pid;
         }
     }
 

@@ -99,6 +99,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
     private SharedPrefManager sharedPrefManager;
     Uri filePath;
     int flag_for_image=0;
+    ProgressDialog loading = null;
 
 
     @Override
@@ -153,6 +154,14 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
         requestQueue = volleySingleton.getRequestQueue();
         //Bundle extras = getIntent().getExtras();
         api_key = sharedPrefManager.getApiKey();//extras.getString("API_KEY");
+    }
+
+    @Override
+    public void onPause(){
+
+        super.onPause();
+        if(loading != null)
+            loading.dismiss();
     }
 
     /**
@@ -268,9 +277,10 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
 //                    .diskCacheStrategy(DiskCacheStrategy.ALL)
 //                    .crossFade()
 //                    .into(linkPhoto);
-
+                if(finalDesc!=null)
                 finalDesc = finalDesc.trim();
-                if (finalDesc.isEmpty() || finalDesc == null || finalDesc.equals(""))
+
+                if ( finalDesc == null || finalDesc.isEmpty() || finalDesc.equals(""))
                     finalDesc = title;
 
                 runOnUiThread(new Runnable() {
@@ -807,7 +817,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
 
     private class BackGroundTask extends AsyncTask<String, Integer, String> {
 
-        ProgressDialog loading = null;
+
 
         @Override
         protected void onPreExecute() {

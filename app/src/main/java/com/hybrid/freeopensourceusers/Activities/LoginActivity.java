@@ -187,10 +187,15 @@ public class LoginActivity extends AppCompatActivity implements
                                                     String api_key = jsonObject.get("api_key").toString();
                                                     String fcm_token = jsonObject.get("fcm_token").toString();
                                                     String su_user = jsonObject.get("su_user").toString();
+                                                    String user_pic = jsonObject.get("user_pic").toString();
+                                                    String uid = jsonObject.get("user_id").toString();
+                                                    int user_id = Integer.parseInt(uid);
 
-                                                    sharedPrefManager.setUserStatusOnLogin(user_name, user_email, api_key, fcm_token,su_user);
+                                                    sharedPrefManager.setUserStatusOnLogin(user_name, user_email, api_key, fcm_token,su_user,user_pic,user_id);
                                                     Toast.makeText(LoginActivity.this, "Welcome " + user_name, Toast.LENGTH_LONG).show();
-                                                    startActivity(new Intent(LoginActivity.this, FirstActivity.class));
+                                                    Intent i = new Intent(LoginActivity.this, FirstActivity.class);
+                                                    i.putExtra("login_intent",true);
+                                                    startActivity(i);
                                                     finish();
                                                 } catch (JSONException e) {
 //                                                    Toast.makeText(LoginActivity.this,"CATCH",Toast.LENGTH_LONG).show();
@@ -283,10 +288,15 @@ public class LoginActivity extends AppCompatActivity implements
                                     String api_key = jsonObject.get("apiKey").toString();
                                     String fcm_token = jsonObject.get("fcm_token").toString();
                                     String su_user = jsonObject.get("su_user").toString();
-                                    sharedPrefManager.setUserStatusOnLogin(user_name,user_email,api_key,fcm_token,su_user);
+                                    String user_pic = jsonObject.get("user_pic").toString();
+                                    String uid = jsonObject.get("user_id").toString();
+                                    int user_id = Integer.parseInt(uid);
+                                    sharedPrefManager.setUserStatusOnLogin(user_name,user_email,api_key,fcm_token,su_user,user_pic,user_id);
                                     Toast.makeText(LoginActivity.this, "Welcome " + jsonObject.get("name").toString(), Toast.LENGTH_LONG).show();
                                     hideProgressDialog();
-                                    startActivity(new Intent(LoginActivity.this, FirstActivity.class));
+                                    Intent i = new Intent(LoginActivity.this, FirstActivity.class);
+                                    i.putExtra("login_intent",true);
+                                    startActivity(i);
                                     finish();
                                 } catch (JSONException e) {
 //                                    Toast.makeText(LoginActivity.this,"CATCH",Toast.LENGTH_LONG).show();
@@ -449,9 +459,14 @@ public class LoginActivity extends AppCompatActivity implements
                                     String api_key = jsonObject.get("api_key").toString();
                                     String fcm_token = jsonObject.get("fcm_token").toString();
                                     String su_user = jsonObject.get("su_user").toString();
-                                    sharedPrefManager.setUserStatusOnLogin(user_name,user_email,api_key,fcm_token,su_user);
+                                    String user_pic = jsonObject.get("user_pic").toString();
+                                    String uid = jsonObject.get("user_id").toString();
+                                    int user_id = Integer.parseInt(uid);
+                                    sharedPrefManager.setUserStatusOnLogin(user_name,user_email,api_key,fcm_token,su_user,user_pic,user_id);
                                     Toast.makeText(LoginActivity.this, "Welcome " + acct.getDisplayName(), Toast.LENGTH_LONG).show();
-                                    startActivity(new Intent(LoginActivity.this, FirstActivity.class));
+                                    Intent i = new Intent(LoginActivity.this, FirstActivity.class);
+                                    i.putExtra("login_intent",true);
+                                    startActivity(i);
                                     finish();
                                 } catch (JSONException e) {
 //                                    Toast.makeText(LoginActivity.this,"CATCH",Toast.LENGTH_LONG).show();

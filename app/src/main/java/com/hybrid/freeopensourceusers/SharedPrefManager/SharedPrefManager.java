@@ -49,7 +49,7 @@ public class SharedPrefManager {
         sharedPreferences.edit().putBoolean("logged_in", status).apply();
     }
 
-    public void setUserStatusOnLogin(String user_name,String user_email,String api_key,String fcm_token,String su_user){
+    public void setUserStatusOnLogin(String user_name,String user_email,String api_key,String fcm_token,String su_user,String user_pic,int user_id){
 
         sharedPreferences.edit().putString("user_name", user_name).apply();
         sharedPreferences.edit().putString("user_email", user_email).apply();
@@ -57,6 +57,13 @@ public class SharedPrefManager {
         sharedPreferences.edit().putString("fcm_token", fcm_token).apply();
         sharedPreferences.edit().putBoolean("logged_in", true).apply();
         sharedPreferences.edit().putString("su_user",su_user).apply();
+        sharedPreferences.edit().putString("user_pic",user_pic).apply();
+        sharedPreferences.edit().putInt("user_id",user_id).apply();
+    }
+
+    public int getUser_id(){
+        int user_id = sharedPreferences.getInt("user_id",0);
+        return user_id;
     }
 
     public String getSu_User(){
