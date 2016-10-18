@@ -51,13 +51,16 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.Callback.FabClickListener;
+import com.hybrid.freeopensourceusers.Callback.PostFeedLoadingListener;
 import com.hybrid.freeopensourceusers.Callback.TabClickListener;
+import com.hybrid.freeopensourceusers.PojoClasses.PostFeed;
 import com.hybrid.freeopensourceusers.R;
 import com.hybrid.freeopensourceusers.Fragments.SessionFragment;
 import com.hybrid.freeopensourceusers.Fragments.TrendingFragment;
 import com.hybrid.freeopensourceusers.SearchStuffs.SearchableProvider;
 import com.hybrid.freeopensourceusers.Services.MyFireBaseInstanceIdService;
 import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
+import com.hybrid.freeopensourceusers.Task.TaskLoadPostFeed;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
 
 
@@ -73,7 +76,7 @@ import java.util.Map;
 
 public class FirstActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
-        View.OnClickListener {
+        View.OnClickListener,PostFeedLoadingListener {
 
     private MyApplication myApplication;
     private ViewPager mViewPager ;
@@ -87,11 +90,16 @@ public class FirstActivity extends AppCompatActivity implements
     private VolleySingleton volleySingleton;
     private SharedPrefManager sharedPrefManager;
     private AppBarLayout appBarLayout;
+    private Bundle b = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
+        b = getIntent().getExtras();
+        if(b!=null)
+        if(b.getBoolean("login_intent",false)==true)
+            new TaskLoadPostFeed(this).execute();
 
         myApplication = MyApplication.getInstance();
         volleySingleton = VolleySingleton.getInstance();
@@ -131,7 +139,7 @@ public class FirstActivity extends AppCompatActivity implements
         mToolbar   =    (Toolbar) findViewById(R.id.m_toolbar);
         appBarLayout = (AppBarLayout) findViewById(R.id.appbar_layoutFirstAcitivty);
         mViewPager =    (ViewPager) findViewById(R.id.m_viewpager);
-        mTabLayout =    (TabLayout) ssfindViewById(R.id.tab_layout);
+        mTabLayout =    (TabLayout) findViewById(R.id.tab_layout);
 
         mFab       =    (FloatingActionButton) findViewById(R.id.fabButton);
         mFab.setOnClickListener(this);
@@ -178,6 +186,11 @@ public class FirstActivity extends AppCompatActivity implements
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onPostFeedLoaded(ArrayList<PostFeed> newsFeedLists) {
 
     }
 

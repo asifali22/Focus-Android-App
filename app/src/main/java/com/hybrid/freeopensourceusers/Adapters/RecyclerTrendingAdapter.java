@@ -363,7 +363,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
         holder.post_body.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                showDeleteReportDialog(v);
+                showDeleteReportDialog(v,postFeed.getUid(),postFeed.getPid());
                 return true;
             }
         });
@@ -580,15 +580,19 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
 
 
 
-    public void showDeleteReportDialog(final View view) {
+    public void showDeleteReportDialog(final View view,int uid,final int pid) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(view.getContext());
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 view.getContext(),
                 R.layout.dialog_delete_report);
-
+        if(sharedPrefManager.getUser_id()==uid)
         arrayAdapter.add("Delete");
+        DatabaseOperations dop = new DatabaseOperations(MyApplication.getAppContext());
+        if(dop.reported(dop,pid)==0)
         arrayAdapter.add("Report");
+        else
+        arrayAdapter.add("Already Reported.");
 
         builderSingle.setAdapter(
                 arrayAdapter,
@@ -596,10 +600,114 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String strName = arrayAdapter.getItem(which);
-                        Toast.makeText(myApplication.getApplicationContext(), strName, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(myApplication.getApplicationContext(), strName, Toast.LENGTH_SHORT).show();
+                        if(strName.equals("Delete"))
+                            deletePost(pid);
+                        else if(strName.equals("Already Reported."))
+                            Toast.makeText(context,"You have already reported this post.",Toast.LENGTH_LONG).show();
+                        else if(strName.equals("Report"))
+                            reportPost(pid);
                     }
                 });
         builderSingle.show();
+
+    }
+
+    public void reportPost(final int pid){
+        String URL = Utility.getIPADDRESS()+"reportPost";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try{
+                    JSONObject jsonObject = new JSONObject(response);
+                    if(jsonObject.getBoolean("error")==false) {
+                            dop.addReportStatus(dop,sharedPrefManager.getUser_id(),pid);
+                            Toast.makeText(context,jsonObject.getString("message").toString(),Toast.LENGTH_LONG).show();
+                            if(jsonObject.getBoolean("deletepost")==true){
+                                dop.deletePostbyPid(dop,pid);
+                                newsFeedArrayList=dop.readPostData(dop);
+                                notifyDataSetChanged();
+                            }
+                    }
+                    else{
+                        Toast.makeText(context,"Report request could not be registered.",Toast.LENGTH_SHORT).show();
+                    }
+
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context,"Something went wrong. Try after sometime.",Toast.LENGTH_LONG).show();
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", sharedPrefManager.getApiKey());
+                return params;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("pid", Integer.toString(pid));
+                return params;
+            }
+        };
+        requestQueue.add(stringRequest);
+    }
+
+    public void deletePost(final int pid){
+        String URL = Utility.getIPADDRESS()+"deletePost";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                    try{
+                        JSONObject jsonObject = new JSONObject(response);
+                        if(jsonObject.getBoolean("error")==false) {
+                            dop.deletePostbyPid(dop, pid);
+                            newsFeedArrayList = dop.readPostData(dop);
+                            notifyDataSetChanged();
+                            Toast.makeText(context,"Post Deleted.",Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            Toast.makeText(context,"Post could not be deleted.",Toast.LENGTH_SHORT).show();
+                        }
+
+                    }catch(JSONException e){
+                        e.printStackTrace();
+                    }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", sharedPrefManager.getApiKey());
+                return params;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("pid", Integer.toString(pid));
+                return params;
+            }
+
+        };
+        requestQueue.add(stringRequest);
 
     }
 
