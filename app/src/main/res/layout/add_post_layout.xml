@@ -131,7 +131,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
                             android:layout_margin="8dp"
-                            android:background="@color/colorPrimary"
+                            android:background="@drawable/round_rectangle_drawable"
                             android:padding="8dp"
                             android:text="Custom?"
                             android:textColor="@android:color/white" />

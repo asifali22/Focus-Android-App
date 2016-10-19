@@ -120,11 +120,13 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
             holder.post_description.setText(postFeed.getDescription());
             holder.postDescriptionNOImage.setText(postFeed.getDescription());
             holder.post_descriptionCustom.setText(postFeed.getDescription());
+            holder.post_descriptionBelowImage.setText(postFeed.getDescription());
         }
         else {
             holder.post_description.setText(postFeed.getTitle());
             holder.postDescriptionNOImage.setText(postFeed.getTitle());
             holder.post_descriptionCustom.setText(postFeed.getTitle());
+            holder.post_descriptionBelowImage.setText(postFeed.getTitle());
         }
         holder.like_count.setText(postFeed.getUp() + "");
         holder.comment_count.setText(postFeed.getComment_count() + "");
@@ -191,6 +193,16 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                 holder.post_description.setVisibility(View.VISIBLE);
                 holder.post_descriptionCustom.setVisibility(View.GONE);
             }
+        }
+
+        if (postFeed.getUid() == 64){
+            holder.post_header.setVisibility(View.GONE);
+            holder.post_description.setVisibility(View.GONE);
+            holder.post_descriptionBelowImage.setVisibility(View.VISIBLE);
+        }else{
+            holder.post_header.setVisibility(View.VISIBLE);
+            holder.post_description.setVisibility(View.VISIBLE);
+            holder.post_descriptionBelowImage.setVisibility(View.GONE);
         }
 
         holder.post_body.setOnClickListener(new View.OnClickListener() {
@@ -548,7 +560,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
     public static class ViewholderPostFeed extends RecyclerView.ViewHolder {
 
         public CircleImageView circleImageView;
-        public TextView user_name, user_share_time,post_descriptionCustom, post_title, post_description, like_count, comment_count, postTitleNoImage, postDescriptionNOImage;
+        public TextView user_name, user_share_time,post_descriptionCustom, post_title, post_description, like_count, comment_count, postTitleNoImage, postDescriptionNOImage,post_descriptionBelowImage;
         public ImageView post_pic, comment_button;
         public RelativeLayout post_header;
         public LinearLayout post_body, postBodyNoImage;
@@ -575,6 +587,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
             postDescriptionNOImage = (TextView) itemView.findViewById(R.id.post_descriptionForNoImage);
             postBodyNoImage = (LinearLayout) itemView.findViewById(R.id.post_bodyForNoImage);
             post_descriptionCustom = (TextView) itemView.findViewById(R.id.post_descriptionCustom);
+            post_descriptionBelowImage = (TextView) itemView.findViewById(R.id.post_descriptionBelowImage);
         }
 
 

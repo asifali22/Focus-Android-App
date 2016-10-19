@@ -143,7 +143,7 @@
                 android:gravity="center"
                 android:lineSpacingExtra="1.6sp"
                 android:maxLines="3"
-                android:paddingBottom="8dp"
+                android:paddingBottom="24dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingTop="8dp"
@@ -154,7 +154,6 @@
             <android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="16dp"
                 android:gravity="center">
 
 
@@ -184,6 +183,25 @@
                     android:textColor="@android:color/white" />
 
             </android.support.percent.PercentRelativeLayout>
+
+            <TextView
+                android:id="@+id/post_descriptionBelowImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:ellipsize="end"
+                android:visibility="gone"
+                android:fontFamily="sans-serif"
+                android:gravity="center"
+                android:lineSpacingExtra="1.6sp"
+                android:maxLines="3"
+                android:paddingBottom="8dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="8dp"
+                android:text="Description"
+                android:textAppearance="@android:style/TextAppearance.SearchResult.Subtitle"
+                android:textColor="#cc000000" />
         </LinearLayout>
 
         <RelativeLayout

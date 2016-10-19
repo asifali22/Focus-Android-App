@@ -36,6 +36,7 @@ import android.widget.EdgeEffect;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -100,7 +101,6 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
     private Uri filePath;
     private int flag_for_image=0;
     private ProgressDialog loading = null;
-
 
 
     @Override
@@ -192,6 +192,8 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
         // When image URI is not null
         if (imageUri != null) {
 
+            tintSystemBars();
+            revealLayout.setVisibility(View.VISIBLE);
             // Update UI to reflect image being shared
             linkPhoto.setImageURI(imageUri);
         } else {
@@ -259,7 +261,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
         final String userImageText = sharedPrefManager.getUserImage();
         final String userName = sharedPrefManager.getUserName();
         if (flag == 1) {
-            if (!input.equals("")) {
+            if (!input.isEmpty()) {
                 int start = input.indexOf("http");
                 int end = 0;
                 while (end < start) {
@@ -326,10 +328,12 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
         final AlertDialog myDialog = new AlertDialog.Builder(this).create();
 
         CircleImageView circleImageView;
-        TextView user_name, post_title, post_description, like_count, comment_count;
+        TextView user_name, post_title, post_description, like_count, comment_count,postTitleNoImage, postDescriptionNOImage,post_descriptionCustom;
         ImageView post_pic;
         TextView addButton, cancelButton;
         LikeButton plus_like, minus_dislike;
+        LinearLayout post_body, postBodyNoImage;
+
 
 
 
@@ -344,6 +348,11 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
         cancelButton = (TextView) dialogMainView.findViewById(R.id.cancelButtonDialog);
         plus_like = (LikeButton) dialogMainView.findViewById(R.id.plus_like);
         minus_dislike = (LikeButton) dialogMainView.findViewById(R.id.minus_dislike);
+        post_body = (LinearLayout) dialogMainView.findViewById(R.id.post_body);
+        postTitleNoImage = (TextView) dialogMainView.findViewById(R.id.post_titleForNoImage);
+        postDescriptionNOImage = (TextView) dialogMainView.findViewById(R.id.post_descriptionForNoImage);
+        postBodyNoImage = (LinearLayout) dialogMainView.findViewById(R.id.post_bodyForNoImage);
+        post_descriptionCustom = (TextView) dialogMainView.findViewById(R.id.post_descriptionCustom);
 
 
         myDialog.setView(dialogMainView);
@@ -357,11 +366,8 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                 .error(myTextDrawable.setTextDrawableForError("Error!"))
                 .crossFade()
                 .into(post_pic);
-        else if (flag ==2 ) {
-
+        else if (flag ==2)
                 post_pic.setImageBitmap(bitmap);
-
-        }
 
 
         if (userImageText.isEmpty())
@@ -377,12 +383,35 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
 
         user_name.setText(userName);
         post_title.setText(title);
+        postTitleNoImage.setText(title);
+        postDescriptionNOImage.setText(finalDesc);
+        post_descriptionCustom.setText(finalDesc);
         post_description.setText(finalDesc);
         like_count.setText("0");
         comment_count.setText("0");
         plus_like.setEnabled(false);
         minus_dislike.setEnabled(false);
 
+        if (flag==1) {
+
+            if (!getImageUrl.trim().isEmpty()) {
+                post_body.setVisibility(View.VISIBLE);
+                postBodyNoImage.setVisibility(View.GONE);
+            } else {
+                post_body.setVisibility(View.GONE);
+                postBodyNoImage.setVisibility(View.VISIBLE);
+            }
+        }
+
+        if (flag==2) {
+            if (flag_for_image == 0) {
+                    post_body.setVisibility(View.GONE);
+                    postBodyNoImage.setVisibility(View.VISIBLE);
+            } else if ( flag_for_image == 1) {
+                post_body.setVisibility(View.VISIBLE);
+                postBodyNoImage.setVisibility(View.GONE);
+            }
+        }
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -683,7 +712,6 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
-
                         advancedButton.setText("Simple?");
                     }
                 });
