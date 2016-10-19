@@ -590,7 +590,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
 
 
     public void showDeleteReportDialog(final View view,int uid,final int pid) {
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(view.getContext());
+        final AlertDialog.Builder builderSingle = new AlertDialog.Builder(view.getContext());
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 view.getContext(),
@@ -601,7 +601,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
         if(dop.reported(dop,pid)==0)
         arrayAdapter.add("Report");
         else
-        arrayAdapter.add("Already Reported.");
+        arrayAdapter.add("Already reported");
 
         builderSingle.setAdapter(
                 arrayAdapter,
@@ -609,11 +609,24 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String strName = arrayAdapter.getItem(which);
-                        //Toast.makeText(myApplication.getApplicationContext(), strName, Toast.LENGTH_SHORT).show();
-                        if(strName.equals("Delete"))
-                            deletePost(pid);
-                        else if(strName.equals("Already Reported."))
-                            Toast.makeText(context,"You have already reported this post.",Toast.LENGTH_LONG).show();
+                        if(strName.equals("Delete")) {
+                            new AlertDialog.Builder(view.getContext())
+                                    .setTitle("Delete post")
+                                    .setMessage("Are you sure you want to delete this post?")
+                                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            deletePost(pid);
+                                        }
+                                    })
+                                    .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // do nothing
+                                        }
+                                    })
+                                    .show();
+                        }
+                        else if(strName.equals("Already reported"))
+                            Toast.makeText(context,"You have already reported this post",Toast.LENGTH_LONG).show();
                         else if(strName.equals("Report"))
                             reportPost(pid);
                     }
@@ -630,17 +643,17 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
             public void onResponse(String response) {
                 try{
                     JSONObject jsonObject = new JSONObject(response);
-                    if(jsonObject.getBoolean("error")==false) {
+                    if(!jsonObject.getBoolean("error")) {
                             dop.addReportStatus(dop,sharedPrefManager.getUser_id(),pid);
-                            Toast.makeText(context,jsonObject.getString("message").toString(),Toast.LENGTH_LONG).show();
-                            if(jsonObject.getBoolean("deletepost")==true){
+                            Toast.makeText(context,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                            if(jsonObject.getBoolean("deletepost")){
                                 dop.deletePostbyPid(dop,pid);
                                 newsFeedArrayList=dop.readPostData(dop);
                                 notifyDataSetChanged();
                             }
                     }
                     else{
-                        Toast.makeText(context,"Report request could not be registered.",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,"Report request could not be registered",Toast.LENGTH_SHORT).show();
                     }
 
                 }catch(JSONException e){
@@ -651,7 +664,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context,"Something went wrong. Try after sometime.",Toast.LENGTH_LONG).show();
+                Toast.makeText(context,"Something went wrong. Try after sometime",Toast.LENGTH_LONG).show();
             }
         }) {
 
@@ -680,14 +693,14 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
             public void onResponse(String response) {
                     try{
                         JSONObject jsonObject = new JSONObject(response);
-                        if(jsonObject.getBoolean("error")==false) {
+                        if(!jsonObject.getBoolean("error")) {
                             dop.deletePostbyPid(dop, pid);
                             newsFeedArrayList = dop.readPostData(dop);
                             notifyDataSetChanged();
-                            Toast.makeText(context,"Post Deleted.",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context,"Post Deleted",Toast.LENGTH_SHORT).show();
                         }
                         else{
-                            Toast.makeText(context,"Post could not be deleted.",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context,"Post could not be deleted",Toast.LENGTH_SHORT).show();
                         }
 
                     }catch(JSONException e){
@@ -843,6 +856,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
         }
         return likes;
     }
+
 
 
 }

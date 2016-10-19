@@ -51,6 +51,7 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:9.4.0'
     compile 'com.isseiaoki:simplecropview:1.1.0'
     compile 'jp.wasabeef:recyclerview-animators:2.2.4'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha5'
     testCompile 'junit:junit:4.12'
 }
 apply plugin: 'com.google.gms.google-services'

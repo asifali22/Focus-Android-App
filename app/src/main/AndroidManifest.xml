@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
 
     <application
         android:name=".ApplicationContext.MyApplication"
@@ -71,7 +71,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.LoginActivity" />
-        <activity android:name=".Activities.Comment_Actiivity"></activity>
+        <activity android:name=".Activities.Comment_Actiivity" />
         <activity android:name=".Activities.WebViewActivity" />
         <activity
             android:name=".UserProfileStuff.UserProfile"
@@ -91,10 +91,10 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".Activities.new_session_add"
+        <activity
+            android:name=".Activities.new_session_add"
             android:theme="@style/SessionFitSystem"
-            android:windowSoftInputMode="adjustPan"
-            />
+            android:windowSoftInputMode="adjustPan" />
 
         <service android:name=".Services.MyFirebaseMessagingService">
             <intent-filter>
@@ -121,7 +121,11 @@
             <!-- android:value=".Activities.FirstActivity"/> -->
 
         </activity>
-        <activity android:name=".UserProfileStuff.UserPostAndSessionActivity"></activity>
+        <activity android:name=".UserProfileStuff.UserPostAndSessionActivity" />
+        <activity android:name=".UserProfileStuff.EditProfile" />
+        <activity
+            android:name=".UserProfileStuff.UserProfileOwner"
+            android:theme="@style/UserProfileTheme"></activity>
     </application>
 
 </manifest>

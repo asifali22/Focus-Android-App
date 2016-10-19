@@ -10,6 +10,11 @@
         android:icon="@drawable/ic_clear"/>
 
     <item
+        android:id="@+id/action_settings_open_userProfile"
+        android:title="Profile"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_settings_logged_out"
         android:orderInCategory="100"
         android:title="Logout"

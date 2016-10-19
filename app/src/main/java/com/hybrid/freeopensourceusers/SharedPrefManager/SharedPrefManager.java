@@ -49,7 +49,7 @@ public class SharedPrefManager {
         sharedPreferences.edit().putBoolean("logged_in", status).apply();
     }
 
-    public void setUserStatusOnLogin(String user_name,String user_email,String api_key,String fcm_token,String su_user,String user_pic,int user_id){
+    public void setUserStatusOnLogin(String user_name,String user_email,String api_key,String fcm_token,String su_user,String user_pic,int user_id, String user_status){
 
         sharedPreferences.edit().putString("user_name", user_name).apply();
         sharedPreferences.edit().putString("user_email", user_email).apply();
@@ -59,12 +59,30 @@ public class SharedPrefManager {
         sharedPreferences.edit().putString("su_user",su_user).apply();
         sharedPreferences.edit().putString("user_pic",user_pic).apply();
         sharedPreferences.edit().putInt("user_id",user_id).apply();
+        sharedPreferences.edit().putString("user_status",user_status).apply();
     }
 
     public int getUser_id(){
         int user_id = sharedPreferences.getInt("user_id",0);
         return user_id;
     }
+
+    public String getUserEmail(){
+        String userEmail = sharedPreferences.getString("user_email", null);
+        if (!userEmail.isEmpty())
+            return userEmail;
+        else
+            return null;
+    }
+
+    public String getUserStatus(){
+        String userStatus = sharedPreferences.getString("user_status", null);
+        if (!userStatus.isEmpty())
+            return userStatus;
+        else
+            return null;
+    }
+
 
     public String getUserImage(){
         String userImage = sharedPreferences.getString("user_pic", null);

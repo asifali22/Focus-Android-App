@@ -1,29 +1,19 @@
 package com.hybrid.freeopensourceusers.UserProfileStuff;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.media.Image;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.transition.Transition;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,11 +26,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
-
-import com.hybrid.freeopensourceusers.Activities.session_details;
-import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
+import com.hybrid.freeopensourceusers.Activities.new_session_add;
 import com.hybrid.freeopensourceusers.R;
-
 import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
 import com.hybrid.freeopensourceusers.Utility.MyTextDrawable;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
@@ -55,8 +42,7 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-
-public class UserProfile extends AppCompatActivity
+public class UserProfileOwner extends AppCompatActivity
         implements AppBarLayout.OnOffsetChangedListener {
 
     private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR  = 0.9f;
@@ -74,37 +60,37 @@ public class UserProfile extends AppCompatActivity
     private int userID;
     private CircleImageView avatar;
     private ImageView timeLine;
-    private VolleySingleton volleySingleton;
-    private RequestQueue requestQueue;
+   // private VolleySingleton volleySingleton;
+   // private RequestQueue requestQueue;
     private CoordinatorLayout coordinatorLayout;
     private SharedPrefManager sharedPrefManager;
     static private String mail;
-    private ImageView mailButton;
+  //  private ImageView mailButton;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_profile);
+        setContentView(R.layout.activity_user_profile_owner);
 
         bindActivity();
 
-        volleySingleton = VolleySingleton.getInstance();
-        requestQueue = volleySingleton.getRequestQueue();
         sharedPrefManager = new SharedPrefManager(this);
 
-        Bundle bundle = getIntent().getExtras();
-        userID = bundle.getInt("UID");
-        name = bundle.getString("NAME");
-        profilepic = bundle.getString("PIC");
-        status = bundle.getString("STATUS");
+        userID = sharedPrefManager.getUser_id();
+        name = sharedPrefManager.getUserName();
+        profilepic = sharedPrefManager.getUserImage();
+        status = sharedPrefManager.getUserStatus();
 
         mTitle.setText(name);
         mTitleBehindPhoto.setText(name);
         mStatus.setText(status);
-
-        mFeed.setText(name + "'s feed");
-
+        mFeed.setText("Feed");
+        if(sharedPrefManager.getSu_User().equals("1")) {
+           su_user.setText("Coordinator");
+        }
+        else
+            su_user.setText("Member");
         MyTextDrawable myTextDrawable = new MyTextDrawable();
 
         Glide.with(this)
@@ -132,113 +118,11 @@ public class UserProfile extends AppCompatActivity
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                letsFetchData();
-
+                Snackbar.make(coordinatorLayout,"You are logged in as "+sharedPrefManager.getUserEmail(),Snackbar.LENGTH_SHORT).show();
             }
         }, 1000);
 
 
-
-
-    }
-
-    private void letsFetchData() {
-        String UPLOAD_URL = "http://focusvce.com/api/v1/userDetails";
-      //  final ProgressDialog loading = ProgressDialog.show(UserProfile.this, "Updating...", "Please wait...", false, false);
-        Snackbar.make(coordinatorLayout,"Refreshing...", Snackbar.LENGTH_SHORT).show();
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String s) {
-                        //Disimissing the progress dialog
-                        //    loading.dismiss();
-                        Snackbar.make(coordinatorLayout,"Updating...", Snackbar.LENGTH_SHORT).show();
-                        JSONObject jsonObject = null;
-                        try {
-                            jsonObject = new JSONObject(s);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            if (!jsonObject.getBoolean("error")){
-                                JSONArray jsonArray = jsonObject.getJSONArray("user_details");
-                                JSONObject finalObject = jsonArray.getJSONObject(0);
-                                String u_status = finalObject.getString("user_status");
-                                String about_user = finalObject.getString("about_user");
-                                String memORCo = finalObject.getString("su_user");
-                                String aoi = finalObject.getString("aoi");
-                                String org = finalObject.getString("organisation");
-                                mail = finalObject.getString("user_email");
-
-                                mailButton.setClickable(true);
-
-                                if (about_user.isEmpty())
-                                    user_desc.setHint("Description not available");
-                                else
-                                    user_desc.setText(about_user);
-
-                                mStatus.setText(u_status);
-
-                                if (memORCo.equals("0"))
-                                    su_user.setText("Member");
-                                else
-                                    su_user.setText("Coordinator");
-
-                                if (aoi.isEmpty())
-                                    areaOfInterest.setHint("Not available");
-                                else
-                                    areaOfInterest.setText(aoi+"");
-                                if (org.isEmpty())
-                                    organisation.setHint("Not available");
-                                else
-                                    organisation.setText(org);
-
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        //Showing toast message of the response
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        //Dismissing the progress dialog
-                     //   loading.dismiss();
-
-                        //Showing toast
-                        Snackbar.make(coordinatorLayout,"Failed to update : Try again",Snackbar.LENGTH_SHORT).show();
-                       mailButton.setClickable(false);
-                        Log.e("Error", volleyError.toString());
-                    }
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("Authorization", sharedPrefManager.getApiKey() + "");
-                return params;
-            }@Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                //Converting Bitmap to String
-
-
-                //Creating parameters
-                Map<String, String> params = new Hashtable<>();
-
-
-
-                params.put("user_id", userID+"");
-
-
-                //returning parameters
-                return params;
-            }
-        };
-
-
-        requestQueue.add(stringRequest);
 
 
     }
@@ -258,7 +142,6 @@ public class UserProfile extends AppCompatActivity
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorUserProfileMain);
         areaOfInterest = (TextView) findViewById(R.id.user_Interest);
         organisation = (TextView) findViewById(R.id.user_organisation);
-        mailButton = (ImageView) findViewById(R.id.mailButtonUserProfile);
     }
 
 
@@ -322,12 +205,21 @@ public class UserProfile extends AppCompatActivity
         startActivity(intent);
     }
 
-    public void mailButtonClicked(View v) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:" + mail));
-        startActivity(intent);
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_user_profile, menu);
+        return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
 
-
+        switch (id){
+            case R.id.action_edit:
+                startActivity(new Intent(this, EditProfile.class));
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
-

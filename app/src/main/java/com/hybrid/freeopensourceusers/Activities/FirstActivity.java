@@ -61,6 +61,7 @@ import com.hybrid.freeopensourceusers.SearchStuffs.SearchableProvider;
 import com.hybrid.freeopensourceusers.Services.MyFireBaseInstanceIdService;
 import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
 import com.hybrid.freeopensourceusers.Task.TaskLoadPostFeed;
+import com.hybrid.freeopensourceusers.UserProfileStuff.UserProfileOwner;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
 
 
@@ -254,6 +255,10 @@ public class FirstActivity extends AppCompatActivity implements
             case R.id.clearSuggestion:
                 SearchRecentSuggestions searchRecentSuggestions = new SearchRecentSuggestions(this, SearchableProvider.AUTHORITY,SearchableProvider.MODE);
                 searchRecentSuggestions.clearHistory();
+                break;
+            case R.id.action_settings_open_userProfile:
+                startActivity(new Intent(this, UserProfileOwner.class));
+                break;
 
         }
 
