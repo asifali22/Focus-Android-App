@@ -1,14 +1,17 @@
 package com.hybrid.freeopensourceusers.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -17,6 +20,10 @@ import android.widget.TextView;
 import com.android.volley.RequestQueue;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.facebook.FacebookSdk;
+import com.facebook.share.model.ShareContent;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.hybrid.freeopensourceusers.Activities.Comment_Actiivity;
 import com.hybrid.freeopensourceusers.Activities.LoginActivity;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
@@ -61,6 +68,7 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
         this.context=context;
         sharedPrefManager = new SharedPrefManager(context);
         setCallback(clickCallback);
+        FacebookSdk.sdkInitialize(myApplication.getApplicationContext());
     }
     public void setFeed(ArrayList<SessionFeed> newsFeedArrayList) {
         this.sessiofeedArrayList = newsFeedArrayList;
@@ -155,25 +163,77 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
         holder.session_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "Hello Folks...\nBelow are the details of yet another GLUG session" +
-                        "\n\nSession:"+sessionFeed.getSession_title()+
-                        "\n\nDescription:"+sessionFeed.getSession_description()+
-                        "\n\nVenue:"+sessionFeed.getS_venue()+
-                        "\n\nCoordinator:"+sessionFeed.getS_coordinator()+
-                        "\n\nCoordinator's Email:"+sessionFeed.getS_c_email()+
-                        "\n\nCoordinator's Phone:"+sessionFeed.getS_c_phone()+
-                        "\n\nResource Person:"+sessionFeed.getResource_person()+
-                        "\n\nDesignation:"+sessionFeed.getRp_desg()+
-                        "\n\nTime:"+sessionFeed.getTime_and_date()+
-                        "\n\nAddress:"+sessionFeed.getAddress()+
-                        "\n\nRoom:"+sessionFeed.getRoom()+
-                        "\n\nThank you - shared via FOCUS App, download now @link ");
-                sendIntent.setType("text/plain");
-                context.startActivity(Intent.createChooser(sendIntent, "Share via..."));
+
+                AlertDialog.Builder builderSingle = new AlertDialog.Builder(view.getContext());
+
+                final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                        view.getContext(),
+                        R.layout.dialog_delete_report);
+
+                arrayAdapter.add("Facebook");
+                arrayAdapter.add("Share with other apps");
+
+
+                builderSingle.setAdapter(
+                        arrayAdapter,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String strName = arrayAdapter.getItem(which);
+                                //Toast.makeText(myApplication.getApplicationContext(), strName, Toast.LENGTH_SHORT).show();
+                                if(strName.equals("Facebook")){
+                                    String desc = "Hello Folks...\nBelow are the details of yet another GLUG session" +
+                                            "\n\nSession:"+sessionFeed.getSession_title()+
+                                            "\n\nDescription:"+sessionFeed.getSession_description()+
+                                            "\n\nVenue:"+sessionFeed.getS_venue()+
+                                            "\n\nCoordinator:"+sessionFeed.getS_coordinator()+
+                                            "\n\nCoordinator's Email:"+sessionFeed.getS_c_email()+
+                                            "\n\nCoordinator's Phone:"+sessionFeed.getS_c_phone()+
+                                            "\n\nResource Person:"+sessionFeed.getResource_person()+
+                                            "\n\nDesignation:"+sessionFeed.getRp_desg()+
+                                            "\n\nTime:"+sessionFeed.getTime_and_date()+
+                                            "\n\nAddress:"+sessionFeed.getAddress()+
+                                            "\n\nRoom:"+sessionFeed.getRoom()+
+                                            "\n\nThank you - shared via FOCUS App, download now @link ";
+                                    ShareContent content = new ShareLinkContent.Builder().
+                                            setContentTitle(sessionFeed.getSession_title()).
+                                            setContentDescription(desc).
+                                            setContentUrl(Uri.parse(sessionFeed.getSession_image())).
+                                            setImageUrl(Uri.parse(sessionFeed.getSession_image())).
+                                            build();
+                                    Activity activity = (Activity) context;
+
+                                    ShareDialog shareDialog = new ShareDialog(activity);
+                                    shareDialog.show(content);
+                                }
+                                else if(strName.equals("Share with other apps")){
+                                    Intent sendIntent = new Intent();
+                                    sendIntent.setAction(Intent.ACTION_SEND);
+                                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Hello Folks...\nBelow are the details of yet another GLUG session" +
+                                            "\n\nSession:"+sessionFeed.getSession_title()+
+                                            "\n\nDescription:"+sessionFeed.getSession_description()+
+                                            "\n\nVenue:"+sessionFeed.getS_venue()+
+                                            "\n\nCoordinator:"+sessionFeed.getS_coordinator()+
+                                            "\n\nCoordinator's Email:"+sessionFeed.getS_c_email()+
+                                            "\n\nCoordinator's Phone:"+sessionFeed.getS_c_phone()+
+                                            "\n\nResource Person:"+sessionFeed.getResource_person()+
+                                            "\n\nDesignation:"+sessionFeed.getRp_desg()+
+                                            "\n\nTime:"+sessionFeed.getTime_and_date()+
+                                            "\n\nAddress:"+sessionFeed.getAddress()+
+                                            "\n\nRoom:"+sessionFeed.getRoom()+
+                                            "\n\nThank you - shared via FOCUS App, download now @link ");
+                                    sendIntent.setType("text/plain");
+                                    context.startActivity(Intent.createChooser(sendIntent, "Share via..."));
+                                }
+                            }
+                        });
+                builderSingle.show();
+
+
+
             }
         });
+
 
     }
 
