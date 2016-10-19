@@ -109,10 +109,11 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
                 new MaterialShowcaseView.Builder(getActivity())
                         .setTarget(viewholderPostFeed.getLikeDislikeContainer())
                         .setDismissText("GOT IT")
-                        .setContentText("\tLike or Dislike !! How it works?\n1)" +
+                        .setContentText("Like or Dislike !! How it works?\n\n1)" +
                                 " Like and Dislike works as their literal meaning says\n\n" +
                                 "2)" +
                                 " Simultaneous like and dislike results in last action, and vise-versa")
+                        .setShapePadding(0)
                         .setDelay(500) // optional but starting animations immediately in onCreate can make them choppy
                         .singleUse(LIKE1) // provide a unique ID used to ensure it is only shown once
                         .show();
