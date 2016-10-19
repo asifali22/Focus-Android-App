@@ -66,6 +66,14 @@ public class SharedPrefManager {
         return user_id;
     }
 
+    public String getUserImage(){
+        String userImage = sharedPreferences.getString("user_pic", null);
+        if (!userImage.isEmpty())
+            return userImage;
+        else
+            return null;
+    }
+
     public String getSu_User(){
         String su_user = sharedPreferences.getString("su_user",null);
         if(!su_user.isEmpty())

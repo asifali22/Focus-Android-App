@@ -97,9 +97,10 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
     private ScrollView simpleLayout;
     private AppCompatButton advancedButton;
     private SharedPrefManager sharedPrefManager;
-    Uri filePath;
-    int flag_for_image=0;
-    ProgressDialog loading = null;
+    private Uri filePath;
+    private int flag_for_image=0;
+    private ProgressDialog loading = null;
+
 
 
     @Override
@@ -199,51 +200,54 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
     }
 
     public String getUrl(String urll) {
+        Elements metaOgImage = null;
         connection = Jsoup.connect(urll).userAgent("Mozilla");
         try {
             document = connection.get();
+            if (!document.select("meta[property=og:image]").isEmpty())
+            metaOgImage = document.select("meta[property=og:image]");
+            if (metaOgImage.size() != 0 && metaOgImage != null) {
+                for (int i = 0; i < metaOgImage.size(); i++) {
+                    if (metaOgImage.get(i).attr("content") != "") {
+                        imgurl = metaOgImage.get(i).attr("content");
+                        break;
+                    } else
+                        continue;
+                }
+            } else if (imgurl == "" || imgurl == null) {
+                Elements pngs = document.select("img");
+                for (int i = 0; i < pngs.size(); i++) {
+                    if (pngs.get(i).attr("src") != "") {
+                        imgurl = pngs.get(i).attr("src");
+                        break;
+                    }
+                }
+            }
+
+            title = document.title();
+
+            desc = null;
+            Elements metaOgDescription = document.select("meta[property=og:description]");
+            if (metaOgDescription.size() != 0)
+                desc = metaOgDescription.get(0).attr("content");
+
+            if (desc != null) {
+                finalDesc = desc;
+            } else {
+                Elements metaDescription = document.select("meta[name=description]");
+                secondDesc = null;
+                if (metaDescription.size() != 0)
+                    secondDesc = metaDescription.get(0).attr("content");
+
+                if (secondDesc != null) {
+                    finalDesc = desc;
+                }
+
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Elements metaOgImage = document.select("meta[property=og:image]");
-        if (metaOgImage.size() != 0 && metaOgImage != null) {
-            for (int i = 0; i < metaOgImage.size(); i++) {
-                if (metaOgImage.get(i).attr("content") != "") {
-                    imgurl = metaOgImage.get(i).attr("content");
-                    break;
-                } else
-                    continue;
-            }
-        } else if (imgurl == "" || imgurl == null) {
-            Elements pngs = document.select("img");
-            for (int i = 0; i < pngs.size(); i++) {
-                if (pngs.get(i).attr("src") != "") {
-                    imgurl = pngs.get(i).attr("src");
-                    break;
-                }
-            }
-        }
 
-        title = document.title();
-
-        desc = null;
-        Elements metaOgDescription = document.select("meta[property=og:description]");
-        if (metaOgDescription.size() != 0)
-            desc = metaOgDescription.get(0).attr("content");
-
-        if (desc != null) {
-            finalDesc = desc;
-        } else {
-            Elements metaDescription = document.select("meta[name=description]");
-            secondDesc = null;
-            if (metaDescription.size() != 0)
-                secondDesc = metaDescription.get(0).attr("content");
-
-            if (secondDesc != null) {
-                finalDesc = desc;
-            }
-
-        }
 
 
         return imgurl;
@@ -252,6 +256,8 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
     public void submitButton() {
         isCLicked = true;
         input = user_input_link.getText().toString();
+        final String userImageText = sharedPrefManager.getUserImage();
+        final String userName = sharedPrefManager.getUserName();
         if (flag == 1) {
             if (!input.equals("")) {
                 int start = input.indexOf("http");
@@ -271,12 +277,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                 else
                     input = input.substring(0, input.length());
                 getImageUrl = getUrl(input);
-//            Glide.with(this)
-//                    .load(getImageUrl)
-//                    .centerCrop()
-//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                    .crossFade()
-//                    .into(linkPhoto);
+
                 if(finalDesc!=null)
                 finalDesc = finalDesc.trim();
 
@@ -286,7 +287,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        showDialog("", sharedPrefManager.getUserName(), title, finalDesc, getImageUrl);
+                        showDialog(userImageText, userName, title, finalDesc, getImageUrl);
                     }
                 });
 
@@ -300,7 +301,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            showDialog("", sharedPrefManager.getUserName(), title, desc, "");
+                            showDialog(userImageText, userName, title, desc, "");
                         }
                     });
 
@@ -309,9 +310,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                     input_title.setError("Title can't be empty");
                 else if (desc.isEmpty())
                     input_desc.setError("Description can't be empty");
-//                else if(bitmap == null) {
-//                    // handle this event for the post without images
-//                }
+
 
         }
 
