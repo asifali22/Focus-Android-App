@@ -33,34 +33,34 @@
                 android:id="@+id/user_profile_image"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:transitionName="profile"
                 android:layout_gravity="start"
                 android:layout_marginLeft="8dp"
-                android:src="@drawable/blank_person_final" />
+                android:src="@drawable/blank_person_final"
+                android:transitionName="profile" />
 
             <TextView
                 android:id="@+id/user.name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:fontFamily="sans-serif"
-                android:transitionName="user_name"
                 android:layout_toRightOf="@+id/user_profile_image"
                 android:ellipsize="end"
+                android:fontFamily="sans-serif"
                 android:maxLines="1"
                 android:text="Name"
                 android:textAppearance="@android:style/TextAppearance.Holo.Small"
                 android:textColor="#000"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:transitionName="user_name" />
 
             <TextView
                 android:id="@+id/user.share.time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/user.name"
-                android:fontFamily="sans-serif-condensed"
                 android:layout_marginLeft="8dp"
                 android:layout_toRightOf="@+id/user_profile_image"
+                android:fontFamily="sans-serif-condensed"
                 android:text="Day, Date @ Time"
                 android:textAppearance="@android:style/TextAppearance.Holo.Small"
                 android:textColor="#88000000"
@@ -69,25 +69,26 @@
 
         <LinearLayout
             android:id="@+id/post_bodyForNoImage"
-            android:visibility="gone"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:orientation="vertical"
-            android:layout_height="wrap_content">
+            android:visibility="gone">
+
             <TextView
                 android:id="@+id/post_titleForNoImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center"
                 android:maxLines="2"
                 android:paddingBottom="8dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:fontFamily="sans-serif-condensed"
                 android:paddingTop="8dp"
                 android:text="TITLE"
-                android:gravity="center"
                 android:textAppearance="@android:style/TextAppearance.Holo.SearchResult.Title"
                 android:textColor="@android:color/black" />
 
@@ -121,7 +122,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:visibility="gone"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:lineSpacingExtra="1.6sp"
@@ -131,7 +131,8 @@
                 android:paddingTop="8dp"
                 android:text="Description"
                 android:textAppearance="@android:style/TextAppearance.SearchResult.Subtitle"
-                android:textColor="#cc000000" />
+                android:textColor="#cc000000"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/post_description"
@@ -160,8 +161,8 @@
                 <ImageView
                     android:id="@+id/post_pic"
                     android:background="#e3e3e3"
-                    app:layout_aspectRatio="178%"
                     android:scaleType="centerCrop"
+                    app:layout_aspectRatio="178%"
                     app:layout_widthPercent="100%" />
 
                 <TextView
@@ -172,11 +173,11 @@
                     android:layout_gravity="bottom"
                     android:background="#99000000"
                     android:ellipsize="end"
+                    android:fontFamily="sans-serif-condensed"
                     android:maxLines="1"
                     android:paddingBottom="8dp"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
-                    android:fontFamily="sans-serif-condensed"
                     android:paddingTop="8dp"
                     android:text="TITLE"
                     android:textAppearance="@android:style/TextAppearance.Holo.SearchResult.Title"
@@ -190,7 +191,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:ellipsize="end"
-                android:visibility="gone"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:lineSpacingExtra="1.6sp"
@@ -201,7 +201,8 @@
                 android:paddingTop="8dp"
                 android:text="Description"
                 android:textAppearance="@android:style/TextAppearance.SearchResult.Subtitle"
-                android:textColor="#cc000000" />
+                android:textColor="#cc000000"
+                android:visibility="gone" />
         </LinearLayout>
 
         <RelativeLayout
@@ -211,32 +212,38 @@
             android:layout_marginTop="8dp"
             android:padding="4dp">
 
-            <com.like.LikeButton
-                android:id="@+id/plus_like"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_centerVertical="true"
-                android:layout_margin="4dp"
-                app:icon_size="40dp"
-                app:icon_type="star"
-                app:is_enabled="true"
-                app:like_drawable="@drawable/teal_like"
-                app:liked="false"
-                app:unlike_drawable="@drawable/likeplus" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/likeDislikeContainer">
 
-            <com.like.LikeButton
-                android:id="@+id/minus_dislike"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_centerVertical="true"
-                android:layout_margin="4dp"
-                android:layout_toRightOf="@+id/plus_like"
-                app:icon_size="40dp"
-                app:icon_type="star"
-                app:is_enabled="true"
-                app:like_drawable="@drawable/teal_dislike"
-                app:liked="false"
-                app:unlike_drawable="@drawable/unlikeminus" />
+                <com.like.LikeButton
+                    android:id="@+id/plus_like"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="4dp"
+                    app:icon_size="40dp"
+                    app:icon_type="star"
+                    app:is_enabled="true"
+                    app:like_drawable="@drawable/teal_like"
+                    app:liked="false"
+                    app:unlike_drawable="@drawable/likeplus" />
+
+                <com.like.LikeButton
+                    android:id="@+id/minus_dislike"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="4dp"
+                    android:layout_toRightOf="@+id/plus_like"
+                    app:icon_size="40dp"
+                    app:icon_type="star"
+                    app:is_enabled="true"
+                    app:like_drawable="@drawable/teal_dislike"
+                    app:liked="false"
+                    app:unlike_drawable="@drawable/unlikeminus" />
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/like_count"
@@ -244,7 +251,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_margin="8dp"
-                android:layout_toRightOf="@+id/minus_dislike"
+                android:layout_toRightOf="@+id/likeDislikeContainer"
                 android:text="0"
                 android:textAppearance="@android:style/TextAppearance.Holo.Small" />
 

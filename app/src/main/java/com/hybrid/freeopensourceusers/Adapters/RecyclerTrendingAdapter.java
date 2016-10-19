@@ -58,6 +58,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 
 public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendingAdapter.ViewholderPostFeed> {
@@ -99,6 +100,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
     public ViewholderPostFeed onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = layoutInflater.inflate(R.layout.trending_row_layout, parent, false);
         ViewholderPostFeed viewholderPostFeed = new ViewholderPostFeed(view);
+        clickCallback.likeDislike1(viewholderPostFeed);
         dop = new DatabaseOperations(MyApplication.getAppContext());
         return viewholderPostFeed;
     }
@@ -251,6 +253,8 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                 if (!sharedPrefManager.isLoggedIn())
                     sharedPrefManager.showAlertDialog(view);
                 else {
+
+
                     int count = Integer.parseInt(holder.like_count.getText().toString());
 //                    holder.plus_like.setIcon(IconType.Star);
 //                    holder.plus_like.setIconSizeDp(40);
@@ -397,6 +401,10 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
 
     public interface ClickCallback {
         void openProfile(PostFeed postFeed, ViewholderPostFeed viewHolder);
+
+
+
+        void likeDislike1(ViewholderPostFeed viewHolder);
 
         void startDialogForNewImage(String image);
 
@@ -562,7 +570,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
         public CircleImageView circleImageView;
         public TextView user_name, user_share_time,post_descriptionCustom, post_title, post_description, like_count, comment_count, postTitleNoImage, postDescriptionNOImage,post_descriptionBelowImage;
         public ImageView post_pic, comment_button;
-        public RelativeLayout post_header;
+        public RelativeLayout post_header, likeDislikeContainer;
         public LinearLayout post_body, postBodyNoImage;
         public LikeButton plus_like, minus_dislike;
 
@@ -588,9 +596,12 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
             postBodyNoImage = (LinearLayout) itemView.findViewById(R.id.post_bodyForNoImage);
             post_descriptionCustom = (TextView) itemView.findViewById(R.id.post_descriptionCustom);
             post_descriptionBelowImage = (TextView) itemView.findViewById(R.id.post_descriptionBelowImage);
+            likeDislikeContainer = (RelativeLayout) itemView.findViewById(R.id.likeDislikeContainer);
         }
 
-
+        public RelativeLayout getLikeDislikeContainer() {
+            return likeDislikeContainer;
+        }
     }
 
 

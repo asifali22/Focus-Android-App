@@ -45,6 +45,10 @@ import java.util.ArrayList;
 
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+import uk.co.deanwild.materialshowcaseview.shape.Shape;
 
 
 /**
@@ -53,6 +57,10 @@ import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 public class TrendingFragment extends Fragment implements PostFeedLoadingListener,FabClickListener,TabClickListener{
 
     private static final int REQUEST_CODE = 100;
+    private static final String LIKE1 = "like1";
+    private static final String DISLIKE1 = "dislike1";
+    private static final String LIKE2 = "like2";
+    private static final String DISLIKE2 = "dislike2";
     private ArrayList<PostFeed> newsFeedsList = new ArrayList<>();
     private SharedPrefManager sharedPrefManager;
 
@@ -71,7 +79,9 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_trending, container, false);
+        final View view = inflater.inflate(R.layout.fragment_trending, container, false);
+
+
         progressDialog = new ProgressDialog(getContext());
         sharedPrefManager = new SharedPrefManager(getContext());
         trendingRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
@@ -93,6 +103,22 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), p1, p2);
                 startActivity(myIntent, options.toBundle());
             }
+
+            @Override
+            public void likeDislike1(RecyclerTrendingAdapter.ViewholderPostFeed viewholderPostFeed){
+                new MaterialShowcaseView.Builder(getActivity())
+                        .setTarget(viewholderPostFeed.getLikeDislikeContainer())
+                        .setDismissText("GOT IT")
+                        .setContentText("\tLike or Dislike !! How it works?\n1)" +
+                                " Like and Dislike works as their literal meaning says\n\n" +
+                                "2)" +
+                                " Simultaneous like and dislike results in last action, and vise-versa")
+                        .setDelay(500) // optional but starting animations immediately in onCreate can make them choppy
+                        .singleUse(LIKE1) // provide a unique ID used to ensure it is only shown once
+                        .show();
+            }
+
+
 
             @Override
             public void startDialogForNewImage(String image) {
@@ -156,6 +182,8 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
                 android.R.color.holo_green_light,
                 android.R.color.holo_red_light);
         mRecyclerTrendingAdapter.setFeed(newsFeedsList);
+
+
 
 
         return view;
