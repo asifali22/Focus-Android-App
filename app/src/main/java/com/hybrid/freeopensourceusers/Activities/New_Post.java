@@ -458,10 +458,11 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
             else
                 photoLink = input;
 
+            String UPLOAD_URL;
             if(flag_for_image==0)
-                Toast.makeText(New_Post.this,"No Image",Toast.LENGTH_SHORT).show();
-
-            String UPLOAD_URL = "http://focusvce.com/api/v1/upload";
+                 UPLOAD_URL = "http://focusvce.com/api/v1/addpostNoImage";
+            else
+                 UPLOAD_URL = "http://focusvce.com/api/v1/upload";
             final ProgressDialog loading = ProgressDialog.show(this,"Uploading...","Please wait...",false,false);
             StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
                     new Response.Listener<String>() {
@@ -499,7 +500,9 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
                     //Converting Bitmap to String
-                    String image = getStringImage(bitmap);
+                    String image="";
+                    if(flag_for_image==1)
+                     image = getStringImage(bitmap);
 
                     //Getting Image Name
                     String name = api_key+"-"+Long.toString(System.currentTimeMillis());
@@ -510,9 +513,17 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                     Map<String,String> params = new Hashtable<>();
 
                     //Adding parameters
-                    params.put("link", photoLink);
-                    params.put("image", image);
-                    params.put("name", name);
+                    if(flag_for_image==1) {
+                        params.put("link", photoLink);
+                        params.put("image", image);
+                        params.put("name", name);
+                    }
+                    if(flag_for_image==0) {
+                        if(user_input_link.getText().toString().isEmpty())
+                            params.put("link", "abc");
+                        else
+                            params.put("link",user_input_link.getText().toString());
+                    }
                     params.put("title",title);
                     params.put("desc",desc);
 

@@ -334,7 +334,9 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                 @Override
                 public void onClick(View v) {
                     if (isOnline()) {
-                        if (!postFeed.getLink().isEmpty()) {
+                        if(postFeed.getLink().equals("abc"));
+
+                        else if (!postFeed.getLink().isEmpty()) {
                             Intent myIntent = new Intent(myApplication.getApplicationContext(), WebViewActivity.class);
                             myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             myIntent.putExtra("LINK", postFeed.getLink() + "");
@@ -364,6 +366,13 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
             @Override
             public boolean onLongClick(View v) {
                 showDeleteReportDialog(v,postFeed.getUid(),postFeed.getPid());
+                return true;
+            }
+        });
+        holder.postBodyNoImage.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                showDeleteReportDialog(view,postFeed.getUid(),postFeed.getPid());
                 return true;
             }
         });
