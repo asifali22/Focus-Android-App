@@ -15,6 +15,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_settings_main"
+        android:title="Settings"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_settings_logged_out"
         android:orderInCategory="100"
         android:title="Logout"

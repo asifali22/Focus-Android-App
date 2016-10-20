@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-
     <application
         android:name=".ApplicationContext.MyApplication"
         android:allowBackup="true"
@@ -17,10 +16,10 @@
         <provider
             android:name=".SearchStuffs.SearchableProvider"
             android:authorities="com.hybrid.freeopensourceusers.SearchStuffs.SearchableProvider" />
-
-        <provider android:authorities="com.facebook.app.FacebookContentProvider306215729724983"
+        <provider
             android:name="com.facebook.FacebookContentProvider"
-            android:exported="true"/>
+            android:authorities="com.facebook.app.FacebookContentProvider306215729724983"
+            android:exported="true" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -66,17 +65,15 @@
                     android:host="www.facebook.com"
                     android:mimeType="text/*" />
             </intent-filter>
-
         </activity>
         <activity android:name=".Activities.LoginActivity" />
-        <activity android:name=".Activities.Comment_Actiivity" >
+        <activity android:name=".Activities.Comment_Actiivity">
             <intent-filter>
                 <action android:name="OPEN_COMMENT_ACTIVITY" />
-                <category android:name="android.intent.category.DEFAULT"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-
         <activity android:name=".Activities.WebViewActivity" />
         <activity
             android:name=".UserProfileStuff.UserProfile"
@@ -128,10 +125,12 @@
         </activity>
         <activity android:name=".UserProfileStuff.UserPostAndSessionActivity" />
         <activity android:name=".UserProfileStuff.EditProfile" />
-
         <activity
             android:name=".UserProfileStuff.UserProfileOwner"
-            android:theme="@style/UserProfileTheme"></activity>
+            android:theme="@style/UserProfileTheme" />
+        <activity
+            android:name=".Activities.SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>

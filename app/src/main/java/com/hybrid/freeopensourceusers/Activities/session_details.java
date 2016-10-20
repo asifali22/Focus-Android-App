@@ -14,11 +14,13 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,6 +37,7 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.R;
 import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
@@ -322,4 +325,26 @@ public class session_details extends AppCompatActivity {
     }
 
 
+    public void showFullSessionImage(View view) {
+        MyTextDrawable myTextDrawable = new MyTextDrawable();
+        LayoutInflater factory = LayoutInflater.from(this);
+        final View dialogMainView = factory.inflate(R.layout.fragment_image_post, null);
+
+        final AlertDialog myDialog = new AlertDialog.Builder(this).create();
+
+        ImageView mImageView = (ImageView) dialogMainView.findViewById(R.id.myImagePostContainer);
+
+        myDialog.setView(dialogMainView);
+        if (!picurl.isEmpty())
+            Glide.with(this)
+                    .load(picurl)
+                    .fitCenter()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.loading)
+                    .dontAnimate()
+                    .error(myTextDrawable.setTextDrawableForError("Error!"))
+                    .into(mImageView);
+
+        myDialog.show();
+    }
 }

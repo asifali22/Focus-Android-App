@@ -248,9 +248,7 @@ public class FirstActivity extends AppCompatActivity implements
                 return true;
             case R.id.action_settings_logged_out:
                 custom_signout();
-
                 break;
-
 
             case R.id.clearSuggestion:
                 SearchRecentSuggestions searchRecentSuggestions = new SearchRecentSuggestions(this, SearchableProvider.AUTHORITY,SearchableProvider.MODE);
@@ -258,6 +256,10 @@ public class FirstActivity extends AppCompatActivity implements
                 break;
             case R.id.action_settings_open_userProfile:
                 startActivity(new Intent(this, UserProfileOwner.class));
+                break;
+
+            case R.id.action_settings_main:
+                startActivity(new Intent(this, SettingsActivity.class));
                 break;
 
         }
