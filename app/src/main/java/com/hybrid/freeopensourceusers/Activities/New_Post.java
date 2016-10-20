@@ -208,13 +208,17 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
             document = connection.get();
             if (!document.select("meta[property=og:image]").isEmpty())
             metaOgImage = document.select("meta[property=og:image]");
-            if (metaOgImage.size() != 0 && metaOgImage != null) {
-                for (int i = 0; i < metaOgImage.size(); i++) {
-                    if (metaOgImage.get(i).attr("content") != "") {
-                        imgurl = metaOgImage.get(i).attr("content");
-                        break;
-                    } else
-                        continue;
+            if (metaOgImage != null) {
+                if (metaOgImage.size() != 0) {
+
+
+                    for (int i = 0; i < metaOgImage.size(); i++) {
+                        if (metaOgImage.get(i).attr("content") != "") {
+                            imgurl = metaOgImage.get(i).attr("content");
+                            break;
+                        } else
+                            continue;
+                    }
                 }
             } else if (imgurl == "" || imgurl == null) {
                 Elements pngs = document.select("img");
@@ -369,7 +373,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
         else if (flag ==2)
                 post_pic.setImageBitmap(bitmap);
 
-
+        if(userImageText!=null)
         if (userImageText.isEmpty())
             userImageText = userName;
 
@@ -393,13 +397,14 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
         minus_dislike.setEnabled(false);
 
         if (flag==1) {
-
-            if (!getImageUrl.trim().isEmpty()) {
-                post_body.setVisibility(View.VISIBLE);
-                postBodyNoImage.setVisibility(View.GONE);
-            } else {
-                post_body.setVisibility(View.GONE);
-                postBodyNoImage.setVisibility(View.VISIBLE);
+            if(getImageUrl!=null) {
+                if (!getImageUrl.trim().isEmpty()) {
+                    post_body.setVisibility(View.VISIBLE);
+                    postBodyNoImage.setVisibility(View.GONE);
+                } else {
+                    post_body.setVisibility(View.GONE);
+                    postBodyNoImage.setVisibility(View.VISIBLE);
+                }
             }
         }
 

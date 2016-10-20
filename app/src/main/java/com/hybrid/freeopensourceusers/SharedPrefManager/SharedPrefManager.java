@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.common.api.BooleanResult;
 import com.hybrid.freeopensourceusers.Activities.LoginActivity;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
@@ -49,7 +50,7 @@ public class SharedPrefManager {
         sharedPreferences.edit().putBoolean("logged_in", status).apply();
     }
 
-    public void setUserStatusOnLogin(String user_name,String user_email,String api_key,String fcm_token,String su_user,String user_pic,int user_id, String user_status){
+    public void setUserStatusOnLogin(String user_name,String user_email,String api_key,String fcm_token,String su_user,String user_pic,int user_id, String user_status,String about,String area_of_interest,String organisation){
 
         sharedPreferences.edit().putString("user_name", user_name).apply();
         sharedPreferences.edit().putString("user_email", user_email).apply();
@@ -60,11 +61,44 @@ public class SharedPrefManager {
         sharedPreferences.edit().putString("user_pic",user_pic).apply();
         sharedPreferences.edit().putInt("user_id",user_id).apply();
         sharedPreferences.edit().putString("user_status",user_status).apply();
+        sharedPreferences.edit().putString("about_user",about).apply();
+        sharedPreferences.edit().putString("area_of_interest",area_of_interest).apply();
+        sharedPreferences.edit().putString("organisation",organisation).apply();
+    }
+    public void updateUserProfile(String user_name,String status,String about,String area_of_interest,String org){
+        sharedPreferences.edit().putString("user_name", user_name).apply();
+        sharedPreferences.edit().putString("user_status",status).apply();
+        sharedPreferences.edit().putString("about_user",about).apply();
+        sharedPreferences.edit().putString("area_of_interest",area_of_interest).apply();
+        sharedPreferences.edit().putString("organisation",org).apply();
     }
 
     public int getUser_id(){
         int user_id = sharedPreferences.getInt("user_id",0);
         return user_id;
+    }
+    public String getAboutUser(){
+        String userEmail = sharedPreferences.getString("about_user", null);
+        if (!userEmail.isEmpty())
+            return userEmail;
+        else
+            return null;
+    }
+
+    public String getAreaOfInterest(){
+        String userEmail = sharedPreferences.getString("area_of_interest", null);
+        if (!userEmail.isEmpty())
+            return userEmail;
+        else
+            return null;
+    }
+
+    public String getOrganisation(){
+        String userEmail = sharedPreferences.getString("organisation", null);
+        if (!userEmail.isEmpty())
+            return userEmail;
+        else
+            return null;
     }
 
     public String getUserEmail(){

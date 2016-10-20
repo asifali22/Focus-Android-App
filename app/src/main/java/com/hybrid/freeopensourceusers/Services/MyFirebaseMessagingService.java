@@ -27,13 +27,12 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Intent intent = new Intent(this, WebViewActivity.class);
-        intent.putExtra("TITLE",remoteMessage.getData().get("title"));
+        intent.putExtra("TITLE",remoteMessage.getNotification().getTitle());
         intent.putExtra("LINK",remoteMessage.getData().get("links"));
         PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setContentTitle("FOCUS");
-        builder.setContentText(remoteMessage.getData().get("message")+" "+remoteMessage.getData().get("post_id")+
-        " "+remoteMessage.getData().get("title")+" "+remoteMessage.getData().get("links"));
+        builder.setContentTitle(remoteMessage.getNotification().getTitle());
+        builder.setContentText(remoteMessage.getNotification().getBody());
         builder.setAutoCancel(true);
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
         builder.setLargeIcon(largeIcon);

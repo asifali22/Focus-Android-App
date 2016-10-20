@@ -192,7 +192,10 @@ public class LoginActivity extends AppCompatActivity implements
                                                     int user_id = Integer.parseInt(uid);
                                                     String status = jsonObject.get("user_status").toString();
 
-                                                    sharedPrefManager.setUserStatusOnLogin(user_name, user_email, api_key, fcm_token,su_user,user_pic,user_id, status);
+                                                    String about_user = jsonObject.get("about_user").toString();
+                                                    String area_of_interest = jsonObject.get("area_of_interest").toString();
+                                                    String organisation = jsonObject.get("organisation").toString();
+                                                    sharedPrefManager.setUserStatusOnLogin(user_name,user_email,api_key,fcm_token,su_user,user_pic,user_id,status,about_user,area_of_interest,organisation);
                                                     Toast.makeText(LoginActivity.this, "Welcome " + user_name, Toast.LENGTH_LONG).show();
                                                     Intent i = new Intent(LoginActivity.this, FirstActivity.class);
                                                     i.putExtra("login_intent",true);
@@ -294,7 +297,10 @@ public class LoginActivity extends AppCompatActivity implements
                                     int user_id = Integer.parseInt(uid);
 
                                     String status = jsonObject.get("user_status").toString();
-                                    sharedPrefManager.setUserStatusOnLogin(user_name,user_email,api_key,fcm_token,su_user,user_pic,user_id,status);
+                                    String about_user = jsonObject.get("about_user").toString();
+                                    String area_of_interest = jsonObject.get("area_of_interest").toString();
+                                    String organisation = jsonObject.get("organisation").toString();
+                                    sharedPrefManager.setUserStatusOnLogin(user_name,user_email,api_key,fcm_token,su_user,user_pic,user_id,status,about_user,area_of_interest,organisation);
                                     Toast.makeText(LoginActivity.this, "Welcome " + jsonObject.get("name").toString(), Toast.LENGTH_LONG).show();
                                     hideProgressDialog();
                                     Intent i = new Intent(LoginActivity.this, FirstActivity.class);
@@ -456,6 +462,7 @@ public class LoginActivity extends AppCompatActivity implements
 
                             if (response != null) {
                                 try {
+                                    Log.e("ADARSH",response);
                                     JSONObject jsonObject = new JSONObject(response);
                                     String user_name = acct.getDisplayName();
                                     String user_email = acct.getEmail();
@@ -466,7 +473,10 @@ public class LoginActivity extends AppCompatActivity implements
                                     String uid = jsonObject.get("user_id").toString();
                                     String status = jsonObject.get("user_status").toString();
                                     int user_id = Integer.parseInt(uid);
-                                    sharedPrefManager.setUserStatusOnLogin(user_name,user_email,api_key,fcm_token,su_user,user_pic,user_id,status);
+                                    String about_user = jsonObject.get("about_user").toString();
+                                    String area_of_interest = jsonObject.get("area_of_interest").toString();
+                                    String organisation = jsonObject.get("organisation").toString();
+                                    sharedPrefManager.setUserStatusOnLogin(user_name,user_email,api_key,fcm_token,su_user,user_pic,user_id,status,about_user,area_of_interest,organisation);
                                     Toast.makeText(LoginActivity.this, "Welcome " + acct.getDisplayName(), Toast.LENGTH_LONG).show();
                                     Intent i = new Intent(LoginActivity.this, FirstActivity.class);
                                     i.putExtra("login_intent",true);
