@@ -381,14 +381,14 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
         holder.post_body.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                showDeleteReportDialog(v,postFeed.getUid(),postFeed.getPid());
+                showDeleteReportDialog(v,postFeed.getUid(),postFeed.getPid(),postFeed);
                 return true;
             }
         });
         holder.postBodyNoImage.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                showDeleteReportDialog(view,postFeed.getUid(),postFeed.getPid());
+                showDeleteReportDialog(view,postFeed.getUid(),postFeed.getPid(),postFeed);
                 return true;
             }
         });
@@ -613,12 +613,13 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
 
 
 
-    public void showDeleteReportDialog(final View view,int uid,final int pid) {
+    public void showDeleteReportDialog(final View view, int uid, final int pid, final PostFeed postFeed) {
         final AlertDialog.Builder builderSingle = new AlertDialog.Builder(view.getContext());
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 view.getContext(),
                 R.layout.dialog_delete_report);
+        arrayAdapter.add("Share");
         if(sharedPrefManager.getUser_id()==uid)
         arrayAdapter.add("Delete");
         DatabaseOperations dop = new DatabaseOperations(MyApplication.getAppContext());
@@ -626,6 +627,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
         arrayAdapter.add("Report");
         else
         arrayAdapter.add("Already reported");
+
 
         builderSingle.setAdapter(
                 arrayAdapter,
@@ -653,6 +655,20 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                             Toast.makeText(context,"You have already reported this post",Toast.LENGTH_LONG).show();
                         else if(strName.equals("Report"))
                             reportPost(pid);
+                        else if(strName.equals("Share")){
+                            Intent sendIntent = new Intent();
+                            sendIntent.setAction(Intent.ACTION_SEND);
+                            String shareString =  "Title:"+postFeed.getTitle()
+                                    +"\n\nDescription:"+postFeed.getDescription();
+                            if(postFeed.getLink()!=null)
+                            if(!postFeed.getLink().isEmpty())
+                            if(!postFeed.getLink().equals("abc"))
+                                shareString=shareString+"\n\nLink:"+postFeed.getLink();
+                            shareString=shareString+"\n\nThank you - shared via FOCUS App, download now @link ";
+                            sendIntent.putExtra(Intent.EXTRA_TEXT,shareString);
+                            sendIntent.setType("text/plain");
+                            context.startActivity(Intent.createChooser(sendIntent, "Share via..."));
+                        }
                     }
                 });
         builderSingle.show();
