@@ -1,6 +1,10 @@
 package com.hybrid.freeopensourceusers.Activities;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -37,6 +41,7 @@ import com.hybrid.freeopensourceusers.Adapters.RecyclerTrendingCommentAdapter;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.PojoClasses.CommentFeed;
 import com.hybrid.freeopensourceusers.R;
+import com.hybrid.freeopensourceusers.Services.MyFirebaseMessagingService;
 import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
 import com.hybrid.freeopensourceusers.Sqlite.DatabaseOperations;
 import com.hybrid.freeopensourceusers.Sqlite.DatabaseOperations_Session;
@@ -69,6 +74,7 @@ public class Comment_Actiivity extends AppCompatActivity {
     private RecyclerTrendingCommentAdapter recyclerTrendingCommentAdapter;
     private static final String COMMENTS_FEED = "comments_feed";
 
+
     public String api_key;
     public String pid;
     int flag_extra;
@@ -92,10 +98,9 @@ public class Comment_Actiivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Discuss");
 
 
-
-        Toast toast= Toast.makeText(this,
+        Toast toast = Toast.makeText(this,
                 "Please refresh to load newer comments", Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.TOP| Gravity.CENTER_HORIZONTAL, 0, 250);
+        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
         toast.show();
 
         sharedPrefManager = new SharedPrefManager(this);
@@ -116,6 +121,10 @@ public class Comment_Actiivity extends AppCompatActivity {
         commentsFeedRecycler.setAdapter(recyclerTrendingCommentAdapter);
         Bundle extras = getIntent().getExtras();
         pid = extras.getString("PID_VALUE");
+        if(pid==null){
+            SharedPreferences sharedPreferences = getSharedPreferences("comment",MODE_PRIVATE);
+            pid=sharedPreferences.getString("comment_pid",null);
+        }
         api_key = extras.getString("API_KEY");
         flag_extra = extras.getInt("FLAG");
         if (savedInstanceState != null) {
@@ -124,10 +133,10 @@ public class Comment_Actiivity extends AppCompatActivity {
 
             DatabaseOperations dop = new DatabaseOperations(MyApplication.getAppContext());
             DatabaseOperations_Session dops = new DatabaseOperations_Session(MyApplication.getAppContext());
-            if(flag_extra==0)
-            commentsFeedsList = MyApplication.getDatabase().readCommentDataForPost(pid,dop);
+            if (flag_extra == 0)
+                commentsFeedsList = MyApplication.getDatabase().readCommentDataForPost(pid, dop);
             else
-            commentsFeedsList = MyApplication.getMsDatabase().readCommentDataForPost(pid,dops);
+                commentsFeedsList = MyApplication.getMsDatabase().readCommentDataForPost(pid, dops);
             if (commentsFeedsList.isEmpty()) {
                 sendJsonrequest();
             }
@@ -139,11 +148,10 @@ public class Comment_Actiivity extends AppCompatActivity {
         swipeRefreshLayoutForCommentsTrending.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(sharedPrefManager.isOnline()) {
+                if (sharedPrefManager.isOnline()) {
                     swipeRefreshLayoutForCommentsTrending.setRefreshing(true);
                     sendJsonrequest();
-                }
-                else {
+                } else {
                     Toast.makeText(Comment_Actiivity.this, "No Network", Toast.LENGTH_SHORT).show();
                     swipeRefreshLayoutForCommentsTrending.setRefreshing(false);
                 }
@@ -155,6 +163,7 @@ public class Comment_Actiivity extends AppCompatActivity {
                 android.R.color.holo_red_light);
 
     }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -190,7 +199,7 @@ public class Comment_Actiivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("pid", pid);
-                params.put("flag",Integer.toString(flag_extra));
+                params.put("flag", Integer.toString(flag_extra));
                 return params;
             }
 
@@ -200,10 +209,10 @@ public class Comment_Actiivity extends AppCompatActivity {
     }
 
     private ArrayList<CommentFeed> parseJsonResponse(String response) {
-        if(flag_extra==0)
-        dp.delete_commentbyPid(pid,dp);
+        if (flag_extra == 0)
+            dp.delete_commentbyPid(pid, dp);
         else
-        dops.delete_commentbyPid(pid,dops);
+            dops.delete_commentbyPid(pid, dops);
         ArrayList<CommentFeed> commentsFeedsList = new ArrayList<>();
         if (response != null && response.length() != 0) {
             try {
@@ -229,10 +238,10 @@ public class Comment_Actiivity extends AppCompatActivity {
                     commentFeedObject.setDoc(dateOfPost);
                     commentFeedObject.setUser_name(user_name);
                     commentFeedObject.setUser_pic(user_pic);
-                    if(flag_extra==0)
-                    dp.putInfo_Comment(dp,comment_id,user_id,pid,comment,commentTimeStamp,user_name,user_pic);
+                    if (flag_extra == 0)
+                        dp.putInfo_Comment(dp, comment_id, user_id, pid, comment, commentTimeStamp, user_name, user_pic);
                     else
-                    dops.putInfo_Comment(dops,comment_id,user_id,pid,comment,commentTimeStamp,user_name,user_pic);
+                        dops.putInfo_Comment(dops, comment_id, user_id, pid, comment, commentTimeStamp, user_name, user_pic);
                     commentsFeedsList.add(commentFeedObject);
                 }
 
@@ -256,7 +265,7 @@ public class Comment_Actiivity extends AppCompatActivity {
 
         switch (id) {
             case android.R.id.home:
-               this.finish();
+                this.finish();
                 return true;
 
         }
@@ -275,17 +284,16 @@ public class Comment_Actiivity extends AppCompatActivity {
     }
 
 
-
     public void commentFabClicked(View v) {
         final String commentText = commentAdd.getText().toString().trim();
-        if (!commentText.isEmpty()&& sharedPrefManager.isOnline()) {
+        if (!commentText.isEmpty() && sharedPrefManager.isOnline()) {
             String POSTCOMMENT_URL = Utility.getIPADDRESS() + "comments";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, POSTCOMMENT_URL, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     if (response != null && response.length() != 0) {
                         try {
-                            Log.e("ADARSH",response);
+                            Log.e("ADARSH", response);
                             JSONObject jObject = new JSONObject(response);
                             int comment_id = jObject.getInt("comment_id");
                             int user_id = jObject.getInt("user_id");
@@ -306,10 +314,10 @@ public class Comment_Actiivity extends AppCompatActivity {
                             commentFeedObject.setDoc(dateOfPost);
                             commentFeedObject.setUser_name(user_name);
                             commentFeedObject.setUser_pic(user_pic);
-                            if(flag_extra==0)
-                            dp.putInfo_Comment(dp,comment_id,user_id,pid,comment,commentTimeStamp,user_name,user_pic);
+                            if (flag_extra == 0)
+                                dp.putInfo_Comment(dp, comment_id, user_id, pid, comment, commentTimeStamp, user_name, user_pic);
                             else
-                            dops.putInfo_Comment(dops,comment_id,user_id,pid,comment,commentTimeStamp,user_name,user_pic);
+                                dops.putInfo_Comment(dops, comment_id, user_id, pid, comment, commentTimeStamp, user_name, user_pic);
                             commentsFeedsList.add(0, commentFeedObject);
                             recyclerTrendingCommentAdapter.setNewCommentFeed(commentsFeedsList);
                             commentsFeedRecycler.smoothScrollToPosition(0);
@@ -340,7 +348,7 @@ public class Comment_Actiivity extends AppCompatActivity {
                     Map<String, String> params = new HashMap<>();
                     params.put("pid", pid);
                     params.put("comment", commentText);
-                    params.put("flag",Integer.toString(flag_extra));
+                    params.put("flag", Integer.toString(flag_extra));
                     return params;
                 }
 
@@ -353,8 +361,7 @@ public class Comment_Actiivity extends AppCompatActivity {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
-        }
-        else {
+        } else {
             View view = this.getCurrentFocus();
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -364,3 +371,6 @@ public class Comment_Actiivity extends AppCompatActivity {
 
 
 }
+
+
+
