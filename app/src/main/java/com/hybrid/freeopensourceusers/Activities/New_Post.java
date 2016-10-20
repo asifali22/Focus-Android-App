@@ -146,8 +146,6 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
             // When tyoe is 'text/plain'
             if ("text/plain".equals(type)) {
                 handleSendText(intent); // Handle text being sent
-            } else if (type.startsWith("image/")) { // When type is 'image/*'
-                handleSendImage(intent); // Handle single image being sent
             }
         }
         myApplication = MyApplication.getInstance();
@@ -181,25 +179,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
         }
     }
 
-    /**
-     * Method to handle incoming Image
-     *
-     * @param intent
-     */
-    private void handleSendImage(Intent intent) {
-        // Get the image URI from intent
-        Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        // When image URI is not null
-        if (imageUri != null) {
 
-            tintSystemBars();
-            revealLayout.setVisibility(View.VISIBLE);
-            // Update UI to reflect image being shared
-            linkPhoto.setImageURI(imageUri);
-        } else {
-            Toast.makeText(this, "Error occured, URI is invalid", Toast.LENGTH_LONG).show();
-        }
-    }
 
     public String getUrl(String urll) {
         Elements metaOgImage = null;

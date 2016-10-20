@@ -66,16 +66,17 @@
                     android:host="www.facebook.com"
                     android:mimeType="text/*" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="image/*" />
-            </intent-filter>
         </activity>
         <activity android:name=".Activities.LoginActivity" />
-        <activity android:name=".Activities.Comment_Actiivity" />
+        <activity android:name=".Activities.Comment_Actiivity" >
+            <intent-filter>
+                <action android:name="OPEN_COMMENT_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+
         <activity android:name=".Activities.WebViewActivity" />
         <activity
             android:name=".UserProfileStuff.UserProfile"
@@ -127,6 +128,7 @@
         </activity>
         <activity android:name=".UserProfileStuff.UserPostAndSessionActivity" />
         <activity android:name=".UserProfileStuff.EditProfile" />
+
         <activity
             android:name=".UserProfileStuff.UserProfileOwner"
             android:theme="@style/UserProfileTheme"></activity>
