@@ -140,14 +140,14 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
                 if (sharedPrefManager.isLoggedIn())
                 clickCallback.openProfile(sessionFeed, holder);
                 else
-                    showAlertDialog(v);
+                    sharedPrefManager.showAlertDialog(v);
             }
         });
         holder.session_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!sharedPrefManager.isLoggedIn())
-                    showAlertDialog(view);
+                    sharedPrefManager.showAlertDialog(view);
                 else {
                     String api_key = sharedPrefManager.getApiKey();
                     Intent myIntent = new Intent(myApplication.getApplicationContext(), Comment_Actiivity.class);
@@ -187,25 +187,6 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
         });
 
 
-    }
-
-    public void showAlertDialog(View view) {
-        new AlertDialog.Builder(view.getContext())
-                .setTitle("Sign up?")
-                .setMessage("Join us to explore more!")
-                .setPositiveButton("SURE", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent myIntent = new Intent(myApplication.getApplicationContext(), LoginActivity.class);
-                        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        myApplication.getApplicationContext().startActivity(myIntent);
-                    }
-                })
-                .setNegativeButton("NOT NOW", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
-                    }
-                })
-                .show();
     }
 
     public void setCallback(ClickCallback callback) {

@@ -27,6 +27,8 @@ public class ViewHolder2 extends RecyclerView.ViewHolder{
     public TextView user_name;
     public TextView date;
     public CircleImageView circleImageView;
+    public ImageView session_comment;
+    public ImageView session_share;
 
     public ViewHolder2(View view) {
         super(view);
@@ -40,6 +42,8 @@ public class ViewHolder2 extends RecyclerView.ViewHolder{
         circleImageView = (CircleImageView) view.findViewById(R.id.user_profile_image_session);
         post_body = (LinearLayout) view.findViewById(R.id.post_body_session);
         post_header = (RelativeLayout) view.findViewById(R.id.post_header_session);
+        session_comment = (ImageView) view.findViewById(R.id.comment_button_session);
+        session_share = (ImageView) view.findViewById(R.id.session_share);
 
     }
 
