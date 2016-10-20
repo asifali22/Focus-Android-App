@@ -150,8 +150,8 @@
                 android:layout_marginTop="4dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
-                android:padding="8dp"
-                android:src="@drawable/ic_action_name" />
+                android:padding="4dp"
+                android:src="@drawable/ic_action_share" />
 
             <ImageView
                 android:id="@+id/comment_button_session"

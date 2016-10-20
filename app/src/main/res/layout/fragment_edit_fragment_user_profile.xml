@@ -1,0 +1,106 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.hybrid.freeopensourceusers.UserProfileStuff.EditFragmentUserProfile">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar_layoutFragmentUserProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:elevation="6dp">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_FragmentUserProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:background="?attr/colorPrimary"
+                android:minHeight="?attr/actionBarSize"
+                app:elevation="0dp"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:id="@+id/toolbarTitle"
+                    android:textSize="18sp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@android:color/white"
+                    android:layout_height="match_parent" />
+            </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/editTextFragmentUserProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/appbar_layoutFragmentUserProfile"
+            android:layout_margin="16dp">
+
+            <EditText
+                android:id="@+id/insideEditText"
+                android:layout_width="match_parent"
+                android:selectAllOnFocus="true"
+                android:focusable="true"
+                android:inputType="textCapSentences"
+                android:layout_height="wrap_content" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.percent.PercentRelativeLayout
+            android:id="@+id/buttonLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+
+            <LinearLayout
+                android:id="@+id/fancyLine"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#88000000"
+                android:orientation="vertical" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/cancelButtonUserPro"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/fancyLine"
+                android:textColor="@color/colorAccentUserProfile"
+                android:background="@android:color/white"
+                android:text="CANCEL"
+                app:layout_widthPercent="49%" />
+
+            <LinearLayout
+                android:id="@+id/fancyLine2"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@+id/cancelButtonUserPro"
+                android:layout_toRightOf="@+id/cancelButtonUserPro"
+                android:background="#88000000"
+                android:orientation="vertical" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/okButtonUserPro"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textColor="@color/colorAccentUserProfile"
+                android:layout_below="@+id/fancyLine"
+                android:layout_toRightOf="@id/fancyLine2"
+                android:background="@android:color/white"
+                android:text="OK"
+                app:layout_widthPercent="49%" />
+
+        </android.support.percent.PercentRelativeLayout>
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

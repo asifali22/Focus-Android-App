@@ -66,9 +66,7 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
     private SharedPrefManager sharedPrefManager;
 
     private static final String REGISTER_URL = Utility.getIPADDRESS()+"register";
-    public static final String KEY_NAME = "user_name";
-    public static final String KEY_USERNAME = "user_email";
-    public static final String KEY_PASSWORD = "user_password";
+
     private ExecutorService mExecutor;
     public static Intent createIntent(Activity activity, Uri uri) {
         Intent intent = new Intent(activity, RegisterActivity.class);
@@ -76,7 +74,7 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
         return intent;
     }
 
-    EditText input_nameRegister, input_emailRegister, input_passwordRegister, input_retypepasswordRegister;
+    private EditText input_nameRegister, input_emailRegister, input_passwordRegister, input_retypepasswordRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

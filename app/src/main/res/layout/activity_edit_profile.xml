@@ -11,15 +11,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/showCase"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/showCase"
                 android:orientation="vertical">
 
                 <CheckBox
@@ -27,7 +22,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="        Post Notification"
+                    android:text="Post Notification"
                     android:onClick="checkboxpost"/>
 
                 <CheckBox
@@ -35,7 +30,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="        Session Notification"
+                    android:text="Session Notification"
                     android:onClick="checkboxsess"/>
 
                 <TextView
@@ -43,14 +38,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:text="User Name"
-                    android:textSize="15dp" />
-
-                <EditText
-                    android:id="@+id/edit_user_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:textSize="15dp" />
+                    android:textSize="15dp"/>
 
                 <TextView
                     android:layout_width="match_parent"

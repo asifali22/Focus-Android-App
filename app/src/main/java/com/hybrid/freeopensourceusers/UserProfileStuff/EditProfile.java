@@ -33,27 +33,29 @@ import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 public class EditProfile extends AppCompatActivity {
 
-    private static final String SHOWCASE_ID = "like_dislike";
-    Button showCase ;
-    EditText name,status,about,areaofinterest,org;
-    SharedPrefManager sharedPrefManager;
-    VolleySingleton volleySingleton;
-    RequestQueue requestQueue;
-    CheckBox not_post,not_sess;
-    int not_post_flag=1,not_sess_flag=1;
+
+    private EditText name,status,about,areaofinterest,org;
+    private SharedPrefManager sharedPrefManager;
+    private VolleySingleton volleySingleton;
+    private RequestQueue requestQueue;
+    private CheckBox not_post,not_sess;
+    private int not_post_flag=1,not_sess_flag=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+
         volleySingleton = VolleySingleton.getInstance();
         requestQueue = volleySingleton.getRequestQueue();
-        name = (EditText) findViewById(R.id.edit_user_name);
+
+
+
         status = (EditText) findViewById(R.id.edit_status);
         about = (EditText) findViewById(R.id.edit_about);
         areaofinterest = (EditText) findViewById(R.id.edit_area_of_interest);
         org = (EditText) findViewById(R.id.edit_organisation);
-        showCase = (Button) findViewById(R.id.showCase);
+
         sharedPrefManager = new SharedPrefManager(this);
         name.setText(sharedPrefManager.getUserName());
         status.setText(sharedPrefManager.getUserStatus());
@@ -63,13 +65,6 @@ public class EditProfile extends AppCompatActivity {
         not_post = (CheckBox) findViewById(R.id.not_post);
         not_sess = (CheckBox) findViewById(R.id.not_sess);
 
-        new MaterialShowcaseView.Builder(this)
-                .setTarget(showCase)
-                .setDismissText("GOT IT")
-                .setContentText("This is some amazing feature you should know about")
-                .setDelay(1000) // optional but starting animations immediately in onCreate can make them choppy
-                .singleUse(SHOWCASE_ID) // provide a unique ID used to ensure it is only shown once
-                .show();
     }
 
     public void checkboxpost(View view){
@@ -92,12 +87,12 @@ public class EditProfile extends AppCompatActivity {
             public void onResponse(String response) {
                 try{
                     JSONObject jsonObject = new JSONObject(response);
-                    if(jsonObject.getBoolean("error")==false){
+                    if(!jsonObject.getBoolean("error")){
                         Toast.makeText(EditProfile.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
-                        sharedPrefManager.updateUserProfile(name.getText().toString(),status.getText().toString(),about.getText().toString(),areaofinterest.getText().toString(),org.getText().toString());
+                    //    sharedPrefManager.updateUserProfile(name.getText().toString(),status.getText().toString(),about.getText().toString(),areaofinterest.getText().toString(),org.getText().toString());
                         finish();
                     }
-                    else if(jsonObject.getBoolean("error")==true){
+                    else if(jsonObject.getBoolean("error")){
                         Toast.makeText(EditProfile.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
                     }
                 }catch (JSONException e){
@@ -120,7 +115,6 @@ public class EditProfile extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("user_name", name.getText().toString());
                 params.put("status", status.getText().toString());
                 params.put("about",about.getText().toString());
                 params.put("interest",areaofinterest.getText().toString());

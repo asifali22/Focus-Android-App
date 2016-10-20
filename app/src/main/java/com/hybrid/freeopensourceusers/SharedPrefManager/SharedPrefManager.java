@@ -65,13 +65,23 @@ public class SharedPrefManager {
         sharedPreferences.edit().putString("area_of_interest",area_of_interest).apply();
         sharedPreferences.edit().putString("organisation",organisation).apply();
     }
-    public void updateUserProfile(String user_name,String status,String about,String area_of_interest,String org){
-        sharedPreferences.edit().putString("user_name", user_name).apply();
-        sharedPreferences.edit().putString("user_status",status).apply();
+
+    public void updateUserDesc(String about){
         sharedPreferences.edit().putString("about_user",about).apply();
-        sharedPreferences.edit().putString("area_of_interest",area_of_interest).apply();
+    }
+
+    public void updateUserInterest(String aoi){
+        sharedPreferences.edit().putString("area_of_interest",aoi).apply();
+    }
+
+    public void updateUserOrganisation(String org){
         sharedPreferences.edit().putString("organisation",org).apply();
     }
+
+    public void updateUserStatus(String status){
+        sharedPreferences.edit().putString("user_status",status).apply();
+    }
+
 
     public int getUser_id(){
         int user_id = sharedPreferences.getInt("user_id",0);

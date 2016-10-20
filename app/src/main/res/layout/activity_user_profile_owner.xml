@@ -7,6 +7,11 @@
     android:orientation="vertical"
     tools:ignore="RtlHardcoded">
 
+    <FrameLayout
+        android:id="@+id/fragment_containerUserProfile"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent" />
+
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/coordinatorUserProfileMain"
         android:layout_width="match_parent"
@@ -139,16 +144,33 @@
                             android:textColor="@color/colorAccentUserProfile"
                             android:textSize="18sp" />
 
-                        <TextView
-                            android:id="@+id/user_desc"
+                        <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"
-                            android:fontFamily="sans-serif"
-                            android:lineSpacingExtra="8dp"
-                            android:padding="8dp"
-                            android:hint="Description not available"
-                            android:textSize="16sp" />
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/user_desc"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
+                                android:layout_centerVertical="true"
+                                android:fontFamily="sans-serif"
+                                android:hint="Description not available"
+                                android:lineSpacingExtra="8dp"
+                                android:padding="8dp"
+                                android:textSize="16sp" />
+
+                            <ImageView
+                                android:id="@+id/editButtonDesc"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:clickable="true"
+                                android:padding="8dp"
+                                android:src="@drawable/ic_action_user_profile" />
+                        </RelativeLayout>
 
                         <TextView
                             android:id="@+id/su_user"
@@ -190,16 +212,31 @@
                             android:textColor="@color/colorAccentUserProfile"
                             android:textSize="18sp" />
 
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
                         <TextView
                             android:id="@+id/user_Interest"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
                             android:fontFamily="sans-serif"
-                            android:lineSpacingExtra="8dp"
                             android:hint="Not available"
+                            android:lineSpacingExtra="8dp"
                             android:padding="8dp"
                             android:textSize="16sp" />
+                        <ImageView
+                            android:id="@+id/editButtonInterest"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:clickable="true"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_action_user_profile" />
+                        </RelativeLayout>
 
                     </LinearLayout>
 
@@ -231,16 +268,32 @@
                             android:textColor="@color/colorAccentUserProfile"
                             android:textSize="18sp" />
 
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
                         <TextView
                             android:id="@+id/user_organisation"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
                             android:fontFamily="sans-serif"
-                            android:lineSpacingExtra="8dp"
                             android:hint="Not available"
+                            android:lineSpacingExtra="8dp"
                             android:padding="8dp"
                             android:textSize="16sp" />
+
+                        <ImageView
+                            android:id="@+id/editButtonOrg"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:clickable="true"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_action_user_profile" />
+                        </RelativeLayout>
 
                     </LinearLayout>
 
@@ -282,7 +335,7 @@
         </android.support.v7.widget.Toolbar>
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/user.profile.image.userActivity"
+            android:id="@+id/user_profile_image_userActivityOwner"
             android:layout_width="@dimen/image_width"
             android:layout_height="@dimen/image_width"
             android:layout_gravity="center"
@@ -292,6 +345,25 @@
             app:civ_border_width="2dp"
             app:layout_behavior="com.hybrid.freeopensourceusers.UserProfileStuff.AvatarImageBehavior" />
 
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="@dimen/fab_margin"
+            android:backgroundTint="@color/colorAccent"
+            android:clickable="true"
+            android:onClick="changeUserProfilePic"
+            app:elevation="4dp"
+            android:src="@drawable/ic_action_user_person"
+            app:borderWidth="0dp"
+            app:rippleColor="@color/colorAccentDark" />
+
     </android.support.design.widget.CoordinatorLayout>
+
+
+
 
 </LinearLayout>

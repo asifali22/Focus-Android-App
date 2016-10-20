@@ -195,14 +195,14 @@
                 android:gravity="center"
                 android:lineSpacingExtra="1.6sp"
                 android:maxLines="3"
-                android:paddingBottom="8dp"
+                android:visibility="gone"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingTop="8dp"
                 android:text="Description"
                 android:textAppearance="@android:style/TextAppearance.SearchResult.Subtitle"
                 android:textColor="#cc000000"
-                android:visibility="gone" />
+              />
         </LinearLayout>
 
         <RelativeLayout
