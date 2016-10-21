@@ -408,9 +408,8 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         holder.postBodyNoImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isOnline()) {
                     if(postFeed.getLink().equals("abc"));
-
+                    // do nothing
                     else if (!postFeed.getLink().isEmpty()) {
                         Intent myIntent = new Intent(myApplication.getApplicationContext(), WebViewActivity.class);
                         myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -418,8 +417,6 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         myIntent.putExtra("TITLE", postFeed.getTitle() + "");
                         myApplication.getApplicationContext().startActivity(myIntent);
                     }
-                } else if (!isOnline())
-                    Toast.makeText(MyApplication.getAppContext(), "No Network", Toast.LENGTH_SHORT).show();
             }
         });
 

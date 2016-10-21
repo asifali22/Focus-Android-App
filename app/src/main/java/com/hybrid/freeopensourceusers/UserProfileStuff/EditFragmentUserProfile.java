@@ -1,6 +1,7 @@
 package com.hybrid.freeopensourceusers.UserProfileStuff;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +24,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.hybrid.freeopensourceusers.Activities.New_Post;
 import com.hybrid.freeopensourceusers.Callback.UpdateInterest;
 import com.hybrid.freeopensourceusers.Callback.UpdateOrg;
 import com.hybrid.freeopensourceusers.Callback.UpdateStatus;
@@ -56,6 +58,7 @@ public class EditFragmentUserProfile extends Fragment {
     private UpdateInterest updateInterest;
     private UpdateOrg updateOrg;
     private UpdateStatus updateStatus;
+    private ProgressDialog progressDialog;
 
 
     public EditFragmentUserProfile() {
@@ -88,6 +91,7 @@ public class EditFragmentUserProfile extends Fragment {
 
         editTextGeneralised.setCounterEnabled(true);
         sharedPrefManager = new SharedPrefManager(getContext());
+        progressDialog = new ProgressDialog(getActivity());
 
         editTextGeneralised.requestFocus();
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -97,6 +101,7 @@ public class EditFragmentUserProfile extends Fragment {
             @Override
             public void run() {
                 openKeyboard();
+                insideEditText.setSelectAllOnFocus(true);
             }
         }, 500);
 
@@ -172,17 +177,20 @@ public class EditFragmentUserProfile extends Fragment {
     private void updateStatus(final String input) {
 
         String URL = Utility.getIPADDRESS() + "updateUserStatus";
+        progressDialog  = ProgressDialog.show(getActivity(), "Updating", "Please wait...", false, false);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     if (!jsonObject.getBoolean("error")) {
+                        progressDialog.dismiss();
                         Toast.makeText(getContext(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                         sharedPrefManager.updateUserStatus(input);
                         updateStatus.statusUpdate(input);
                         getActivity().onBackPressed();
                     } else if (jsonObject.getBoolean("error")) {
+                        progressDialog.dismiss();
                         Toast.makeText(getContext(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
@@ -192,6 +200,8 @@ public class EditFragmentUserProfile extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                progressDialog.dismiss();
+                Toast.makeText(getContext(), "Can't Update the status", Toast.LENGTH_SHORT).show();
             }
         }) {
 
@@ -216,17 +226,20 @@ public class EditFragmentUserProfile extends Fragment {
 
     private void updateOrganisation(final String input) {
         String URL = Utility.getIPADDRESS() + "updateUserOrganisation";
+        progressDialog  = ProgressDialog.show(getActivity(), "Updating", "Please wait...", false, false);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     if (!jsonObject.getBoolean("error")) {
+                        progressDialog.dismiss();
                         Toast.makeText(getContext(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                         sharedPrefManager.updateUserOrganisation(input);
                         updateOrg.updateOrg(input);
                         getActivity().onBackPressed();
                     } else if (jsonObject.getBoolean("error")) {
+                        progressDialog.dismiss();
                         Toast.makeText(getContext(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
@@ -236,6 +249,8 @@ public class EditFragmentUserProfile extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                progressDialog.dismiss();
+                Toast.makeText(getContext(), "Can't update the organisation", Toast.LENGTH_SHORT).show();
             }
         }) {
 
@@ -261,17 +276,20 @@ public class EditFragmentUserProfile extends Fragment {
 
     private void updateInterest(final String input) {
         String URL = Utility.getIPADDRESS() + "updateUserInterest";
+        progressDialog  = ProgressDialog.show(getActivity(), "Updating", "Please wait...", false, false);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     if (!jsonObject.getBoolean("error")) {
+                        progressDialog.dismiss();
                         Toast.makeText(getContext(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                         sharedPrefManager.updateUserInterest(input);
                         updateInterest.updateInterest(input);
                         getActivity().onBackPressed();
                     } else if (jsonObject.getBoolean("error")) {
+                        progressDialog.dismiss();
                         Toast.makeText(getContext(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
@@ -281,6 +299,8 @@ public class EditFragmentUserProfile extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                progressDialog.dismiss();
+                Toast.makeText(getContext(), "Can't update the Interests", Toast.LENGTH_SHORT).show();
             }
         }) {
 
@@ -305,17 +325,20 @@ public class EditFragmentUserProfile extends Fragment {
 
     private void updateDescription(final String input) {
         String URL = Utility.getIPADDRESS() + "updateUserAbout";
+        progressDialog  = ProgressDialog.show(getActivity(), "Updating", "Please wait...", false, false);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     if (!jsonObject.getBoolean("error")) {
+                        progressDialog.dismiss();
                         Toast.makeText(getContext(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                         sharedPrefManager.updateUserDesc(input);
                         updateUI.updateDESC(input);
                         getActivity().onBackPressed();
                     } else if (jsonObject.getBoolean("error")) {
+                        progressDialog.dismiss();
                         Toast.makeText(getContext(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
@@ -325,6 +348,8 @@ public class EditFragmentUserProfile extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                progressDialog.dismiss();
+                Toast.makeText(getContext(), "Can't update the description", Toast.LENGTH_SHORT).show();
             }
         }) {
 

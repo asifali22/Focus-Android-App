@@ -221,6 +221,7 @@ public class UserProfileOwner extends AppCompatActivity
         editDesc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                about = sharedPrefManager.getAboutUser();
                 Bundle bundle = new Bundle();
                 bundle.putInt("FLAG_FINAL", DESC);
                 bundle.putInt("MAX",500);
@@ -235,6 +236,7 @@ public class UserProfileOwner extends AppCompatActivity
         editInterest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                aoi = sharedPrefManager.getAreaOfInterest();
                 Bundle bundle = new Bundle();
                 bundle.putInt("FLAG_FINAL", INTEREST);
                 bundle.putString("INTEREST", aoi);
@@ -248,6 +250,7 @@ public class UserProfileOwner extends AppCompatActivity
         editOrg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                org = sharedPrefManager.getOrganisation();
                 Bundle bundle = new Bundle();
                 bundle.putInt("FLAG_FINAL", ORG);
                 bundle.putString("ORGANISATION", org);
@@ -334,6 +337,7 @@ public class UserProfileOwner extends AppCompatActivity
 
         switch (id){
             case R.id.action_edit:
+                status = sharedPrefManager.getUserStatus();
                 Bundle bundle = new Bundle();
                 bundle.putInt("FLAG_FINAL", STATUS_CODE);
                 bundle.putString("STATUS", status);

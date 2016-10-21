@@ -50,7 +50,7 @@ public class SharedPrefManager {
         sharedPreferences.edit().putBoolean("logged_in", status).apply();
     }
 
-    public void setUserStatusOnLogin(String user_name,String user_email,String api_key,String fcm_token,String su_user,String user_pic,int user_id, String user_status,String about,String area_of_interest,String organisation){
+    public void setUserStatusOnLogin(String user_name,String user_email,String api_key,String fcm_token,String su_user,String user_pic,int user_id, String user_status,String about,String area_of_interest,String organisation, int not_post, int not_sess){
 
         sharedPreferences.edit().putString("user_name", user_name).apply();
         sharedPreferences.edit().putString("user_email", user_email).apply();
@@ -64,6 +64,24 @@ public class SharedPrefManager {
         sharedPreferences.edit().putString("about_user",about).apply();
         sharedPreferences.edit().putString("area_of_interest",area_of_interest).apply();
         sharedPreferences.edit().putString("organisation",organisation).apply();
+        sharedPreferences.edit().putInt("not_post",not_post).apply();
+        sharedPreferences.edit().putInt("not_sess",not_sess).apply();
+    }
+
+    public int getNotPost(){
+        return sharedPreferences.getInt("not_post",0);
+    }
+
+    public int getNotSess(){
+        return sharedPreferences.getInt("not_sess",0);
+    }
+
+    public void setNotSess(int not_sess){
+        sharedPreferences.edit().putInt("not_sess",not_sess).apply();
+    }
+
+    public void setNotPost(int not_post){
+        sharedPreferences.edit().putInt("not_post",not_post).apply();
     }
 
     public void updateUserDesc(String about){

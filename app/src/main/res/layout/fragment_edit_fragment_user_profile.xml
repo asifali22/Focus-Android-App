@@ -50,7 +50,6 @@
             <EditText
                 android:id="@+id/insideEditText"
                 android:layout_width="match_parent"
-                android:selectAllOnFocus="true"
                 android:focusable="true"
                 android:inputType="textCapSentences"
                 android:layout_height="wrap_content" />

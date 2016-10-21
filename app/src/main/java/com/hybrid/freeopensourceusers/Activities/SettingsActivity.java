@@ -1,256 +1,291 @@
 package com.hybrid.freeopensourceusers.Activities;
 
-
-import android.annotation.TargetApi;
-import android.content.Context;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
-import android.text.TextUtils;
+
+import android.preference.PreferenceScreen;
+import android.preference.SwitchPreference;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.hybrid.freeopensourceusers.R;
+import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
+import com.hybrid.freeopensourceusers.Utility.Utility;
+import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
 
-import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-/**
- * A {@link PreferenceActivity} that presents a set of application settings. On
- * handset devices, settings are presented as a single list. On tablets,
- * settings are split by category, with category headers shown to the left of
- * the list of settings.
- * <p>
- * See <a href="http://developer.android.com/design/patterns/settings.html">
- * Android Design: Settings</a> for design guidelines and the <a
- * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
- * API Guide</a> for more information on developing a Settings UI.
- */
-public class SettingsActivity extends AppCompatPreferenceActivity {
-    /**
-     * A preference value change listener that updates the preference's summary
-     * to reflect its new value.
-     */
-    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object value) {
-            String stringValue = value.toString();
+import java.util.HashMap;
+import java.util.Map;
 
-            if (preference instanceof ListPreference) {
-                // For list preferences, look up the correct display value in
-                // the preference's 'entries' list.
-                ListPreference listPreference = (ListPreference) preference;
-                int index = listPreference.findIndexOfValue(stringValue);
+public class SettingsActivity extends AppCompatActivity {
 
-                // Set the summary to reflect the new value.
-                preference.setSummary(
-                        index >= 0
-                                ? listPreference.getEntries()[index]
-                                : null);
-
-            } else if (preference instanceof RingtonePreference) {
-                // For ringtone preferences, look up the correct display value
-                // using RingtoneManager.
-                if (TextUtils.isEmpty(stringValue)) {
-                    // Empty values correspond to 'silent' (no ringtone).
-                    preference.setSummary(R.string.pref_ringtone_silent);
-
-                } else {
-                    Ringtone ringtone = RingtoneManager.getRingtone(
-                            preference.getContext(), Uri.parse(stringValue));
-
-                    if (ringtone == null) {
-                        // Clear the summary if there was a lookup error.
-                        preference.setSummary(null);
-                    } else {
-                        // Set the summary to reflect the new ringtone display
-                        // name.
-                        String name = ringtone.getTitle(preference.getContext());
-                        preference.setSummary(name);
-                    }
-                }
-
-            } else {
-                // For all other preferences, set the summary to the value's
-                // simple string representation.
-                preference.setSummary(stringValue);
-            }
-            return true;
-        }
-    };
-
-    /**
-     * Helper method to determine if the device has an extra-large screen. For
-     * example, 10" tablets are extra-large.
-     */
-    private static boolean isXLargeTablet(Context context) {
-        return (context.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
-    }
-
-    /**
-     * Binds a preference's summary to its value. More specifically, when the
-     * preference's value is changed, its summary (line of text below the
-     * preference title) is updated to reflect the value. The summary is also
-     * immediately updated upon calling this method. The exact display format is
-     * dependent on the type of preference.
-     *
-     * @see #sBindPreferenceSummaryToValueListener
-     */
-    private static void bindPreferenceSummaryToValue(Preference preference) {
-        // Set the listener to watch for value changes.
-        preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
-
-        // Trigger the listener immediately with the preference's
-        // current value.
-        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-                PreferenceManager
-                        .getDefaultSharedPreferences(preference.getContext())
-                        .getString(preference.getKey(), ""));
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupActionBar();
+        setContentView(R.layout.activity_settings);
+
+
+
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        SettingFragment settingFragment = new SettingFragment();
+        fragmentTransaction.add(android.R.id.content, settingFragment, "SETTING_FRAGMENT");
+        fragmentTransaction.commit();
+
+
+
     }
 
-    /**
-     * Set up the {@link android.app.ActionBar}, if the API is available.
-     */
-    private void setupActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            // Show the Up button in the action bar.
-            actionBar.setDisplayHomeAsUpEnabled(true);
+    public static class SettingFragment extends PreferenceFragment{
+
+        private static int FLAG;
+        private static final int CANCEL = 0;
+        private VolleySingleton volleySingleton;
+        private RequestQueue requestQueue;
+        private static final int ALLOW = 1;
+        private  SharedPrefManager sharedPrefManager;
+        private ProgressDialog progressDialog;
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.app_preferences);
+            sharedPrefManager = new SharedPrefManager(getActivity());
+            progressDialog = new ProgressDialog(getActivity());
+            volleySingleton = VolleySingleton.getInstance();
+            requestQueue = volleySingleton.getRequestQueue();
+
+            // Need to be implemented
+            PreferenceScreen rateSettings = (PreferenceScreen) findPreference("rateSettings");
+            rateSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    Toast.makeText(getActivity(), "Implementation needed - url for play store", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });
+
+            PreferenceScreen contactSettings = (PreferenceScreen) findPreference("contactSettings");
+            contactSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent (Intent.ACTION_VIEW , Uri.parse("mailto:" + "focusvce@gmail.com"));
+                    startActivity(intent);
+                    return true;
+                }
+            });
+
+
+            final SwitchPreference postFeedNotification = (SwitchPreference) findPreference("postFeedNotification");
+                int notPostStatus = sharedPrefManager.getNotPost();
+
+                if (notPostStatus == 1){
+                    postFeedNotification.setChecked(true);
+                }else
+                    postFeedNotification.setChecked(false);
+
+
+
+            final SwitchPreference sessionFeedNotification = (SwitchPreference) findPreference("sessionFeedNotification");
+            int notSessStatus = sharedPrefManager.getNotSess();
+
+            if (notSessStatus == 1)
+                sessionFeedNotification.setChecked(true);
+            else
+                sessionFeedNotification.setChecked(false);
+
+
+           postFeedNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+               @Override
+               public boolean onPreferenceChange(Preference preference, Object newValue) {
+                   boolean switched = ((SwitchPreference) preference).isChecked();
+                   if (switched){
+                        FLAG = 0;
+                       sharedPrefManager.setNotPost(CANCEL);
+                       updateNotPostOnServer(postFeedNotification,CANCEL, FLAG);
+                   }else {
+                       FLAG = 1;
+
+                       sharedPrefManager.setNotPost(ALLOW);
+                       updateNotPostOnServer(postFeedNotification, ALLOW, FLAG);
+                   }
+                   return true;
+               }
+           });
+
+
+            sessionFeedNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    boolean switched = ((SwitchPreference) preference).isChecked();
+                    if (switched){
+                        FLAG = 0;
+                        sharedPrefManager.setNotSess(CANCEL);
+                        updateNotSessOnServer(sessionFeedNotification,CANCEL, FLAG);
+                    }else {
+                        FLAG = 1;
+                        sharedPrefManager.setNotSess(ALLOW);
+                        updateNotSessOnServer(sessionFeedNotification, ALLOW, FLAG);
+                    }
+
+                    return true;
+                }
+            });
+
+
+
+        }
+
+        private void updateNotSessOnServer(final SwitchPreference sessionFeedNotification,final int value,final int flag){
+            String URL = Utility.getIPADDRESS() + "updateUserNotSess";
+            progressDialog  = ProgressDialog.show(getActivity(), "Syncing on server", "Please wait...", false, false);
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (!jsonObject.getBoolean("error")) {
+                            progressDialog.dismiss();
+                            if (flag ==0)
+                                sessionFeedNotification.setChecked(false);
+                            else
+                                sessionFeedNotification.setChecked(true);
+
+                            Toast.makeText(getActivity(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+
+                        } else if (jsonObject.getBoolean("error")) {
+                            progressDialog.dismiss();
+                            Toast.makeText(getActivity(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    progressDialog.dismiss();
+                    Toast.makeText(getActivity(), "Couldn't process your request", Toast.LENGTH_SHORT).show();
+                }
+            }) {
+
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("Authorization", sharedPrefManager.getApiKey());
+                    return params;
+                }
+
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("not_sess", Integer.toString(value));
+                    return params;
+                }
+
+            };
+            requestQueue.add(stringRequest);
+        }
+
+        private void updateNotPostOnServer(final SwitchPreference postFeedNotification, final int value, final int flag)
+        {
+            String URL = Utility.getIPADDRESS() + "updateUserNotPost";
+            progressDialog  = ProgressDialog.show(getActivity(), "Syncing on server", "Please wait...", false, false);
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (!jsonObject.getBoolean("error")) {
+                            progressDialog.dismiss();
+                            if (flag ==0)
+                                postFeedNotification.setChecked(false);
+                            else
+                                postFeedNotification.setChecked(true);
+
+                            Toast.makeText(getActivity(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+
+                        } else if (jsonObject.getBoolean("error")) {
+                            progressDialog.dismiss();
+                            Toast.makeText(getActivity(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    progressDialog.dismiss();
+                    Toast.makeText(getActivity(), "Couldn't process your request", Toast.LENGTH_SHORT).show();
+                }
+            }) {
+
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("Authorization", sharedPrefManager.getApiKey());
+                    return params;
+                }
+
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("not_post", Integer.toString(value));
+                    return params;
+                }
+
+            };
+            requestQueue.add(stringRequest);
+
+
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
-    public boolean onIsMultiPane() {
-        return isXLargeTablet(this);
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public void onBuildHeaders(List<Header> target) {
-        loadHeadersFromResource(R.xml.pref_headers, target);
-    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
 
-    /**
-     * This method stops fragment injection in malicious applications.
-     * Make sure to deny any unknown fragments here.
-     */
-    protected boolean isValidFragment(String fragmentName) {
-        return PreferenceFragment.class.getName().equals(fragmentName)
-                || GeneralPreferenceFragment.class.getName().equals(fragmentName)
-                || DataSyncPreferenceFragment.class.getName().equals(fragmentName)
-                || NotificationPreferenceFragment.class.getName().equals(fragmentName);
-    }
-
-    /**
-     * This fragment shows general preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class GeneralPreferenceFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_general);
-            setHasOptionsMenu(true);
-
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_text"));
-            bindPreferenceSummaryToValue(findPreference("example_list"));
-        }
-
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+        switch (id) {
+            case android.R.id.home:
+                this.finish();
                 return true;
-            }
-            return super.onOptionsItemSelected(item);
+
         }
+
+        return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * This fragment shows notification preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class NotificationPreferenceFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_notification);
-            setHasOptionsMenu(true);
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
-        }
+    public boolean onCreateOptionsMenu(Menu menu) {
 
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
-        }
-    }
+        MenuInflater inflater = getMenuInflater();
 
-    /**
-     * This fragment shows data and sync preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class DataSyncPreferenceFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_data_sync);
-            setHasOptionsMenu(true);
+        inflater.inflate(R.menu.comment_menu_trending, menu);
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("sync_frequency"));
-        }
-
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
-        }
+        return true;
     }
 }

@@ -7,16 +7,13 @@
     <item
         android:id="@+id/clearSuggestion"
         android:title="@string/clearSuggestion"
-        android:icon="@drawable/ic_clear"/>
+        android:icon="@drawable/ic_clear"
+        android:orderInCategory="98"/>
 
     <item
         android:id="@+id/action_settings_open_userProfile"
         android:title="Profile"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_settings_main"
-        android:title="Settings"
+        android:orderInCategory="99"
         app:showAsAction="never" />
 
     <item
@@ -24,6 +21,13 @@
         android:orderInCategory="100"
         android:title="Logout"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_settings_main"
+        android:title="Settings"
+        android:orderInCategory="101"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/action_search"
         android:title="@string/search_hint"

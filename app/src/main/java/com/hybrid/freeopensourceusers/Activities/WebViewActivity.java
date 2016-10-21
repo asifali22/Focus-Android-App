@@ -13,8 +13,11 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.hybrid.freeopensourceusers.R;
+
+import java.io.File;
 
 public class WebViewActivity extends AppCompatActivity {
     private WebView myWebView;
@@ -36,7 +39,7 @@ public class WebViewActivity extends AppCompatActivity {
         if (webViewToolbar != null)
             setSupportActionBar(webViewToolbar);
 
-
+        enableHTML5AppCache();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         myWebView.setWebChromeClient(new WebChromeClient() {
@@ -114,6 +117,24 @@ public class WebViewActivity extends AppCompatActivity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+
+    private void enableHTML5AppCache() {
+
+        myWebView.getSettings().setDomStorageEnabled(true);
+                
+        File dir = getCacheDir();
+
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        myWebView.getSettings().setAppCachePath(dir.getPath());
+        myWebView.getSettings().setAllowFileAccess(true);
+        myWebView.getSettings().setAppCacheEnabled(true);
+
+        myWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
     }
 
 }

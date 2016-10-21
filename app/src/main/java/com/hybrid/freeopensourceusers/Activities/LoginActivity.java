@@ -195,7 +195,10 @@ public class LoginActivity extends AppCompatActivity implements
                                                     String about_user = jsonObject.get("about_user").toString();
                                                     String area_of_interest = jsonObject.get("area_of_interest").toString();
                                                     String organisation = jsonObject.get("organisation").toString();
-                                                    sharedPrefManager.setUserStatusOnLogin(user_name,user_email,api_key,fcm_token,su_user,user_pic,user_id,status,about_user,area_of_interest,organisation);
+                                                    int not_post = jsonObject.getInt("not_post");
+                                                    int not_sess = jsonObject.getInt("not_sess");
+
+                                                    sharedPrefManager.setUserStatusOnLogin(user_name,user_email,api_key,fcm_token,su_user,user_pic,user_id,status,about_user,area_of_interest,organisation, not_post, not_sess);
                                                     Toast.makeText(LoginActivity.this, "Welcome " + user_name, Toast.LENGTH_LONG).show();
                                                     Intent i = new Intent(LoginActivity.this, FirstActivity.class);
                                                     i.putExtra("login_intent",true);
@@ -300,7 +303,10 @@ public class LoginActivity extends AppCompatActivity implements
                                     String about_user = jsonObject.get("about_user").toString();
                                     String area_of_interest = jsonObject.get("area_of_interest").toString();
                                     String organisation = jsonObject.get("organisation").toString();
-                                    sharedPrefManager.setUserStatusOnLogin(user_name,user_email,api_key,fcm_token,su_user,user_pic,user_id,status,about_user,area_of_interest,organisation);
+                                    int not_post = jsonObject.getInt("not_post");
+                                    int not_sess = jsonObject.getInt("not_sess");
+
+                                    sharedPrefManager.setUserStatusOnLogin(user_name,user_email,api_key,fcm_token,su_user,user_pic,user_id,status,about_user,area_of_interest,organisation, not_post, not_sess);
                                     Toast.makeText(LoginActivity.this, "Welcome " + jsonObject.get("name").toString(), Toast.LENGTH_LONG).show();
                                     hideProgressDialog();
                                     Intent i = new Intent(LoginActivity.this, FirstActivity.class);
@@ -476,7 +482,11 @@ public class LoginActivity extends AppCompatActivity implements
                                     String about_user = jsonObject.get("about_user").toString();
                                     String area_of_interest = jsonObject.get("area_of_interest").toString();
                                     String organisation = jsonObject.get("organisation").toString();
-                                    sharedPrefManager.setUserStatusOnLogin(user_name,user_email,api_key,fcm_token,su_user,user_pic,user_id,status,about_user,area_of_interest,organisation);
+                                    int not_post = jsonObject.getInt("not_post");
+                                    int not_sess = jsonObject.getInt("not_sess");
+
+                                    sharedPrefManager.setUserStatusOnLogin(user_name,user_email,api_key,fcm_token,su_user,user_pic,user_id,status,about_user,area_of_interest,organisation, not_post, not_sess);
+
                                     Toast.makeText(LoginActivity.this, "Welcome " + acct.getDisplayName(), Toast.LENGTH_LONG).show();
                                     Intent i = new Intent(LoginActivity.this, FirstActivity.class);
                                     i.putExtra("login_intent",true);

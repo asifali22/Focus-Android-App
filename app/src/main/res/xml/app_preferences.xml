@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Notifications">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="postFeedNotification"
+            android:title="Trending notification" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="sessionFeedNotification"
+            android:title="Session notification" />
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Contribute">
+        <PreferenceScreen
+            android:key="githubSettings"
+            android:summary="Help us improve FOCUS"
+            android:title="GitHub" >
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/asifali22/Focus-Android-App"
+                />
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:key="rateSettings"
+            android:title="Rate us" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="About and help">
+        <PreferenceScreen
+            android:key="contactSettings"
+            android:summary="Question? Need help?"
+            android:title="Contact us" />
+        <PreferenceScreen
+            android:key="aboutSettings"
+            android:selectable="false"
+            android:summary="version 1.0"
+            android:title="About" />
+    </PreferenceCategory>
+</PreferenceScreen>
