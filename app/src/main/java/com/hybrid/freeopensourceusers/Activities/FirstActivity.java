@@ -65,6 +65,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.Callback.FabClickListener;
+import com.hybrid.freeopensourceusers.Callback.NotificationCallback;
 import com.hybrid.freeopensourceusers.Callback.PostFeedLoadingListener;
 import com.hybrid.freeopensourceusers.Callback.TabClickListener;
 import com.hybrid.freeopensourceusers.PojoClasses.PostFeed;
@@ -491,11 +492,11 @@ public class FirstActivity extends AppCompatActivity implements
             final Bundle b = intent.getExtras();
             if(b.getInt("flag",0)==0) {
                 result = "Refresh to see new feeds";
-                action = "Dismiss";
+                action = "Refresh";
             }
             else if(b.getInt("flag",0) ==1){
-                result = "New comment";
-                action = "See";
+                result = "New comment on your post";
+                action = "View";
             }
 
 
@@ -503,8 +504,12 @@ public class FirstActivity extends AppCompatActivity implements
             snackBar.setAction(action, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(b.getInt("flag",0)==0)
-                    snackBar.dismiss();
+                    if(b.getInt("flag",0)==0){
+                        Fragment fragment = (Fragment) mAdapter.instantiateItem(mViewPager,mViewPager.getCurrentItem());
+                        if (fragment instanceof NotificationCallback)
+                            ((NotificationCallback) fragment).notifyUser();
+                    }
+
                     else if(b.getInt("flag",0)==1){
                         String api_key = b.getString("API_KEY");
                         int flag_extra = b.getInt("FLAG");

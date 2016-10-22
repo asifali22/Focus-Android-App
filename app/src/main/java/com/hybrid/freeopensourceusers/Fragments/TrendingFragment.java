@@ -30,6 +30,7 @@ import com.hybrid.freeopensourceusers.Activities.New_Post;
 import com.hybrid.freeopensourceusers.Adapters.RecyclerTrendingAdapter;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.Callback.FabClickListener;
+import com.hybrid.freeopensourceusers.Callback.NotificationCallback;
 import com.hybrid.freeopensourceusers.Callback.PostFeedLoadingListener;
 import com.hybrid.freeopensourceusers.Callback.TabClickListener;
 import com.hybrid.freeopensourceusers.PojoClasses.PostFeed;
@@ -54,7 +55,7 @@ import uk.co.deanwild.materialshowcaseview.shape.Shape;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TrendingFragment extends Fragment implements PostFeedLoadingListener,FabClickListener,TabClickListener{
+public class TrendingFragment extends Fragment implements PostFeedLoadingListener,FabClickListener,TabClickListener, NotificationCallback{
 
     private static final int REQUEST_CODE = 100;
     private static final String LIKE1 = "like1";
@@ -247,5 +248,18 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
     @Override
     public void tabListener() {
         trendingRecyclerView.smoothScrollToPosition(0);
+    }
+
+    @Override
+    public void notifyUser() {
+        if (sharedPrefManager.isOnline()) {
+            swipeRefreshLayout.setRefreshing(true);
+            new TaskLoadPostFeed(TrendingFragment.this).execute();
+
+        }
+        else {
+            swipeRefreshLayout.setRefreshing(false);
+            Toast.makeText(getContext(),"No Network",Toast.LENGTH_SHORT).show();
+        }
     }
 }
