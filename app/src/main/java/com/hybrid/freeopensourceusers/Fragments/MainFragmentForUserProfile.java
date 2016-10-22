@@ -22,13 +22,13 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.hybrid.freeopensourceusers.Activities.RegisterActivity;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.R;
 import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
-import com.hybrid.freeopensourceusers.UserProfileStuff.EditProfile;
 import com.hybrid.freeopensourceusers.UserProfileStuff.UserProfileOwner;
 import com.hybrid.freeopensourceusers.Utility.Utility;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
@@ -345,6 +345,22 @@ public class MainFragmentForUserProfile extends Fragment {
 
 
         };
+        stringRequest.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        });
         requestQueue.add(stringRequest);
 
 

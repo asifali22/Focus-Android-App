@@ -307,6 +307,7 @@
             android:transitionName="profile"
             app:civ_border_color="@android:color/white"
             app:civ_border_width="2dp"
+            android:onClick="showFullProfilePhoto"
             app:layout_behavior="com.hybrid.freeopensourceusers.UserProfileStuff.AvatarImageBehavior" />
 
     </android.support.design.widget.CoordinatorLayout>

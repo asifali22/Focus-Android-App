@@ -12,6 +12,7 @@ import android.os.Looper;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -19,6 +20,7 @@ import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +31,7 @@ import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.signature.StringSignature;
 import com.hybrid.freeopensourceusers.Activities.RegisterActivity;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
@@ -403,7 +406,28 @@ public class UserProfileOwner extends AppCompatActivity
                 .commit();
     }
 
+    public void showFullProfilePhoto(View view) {
+        MyTextDrawable myTextDrawable = new MyTextDrawable();
+        LayoutInflater factory = LayoutInflater.from(this);
+        final View dialogMainView = factory.inflate(R.layout.fragment_image_post, null);
 
+        final AlertDialog myDialog = new AlertDialog.Builder(this).create();
+
+        ImageView mImageView = (ImageView) dialogMainView.findViewById(R.id.myImagePostContainer);
+
+        myDialog.setView(dialogMainView);
+        if (!sharedPrefManager.getUserImage().isEmpty())
+            Glide.with(this)
+                    .load(sharedPrefManager.getUserImage())
+                    .fitCenter()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.loading)
+                    .dontAnimate()
+                    .error(myTextDrawable.setTextDrawableForError("Error!"))
+                    .into(mImageView);
+
+        myDialog.show();
+    }
 
 
     public static class LoadScaledImageTask implements Runnable {
