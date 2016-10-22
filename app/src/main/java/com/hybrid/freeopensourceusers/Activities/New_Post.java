@@ -67,6 +67,7 @@ import org.jsoup.select.Elements;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -183,8 +184,9 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
 
     public String getUrl(String urll) {
         Elements metaOgImage = null;
-        connection = Jsoup.connect(urll).userAgent("Mozilla");
         try {
+        connection = Jsoup.connect(urll).userAgent("Mozilla");
+
             document = connection.get();
             if (!document.select("meta[property=og:image]").isEmpty())
             metaOgImage = document.select("meta[property=og:image]");
@@ -230,7 +232,10 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                 }
 
             }
-        } catch (IOException e) {
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            Toast.makeText(this,"Chech the URL",Toast.LENGTH_LONG).show();
+        } catch (IOException e){
             e.printStackTrace();
         }
 
@@ -262,7 +267,8 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                     input = input.substring(0, end);
                 else
                     input = input.substring(0, input.length());
-                getImageUrl = getUrl(input);
+                    getImageUrl = getUrl(input);
+
 
                 if(finalDesc!=null)
                 finalDesc = finalDesc.trim();
@@ -287,15 +293,20 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            if (title.isEmpty())
+                                input_title.setError("Title can't be empty");
+                            else if (desc.isEmpty())
+                                input_desc.setError("Description can't be empty");
+                            if(!title.isEmpty()&&!desc.isEmpty())
                             showDialog(userImageText, userName, title, desc, "");
                         }
                     });
 
                 }
-                else if (title.isEmpty())
+                /*else if (title.isEmpty())
                     input_title.setError("Title can't be empty");
                 else if (desc.isEmpty())
-                    input_desc.setError("Description can't be empty");
+                    input_desc.setError("Description can't be empty");*/
 
 
         }

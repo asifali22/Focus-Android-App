@@ -41,7 +41,9 @@ public class SharedPrefManager {
     public boolean getLoggedinStatus(){
         return sharedPreferences.getBoolean("logged_in",false);
     }
-
+    public void setUserImage(String image){
+        sharedPreferences.edit().putString("user_pic",image).apply();
+    }
     public void setFirstRunStatus(boolean status){
         sharedPreferencesFirstRun.edit().putBoolean("firstrun",status).apply();
     }

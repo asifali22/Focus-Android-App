@@ -37,6 +37,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 
+import com.bumptech.glide.signature.StringSignature;
 import com.hybrid.freeopensourceusers.Activities.session_details;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.R;
@@ -52,6 +53,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -107,12 +109,17 @@ public class UserProfile extends AppCompatActivity
 
         MyTextDrawable myTextDrawable = new MyTextDrawable();
 
-        Glide.with(this)
+        /*Glide.with(this)
                 .load(profilepic)
                 .fitCenter()
                 .dontAnimate()
                 .placeholder(R.drawable.blank_person_final)
                 .error(myTextDrawable.setTextDrawable(name))
+                .skipMemoryCache(true)
+                .into(avatar);*/
+        Glide.with(this)
+                .load(profilepic)
+                .signature(new StringSignature(UUID.randomUUID().toString()))
                 .into(avatar);
 
         Glide.with(this)

@@ -236,8 +236,8 @@ public class new_session_add extends AppCompatActivity {
             return;
         }
 
-        if (bitmap == null || getImageUri(this, bitmap).toString().isEmpty()) {
-            Snackbar.make(coordinatorLayout, "Please select an image for the session", Snackbar.LENGTH_SHORT).show();
+        if (bitmap == null || (getImageUri(this, bitmap)==null)) {
+            Snackbar.make(coordinatorLayout, "Allow permission to access images", Snackbar.LENGTH_SHORT).show();
             return;
         }
 
@@ -268,14 +268,16 @@ public class new_session_add extends AppCompatActivity {
             if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
                 return Uri.parse(path);
-            } else
+            } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }
         } else {
             String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
             return Uri.parse(path);
         }
-
         return null;
+
+
     }
 
 

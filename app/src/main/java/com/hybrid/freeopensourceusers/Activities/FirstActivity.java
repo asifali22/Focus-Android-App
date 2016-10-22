@@ -4,9 +4,11 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
 import android.database.Cursor;
@@ -19,6 +21,7 @@ import android.provider.SearchRecentSuggestions;
 import android.support.annotation.AnimatorRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -54,6 +57,7 @@ import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
@@ -106,11 +110,14 @@ public class FirstActivity extends AppCompatActivity implements
     private SharedPrefManager sharedPrefManager;
     private AppBarLayout appBarLayout;
     private Bundle b = null;
+    int flag=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
+        IntentFilter filter = new IntentFilter("FIRST_ACTIVITY");
+        registerReceiver(myReceiver, filter);
         b = getIntent().getExtras();
         if(b!=null)
         if(b.getBoolean("login_intent",false)==true)
@@ -322,6 +329,12 @@ public class FirstActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(myReceiver);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
@@ -470,6 +483,43 @@ public class FirstActivity extends AppCompatActivity implements
 
     }
 
+    private final BroadcastReceiver myReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // refresh UI or finish activity and start again
+            String result="",action="";
+            final Bundle b = intent.getExtras();
+            if(b.getInt("flag",0)==0) {
+                result = "Refresh to see new feeds";
+                action = "Dismiss";
+            }
+            else if(b.getInt("flag",0) ==1){
+                result = "New comment";
+                action = "See";
+            }
 
+
+            final Snackbar snackBar = Snackbar.make(findViewById(R.id.main_layout), result, Snackbar.LENGTH_INDEFINITE);
+            snackBar.setAction(action, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(b.getInt("flag",0)==0)
+                    snackBar.dismiss();
+                    else if(b.getInt("flag",0)==1){
+                        String api_key = b.getString("API_KEY");
+                        int flag_extra = b.getInt("FLAG");
+                        SharedPreferences sharedPreferences = getSharedPreferences("comment",MODE_PRIVATE);
+                        String pid=sharedPreferences.getString("comment_pid",null);
+                        Intent i = new Intent(FirstActivity.this, Comment_Actiivity.class);
+                        i.putExtra("API_KEY",api_key);
+                        i.putExtra("FLAG",flag_extra);
+                        i.putExtra("PID_VALUE",pid);
+                        startActivity(i);
+                    }
+                }
+            });
+            snackBar.show();
+        }
+    };
 
 }
