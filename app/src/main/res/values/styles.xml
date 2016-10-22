@@ -11,7 +11,7 @@
         <item name="searchViewStyle">@style/MySearchViewStyle</item>
 
         <item name="android:windowReenterTransition" tools:targetApi="lollipop">@transition/slide</item>
-
+       
        </style>
 
 
@@ -40,6 +40,7 @@
         <item name="colorAccent">@color/colorAccentUserProfile</item>
         <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
         <item name="android:windowTransitionBackgroundFadeDuration" tools:targetApi="lollipop">300</item>
+
 
     </style>
 

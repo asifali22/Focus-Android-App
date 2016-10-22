@@ -120,7 +120,6 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity android:name=".UserProfileStuff.UserPostAndSessionActivity" />
-        <activity android:name=".UserProfileStuff.EditProfile" />
         <activity
             android:name=".UserProfileStuff.UserProfileOwner"
             android:theme="@style/UserProfileTheme" />
