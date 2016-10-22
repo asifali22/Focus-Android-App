@@ -1,10 +1,12 @@
 package com.hybrid.freeopensourceusers.Activities;
 
+import android.annotation.TargetApi;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
@@ -12,6 +14,8 @@ import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.transition.Explode;
+import android.transition.Slide;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -52,8 +56,9 @@ public class SettingsActivity extends AppCompatActivity {
         fragmentTransaction.commit();
 
 
-
     }
+
+
 
     public static class SettingFragment extends PreferenceFragment{
 
@@ -112,19 +117,18 @@ public class SettingsActivity extends AppCompatActivity {
                 sessionFeedNotification.setChecked(false);
 
 
+
+
            postFeedNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                @Override
                public boolean onPreferenceChange(Preference preference, Object newValue) {
                    boolean switched = ((SwitchPreference) preference).isChecked();
                    if (switched){
-                        FLAG = 0;
                        sharedPrefManager.setNotPost(CANCEL);
-                       updateNotPostOnServer(postFeedNotification,CANCEL, FLAG);
+                       updateNotificationOnServer(sharedPrefManager.getNotPost(), sharedPrefManager.getNotSess());
                    }else {
-                       FLAG = 1;
-
                        sharedPrefManager.setNotPost(ALLOW);
-                       updateNotPostOnServer(postFeedNotification, ALLOW, FLAG);
+                       updateNotificationOnServer(sharedPrefManager.getNotPost(), sharedPrefManager.getNotSess());
                    }
                    return true;
                }
@@ -136,25 +140,21 @@ public class SettingsActivity extends AppCompatActivity {
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     boolean switched = ((SwitchPreference) preference).isChecked();
                     if (switched){
-                        FLAG = 0;
                         sharedPrefManager.setNotSess(CANCEL);
-                        updateNotSessOnServer(sessionFeedNotification,CANCEL, FLAG);
+                        updateNotificationOnServer(sharedPrefManager.getNotPost(), sharedPrefManager.getNotSess());
                     }else {
-                        FLAG = 1;
                         sharedPrefManager.setNotSess(ALLOW);
-                        updateNotSessOnServer(sessionFeedNotification, ALLOW, FLAG);
+                        updateNotificationOnServer(sharedPrefManager.getNotPost(), sharedPrefManager.getNotSess());
                     }
 
                     return true;
                 }
             });
 
-
-
         }
 
-        private void updateNotSessOnServer(final SwitchPreference sessionFeedNotification,final int value,final int flag){
-            String URL = Utility.getIPADDRESS() + "updateUserNotSess";
+        private void updateNotificationOnServer(final int not_post ,final int not_sess){
+            String URL = Utility.getIPADDRESS() + "updateUserNotification";
             progressDialog  = ProgressDialog.show(getActivity(), "Syncing on server", "Please wait...", false, false);
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
                 @Override
@@ -163,11 +163,6 @@ public class SettingsActivity extends AppCompatActivity {
                         JSONObject jsonObject = new JSONObject(response);
                         if (!jsonObject.getBoolean("error")) {
                             progressDialog.dismiss();
-                            if (flag ==0)
-                                sessionFeedNotification.setChecked(false);
-                            else
-                                sessionFeedNotification.setChecked(true);
-
                             Toast.makeText(getActivity(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
 
                         } else if (jsonObject.getBoolean("error")) {
@@ -196,7 +191,8 @@ public class SettingsActivity extends AppCompatActivity {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<>();
-                    params.put("not_sess", Integer.toString(value));
+                    params.put("not_post", Integer.toString(not_post));
+                    params.put("not_sess", Integer.toString(not_sess));
                     return params;
                 }
 
@@ -204,59 +200,7 @@ public class SettingsActivity extends AppCompatActivity {
             requestQueue.add(stringRequest);
         }
 
-        private void updateNotPostOnServer(final SwitchPreference postFeedNotification, final int value, final int flag)
-        {
-            String URL = Utility.getIPADDRESS() + "updateUserNotPost";
-            progressDialog  = ProgressDialog.show(getActivity(), "Syncing on server", "Please wait...", false, false);
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(response);
-                        if (!jsonObject.getBoolean("error")) {
-                            progressDialog.dismiss();
-                            if (flag ==0)
-                                postFeedNotification.setChecked(false);
-                            else
-                                postFeedNotification.setChecked(true);
 
-                            Toast.makeText(getActivity(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-
-                        } else if (jsonObject.getBoolean("error")) {
-                            progressDialog.dismiss();
-                            Toast.makeText(getActivity(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    progressDialog.dismiss();
-                    Toast.makeText(getActivity(), "Couldn't process your request", Toast.LENGTH_SHORT).show();
-                }
-            }) {
-
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> params = new HashMap<>();
-                    params.put("Authorization", sharedPrefManager.getApiKey());
-                    return params;
-                }
-
-                @Override
-                protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<>();
-                    params.put("not_post", Integer.toString(value));
-                    return params;
-                }
-
-            };
-            requestQueue.add(stringRequest);
-
-
-        }
     }
 
 

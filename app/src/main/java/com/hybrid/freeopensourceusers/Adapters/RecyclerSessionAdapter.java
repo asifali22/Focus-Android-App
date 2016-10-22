@@ -198,6 +198,15 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
         void openSessionDetails(SessionFeed sessionFeed, ViewholderSessionFeed viewHolder);
     }
 
+
+
+    @Override
+    public void onViewDetachedFromWindow(RecyclerSessionAdapter.ViewholderSessionFeed holder) {
+        super.onViewDetachedFromWindow(holder);
+        holder.itemView.clearAnimation();
+    }
+
+
     @Override
     public int getItemCount() {
         return sessiofeedArrayList.size();

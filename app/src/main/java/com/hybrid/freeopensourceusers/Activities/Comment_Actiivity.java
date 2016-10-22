@@ -20,6 +20,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
+import android.transition.Slide;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -60,6 +62,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.hybrid.freeopensourceusers.R.transition.slide;
 
 public class Comment_Actiivity extends AppCompatActivity {
 
@@ -163,6 +167,8 @@ public class Comment_Actiivity extends AppCompatActivity {
                 android.R.color.holo_red_light);
 
     }
+
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

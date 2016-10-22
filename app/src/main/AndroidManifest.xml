@@ -118,19 +118,17 @@
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
-
-
-
         </activity>
         <activity android:name=".UserProfileStuff.UserPostAndSessionActivity" />
         <activity android:name=".UserProfileStuff.EditProfile" />
         <activity
             android:name=".UserProfileStuff.UserProfileOwner"
             android:theme="@style/UserProfileTheme" />
-        <activity android:name=".Activities.SettingsActivity"
-            android:theme="@style/AppThemeForSetting"
+        <activity
+            android:name=".Activities.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".Activities.FirstActivity"></activity>
+            android:parentActivityName=".Activities.FirstActivity"
+            android:theme="@style/AppThemeForSetting" />
     </application>
 
 </manifest>

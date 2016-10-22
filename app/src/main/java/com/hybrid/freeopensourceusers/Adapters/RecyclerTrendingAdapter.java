@@ -400,8 +400,6 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
     public interface ClickCallback {
         void openProfile(PostFeed postFeed, ViewholderPostFeed viewHolder);
 
-
-
         void likeDislike1(ViewholderPostFeed viewHolder);
 
         void startDialogForNewImage(String image);
@@ -603,11 +601,11 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
     }
 
 
-//    @Override
-//    public void onViewDetachedFromWindow(ViewholderPostFeed holder) {
-//        super.onViewDetachedFromWindow(holder);
-//        holder.itemView.clearAnimation();
-//    }
+    @Override
+    public void onViewDetachedFromWindow(ViewholderPostFeed holder) {
+        super.onViewDetachedFromWindow(holder);
+        holder.itemView.clearAnimation();
+    }
 
 
 

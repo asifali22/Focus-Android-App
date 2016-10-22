@@ -9,7 +9,10 @@
         <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
         <item name="android:windowTransitionBackgroundFadeDuration" tools:targetApi="lollipop">300</item>
         <item name="searchViewStyle">@style/MySearchViewStyle</item>
-    </style>
+
+        <item name="android:windowReenterTransition" tools:targetApi="lollipop">@transition/slide</item>
+
+       </style>
 
 
     <style name="Divider">
@@ -37,6 +40,7 @@
         <item name="colorAccent">@color/colorAccentUserProfile</item>
         <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
         <item name="android:windowTransitionBackgroundFadeDuration" tools:targetApi="lollipop">300</item>
+
     </style>
 
     <style name="MySearchViewStyle" parent="Widget.AppCompat.Light.SearchView">
@@ -49,6 +53,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccentUserProfile</item>
+
+
     </style>
 
 </resources>
