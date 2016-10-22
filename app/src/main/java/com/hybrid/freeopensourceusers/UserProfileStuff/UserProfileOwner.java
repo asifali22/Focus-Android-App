@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
 import com.hybrid.freeopensourceusers.Activities.RegisterActivity;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.Callback.UpdateInterest;
@@ -44,6 +45,7 @@ import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
 import com.isseiaoki.simplecropview.util.Utils;
 
 import java.io.ByteArrayOutputStream;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -125,11 +127,13 @@ public class UserProfileOwner extends AppCompatActivity
 
         Glide.with(this)
                 .load(profilepic)
+                .skipMemoryCache(true)
                 .fitCenter()
                 .dontAnimate()
                 .placeholder(R.drawable.blank_person_final)
                 .error(myTextDrawable.setTextDrawable(name))
                 .into(avatar);
+
 
         Glide.with(this)
                 .load(R.drawable.geometry)

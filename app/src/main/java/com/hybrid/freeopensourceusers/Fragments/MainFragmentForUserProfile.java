@@ -10,20 +10,40 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.hybrid.freeopensourceusers.Activities.RegisterActivity;
+import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.R;
+import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
+import com.hybrid.freeopensourceusers.UserProfileStuff.EditProfile;
 import com.hybrid.freeopensourceusers.UserProfileStuff.UserProfileOwner;
+import com.hybrid.freeopensourceusers.Utility.Utility;
+import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
 import com.isseiaoki.simplecropview.CropImageView;
 import com.isseiaoki.simplecropview.callback.CropCallback;
 import com.isseiaoki.simplecropview.callback.LoadCallback;
 import com.isseiaoki.simplecropview.callback.SaveCallback;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -37,6 +57,7 @@ public class MainFragmentForUserProfile extends Fragment {
     private LinearLayout mRootLayout;
 
     CircleImageView circleImageView;
+    Bitmap bitmap;
 
 
     // Note: only the system can call this constructor by reflection.
@@ -67,6 +88,7 @@ public class MainFragmentForUserProfile extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_main, null, false);
         circleImageView = (CircleImageView)rootView.findViewById(R.id.user_profile_image_userActivityOwner);
         Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        bitmap=null;
         getIntent.setType("image/*");
 
         Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -237,6 +259,7 @@ public class MainFragmentForUserProfile extends Fragment {
     private final CropCallback mCropCallback = new CropCallback() {
         @Override
         public void onSuccess(Bitmap cropped) {
+            bitmap = cropped;
         }
 
         @Override
@@ -247,7 +270,8 @@ public class MainFragmentForUserProfile extends Fragment {
     private final SaveCallback mSaveCallback = new SaveCallback() {
         @Override
         public void onSuccess(Uri outputUri) {
-            dismissProgress();
+            sendJsonRequest();
+            //dismissProgress();
             ((UserProfileOwner) getActivity()).startResultActivity(outputUri);
             getActivity().finish();
         }
@@ -257,6 +281,88 @@ public class MainFragmentForUserProfile extends Fragment {
             dismissProgress();
         }
     };
+
+    public void sendJsonRequest(){
+        final String name = getFileName();
+        final SharedPrefManager sharedPrefManager = new SharedPrefManager(getActivity().getBaseContext());
+        VolleySingleton volleySingleton = VolleySingleton.getInstance();
+        RequestQueue requestQueue = volleySingleton.getRequestQueue();
+        String URL = Utility.getIPADDRESS()+"deleteFile";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try{
+                    JSONObject jsonObject = new JSONObject(response);
+                    if(!jsonObject.getBoolean("error")){
+                        dismissProgress();
+                        String finalname = "http://focusvce.com/api/v1/"+name;
+                        sharedPrefManager.setUserImage(finalname);
+                        Toast.makeText(MyApplication.getAppContext(),jsonObject.get("message").toString(),Toast.LENGTH_LONG).show();
+                        //    sharedPrefManager.updateUserProfile(name.getText().toString(),status.getText().toString(),about.getText().toString(),areaofinterest.getText().toString(),org.getText().toString());
+
+                    }
+                    else if(jsonObject.getBoolean("error")){
+                        Toast.makeText(MyApplication.getAppContext(),"FALSE",Toast.LENGTH_LONG).show();
+                    }
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MyApplication.getAppContext(),error.toString(),Toast.LENGTH_LONG).show();
+            }
+        })
+        {
+            @Override
+            protected Map<String, String> getParams() {
+                int flag=1;
+                String user_pic = sharedPrefManager.getUserImage();
+                String old_name=sharedPrefManager.getUserImage();
+                if(user_pic.contains("http://focusvce.com/api/v1/")) {
+                    flag = 0;
+                    old_name = sharedPrefManager.getUserImage();
+                    old_name = old_name.replace("http://focusvce.com/api/v1/","");
+                }
+                Log.e("ADARSH",name+" "+Integer.toString(flag)+" "+old_name);
+                Map<String, String> params = new HashMap<>();
+                params.put("name", name);
+                params.put("image", getStringImage(bitmap));
+                params.put("flag",Integer.toString(flag));
+                params.put("old_name",old_name);
+                return params;
+            }
+
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", sharedPrefManager.getApiKey());
+                return params;
+            }
+
+
+
+        };
+        requestQueue.add(stringRequest);
+
+
+    }
+    public String getFileName(){
+        SharedPrefManager sharedPrefManager = new SharedPrefManager(MyApplication.getAppContext());
+        String user_pic = "profile_pictures/"+sharedPrefManager.getApiKey();
+        String name = user_pic+"-"+Long.toString(System.currentTimeMillis())+".jpg";
+        return name;
+    }
+
+    public String getStringImage(Bitmap bmp){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG,80, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        return encodedImage;
+    }
 
 
 

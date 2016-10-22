@@ -89,7 +89,6 @@ public class Comment_Actiivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment_actiivity);
-
         newCommentToolbar = (Toolbar) findViewById(R.id.newCommentToolbar);
         if (newCommentToolbar != null)
             setSupportActionBar(newCommentToolbar);
@@ -171,6 +170,7 @@ public class Comment_Actiivity extends AppCompatActivity {
 
     }
 
+
     private void sendJsonrequest() {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
             @Override
@@ -185,6 +185,8 @@ public class Comment_Actiivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(Comment_Actiivity.this,"Couldn't add comment",Toast.LENGTH_LONG).show();
+                swipeRefreshLayoutForCommentsTrending.setRefreshing(false);
             }
         }) {
 
@@ -368,6 +370,8 @@ public class Comment_Actiivity extends AppCompatActivity {
             commentAdd.setText("");
         }
     }
+
+
 
 
 }

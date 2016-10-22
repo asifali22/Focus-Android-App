@@ -28,9 +28,11 @@
         <activity android:name=".Activities.FirstActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <action android:name="FIRST_ACTIVITY"/>
+                <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
 
             <meta-data
                 android:name="android.app.default_searchable"
@@ -68,11 +70,7 @@
         </activity>
         <activity android:name=".Activities.LoginActivity" />
         <activity android:name=".Activities.Comment_Actiivity">
-            <intent-filter>
-                <action android:name="OPEN_COMMENT_ACTIVITY" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
         <activity android:name=".Activities.WebViewActivity" />
         <activity
@@ -130,7 +128,14 @@
             android:theme="@style/UserProfileTheme" />
         <activity
             android:name=".Activities.SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings" />
+        <activity android:name=".Activities.PassThroughActivity">
+            <intent-filter>
+                <action android:name="FIRSTACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
