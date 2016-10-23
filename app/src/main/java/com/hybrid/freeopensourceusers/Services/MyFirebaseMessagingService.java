@@ -89,6 +89,10 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
                 intent.setAction("FIRST_ACTIVITY");
                 intent.putExtra("flag",1);
             }
+            else if(remoteMessage.getNotification().getClickAction().equals("FOR_SESSION")){
+                intent.setAction("FIRST_ACTIVITY");
+                intent.putExtra("flag",2);
+            }
             sendBroadcast(intent);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
             // PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT);

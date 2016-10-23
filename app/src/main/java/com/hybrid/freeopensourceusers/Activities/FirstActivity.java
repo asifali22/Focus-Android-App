@@ -498,6 +498,10 @@ public class FirstActivity extends AppCompatActivity implements
                 result = "New comment on your post";
                 action = "View";
             }
+            else if(b.getInt("flag",0)==2){
+                result = "Refresh to see new sessions";
+                action = "Refresh";
+            }
 
 
             final Snackbar snackBar = Snackbar.make(findViewById(R.id.main_layout), result, Snackbar.LENGTH_INDEFINITE);
@@ -520,6 +524,9 @@ public class FirstActivity extends AppCompatActivity implements
                         i.putExtra("FLAG",flag_extra);
                         i.putExtra("PID_VALUE",pid);
                         startActivity(i);
+                    }
+                    if(b.getInt("flag",0)==2){
+                        snackBar.dismiss();
                     }
                 }
             });
