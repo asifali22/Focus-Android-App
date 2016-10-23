@@ -349,9 +349,9 @@ public class UserProfile extends AppCompatActivity
         ImageView mImageView = (ImageView) dialogMainView.findViewById(R.id.myImagePostContainer);
 
         myDialog.setView(dialogMainView);
-        if (!sharedPrefManager.getUserImage().isEmpty())
+        if (!profilepic.isEmpty()){
             Glide.with(this)
-                    .load(sharedPrefManager.getUserImage())
+                    .load(profilepic)
                     .fitCenter()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.loading)
@@ -360,6 +360,7 @@ public class UserProfile extends AppCompatActivity
                     .into(mImageView);
 
         myDialog.show();
+        }
     }
 }
 
