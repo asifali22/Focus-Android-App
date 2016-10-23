@@ -92,16 +92,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:fontFamily="sans-serif"
+                android:fontFamily="sans-serif-light"
                 android:gravity="center"
-                android:lineSpacingExtra="2sp"
+                android:textStyle="bold"
+                android:lineSpacingExtra="6dp"
                 android:paddingBottom="8dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingTop="8dp"
                 android:text="Description"
                 android:textAppearance="@android:style/TextAppearance.SearchResult.Subtitle"
-                android:textColor="#cc000000" />
+                android:textColor="#7c7c7c"/>
         </LinearLayout>
 
         <LinearLayout
@@ -118,16 +119,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:visibility="gone"
-                android:fontFamily="sans-serif"
+                android:fontFamily="sans-serif-light"
+                android:textStyle="bold"
                 android:gravity="center"
-                android:lineSpacingExtra="1.6sp"
+                android:lineSpacingExtra="6dp"
                 android:paddingBottom="8dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingTop="8dp"
                 android:text="Description"
                 android:textAppearance="@android:style/TextAppearance.SearchResult.Subtitle"
-                android:textColor="#cc000000" />
+                android:textColor="#7c7c7c"/>
 
             <TextView
                 android:id="@+id/post_description"
@@ -135,9 +137,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:ellipsize="end"
-                android:fontFamily="sans-serif"
+                android:fontFamily="sans-serif-light"
                 android:gravity="center"
-                android:lineSpacingExtra="1.6sp"
+                android:textStyle="bold"
+                android:lineSpacingExtra="6dp"
                 android:maxLines="3"
                 android:paddingBottom="8dp"
                 android:paddingLeft="16dp"
@@ -145,7 +148,7 @@
                 android:paddingTop="8dp"
                 android:text="Description"
                 android:textAppearance="@android:style/TextAppearance.SearchResult.Subtitle"
-                android:textColor="#cc000000" />
+                android:textColor="#7c7c7c"/>
 
             <android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
