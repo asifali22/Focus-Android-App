@@ -320,10 +320,19 @@ public class MainFragmentForUserProfile extends Fragment {
                 int flag=1;
                 String user_pic = sharedPrefManager.getUserImage();
                 String old_name=sharedPrefManager.getUserImage();
+                if(user_pic!=null)
                 if(user_pic.contains("http://focusvce.com/api/v1/")) {
                     flag = 0;
                     old_name = sharedPrefManager.getUserImage();
                     old_name = old_name.replace("http://focusvce.com/api/v1/","");
+                }
+                if(name==null)
+                    Log.e("ADARSH","name");
+                if(getStringImage(bitmap)==null)
+                    Log.e("ADARSH","image");
+                if(old_name==null) {
+                    Log.e("ADARSH", "old_name");
+                    old_name="abc";
                 }
                 Log.e("ADARSH",name+" "+Integer.toString(flag)+" "+old_name);
                 Map<String, String> params = new HashMap<>();

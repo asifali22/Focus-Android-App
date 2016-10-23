@@ -107,7 +107,10 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
         holder.post_body.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(sharedPrefManager.isLoggedIn())
                 clickCallback.openSessionDetails(sessionFeed, holder);
+                else
+                    sharedPrefManager.showAlertDialog(view);
 
             }
         });
@@ -162,24 +165,29 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
         holder.session_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!sharedPrefManager.isLoggedIn()){
+                    sharedPrefManager.showAlertDialog(view);
+                }else{
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Hello Folks...\nBelow are the details of yet another GLUG session" +
+                            "\n\nSession:"+sessionFeed.getSession_title()+
+                            "\n\nDescription:"+sessionFeed.getSession_description()+
+                            "\n\nVenue:"+sessionFeed.getS_venue()+
+                            "\n\nCoordinator:"+sessionFeed.getS_coordinator()+
+                            "\n\nCoordinator's Email:"+sessionFeed.getS_c_email()+
+                            "\n\nCoordinator's Phone:"+sessionFeed.getS_c_phone()+
+                            "\n\nResource Person:"+sessionFeed.getResource_person()+
+                            "\n\nDesignation:"+sessionFeed.getRp_desg()+
+                            "\n\nTime:"+sessionFeed.getTime_and_date()+
+                            "\n\nAddress:"+sessionFeed.getAddress()+
+                            "\n\nRoom:"+sessionFeed.getRoom()+
+                            "\n\nThank you - shared via FOCUS App, download now @link ");
+                    sendIntent.setType("text/plain");
+                    context.startActivity(Intent.createChooser(sendIntent, "Share via..."));
+                }
 
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "Hello Folks...\nBelow are the details of yet another GLUG session" +
-                        "\n\nSession:"+sessionFeed.getSession_title()+
-                        "\n\nDescription:"+sessionFeed.getSession_description()+
-                        "\n\nVenue:"+sessionFeed.getS_venue()+
-                        "\n\nCoordinator:"+sessionFeed.getS_coordinator()+
-                        "\n\nCoordinator's Email:"+sessionFeed.getS_c_email()+
-                        "\n\nCoordinator's Phone:"+sessionFeed.getS_c_phone()+
-                        "\n\nResource Person:"+sessionFeed.getResource_person()+
-                        "\n\nDesignation:"+sessionFeed.getRp_desg()+
-                        "\n\nTime:"+sessionFeed.getTime_and_date()+
-                        "\n\nAddress:"+sessionFeed.getAddress()+
-                        "\n\nRoom:"+sessionFeed.getRoom()+
-                        "\n\nThank you - shared via FOCUS App, download now @link ");
-                sendIntent.setType("text/plain");
-                context.startActivity(Intent.createChooser(sendIntent, "Share via..."));
+
 
 
 

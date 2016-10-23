@@ -1,5 +1,6 @@
 package com.hybrid.freeopensourceusers.Activities;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -23,6 +24,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -139,6 +141,8 @@ public class FirstActivity extends AppCompatActivity implements
             myFireBaseInstanceIdService.registerToken(FirebaseInstanceId.getInstance().getToken());
         }
         if(sharedPrefManager.getFirstRunStatus()) {
+            if(Build.VERSION.SDK_INT>=21)
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
             sharedPrefManager.setLoggedInStatus(false);
             sharedPrefManager.setFirstRunStatus(false);
         }

@@ -124,6 +124,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
         sharedPrefManager = new SharedPrefManager(this);
         filePath = null;
 
+
         linkPhoto.setImageDrawable(myTextDrawable.setTextDrawableForPost("Zebra", "Image"));
         if( newPostToolbar != null)
             setSupportActionBar(newPostToolbar);
@@ -244,7 +245,9 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
         return imgurl;
     }
 
-    public void submitButton() {
+
+
+    /*public void submitButton() {
         isCLicked = true;
         input = user_input_link.getText().toString();
         final String userImageText = sharedPrefManager.getUserImage();
@@ -303,6 +306,87 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                     });
 
                 }
+                /*else if (title.isEmpty())
+                    input_title.setError("Title can't be empty");
+                else if (desc.isEmpty())
+                    input_desc.setError("Description can't be empty");*/
+
+
+       // }
+
+
+   // }*/
+
+    public void submitButton() {
+        isCLicked = true;
+        input = user_input_link.getText().toString();
+        final String userImageText = sharedPrefManager.getUserImage();
+        final String userName = sharedPrefManager.getUserName();
+        if (flag == 1) {
+            if (!input.isEmpty()) {
+                int start = input.indexOf("http");
+                int end = 0;
+                while (end < start) {
+                    end = input.indexOf(" ");
+                    if (end < start) {
+                        input = input.substring(end + 1, input.length());
+                        start = start - end - 1;
+                        end = 0;
+                    } else
+                        break;
+                }
+                end = input.indexOf(" ");
+                if (end != -1&&start!=-1)
+                    input = input.substring(0, end);
+                else if(start!=-1) {
+                    input = input.substring(0, input.length());
+                    getImageUrl = getUrl(input);
+                }
+                else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(New_Post.this, "Check the URL", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                }
+
+
+                if(finalDesc!=null)
+                    finalDesc = finalDesc.trim();
+
+                if ( finalDesc == null || finalDesc.isEmpty() || finalDesc.equals(""))
+                    finalDesc = title;
+
+                if(start!=-1)
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showDialog(userImageText, userName, title, finalDesc, getImageUrl);
+                        }
+                    });
+
+
+
+            }
+        }else if (flag ==2){
+            final String title = input_title.getText().toString();
+            final String desc = input_desc.getText().toString();
+            if(!(title.isEmpty() || desc.isEmpty())) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (title.isEmpty())
+                            input_title.setError("Title can't be empty");
+                        else if (desc.isEmpty())
+                            input_desc.setError("Description can't be empty");
+                        if(!title.isEmpty()&&!desc.isEmpty())
+                            showDialog(userImageText, userName, title, desc, "");
+                    }
+                });
+
+            }
                 /*else if (title.isEmpty())
                     input_title.setError("Title can't be empty");
                 else if (desc.isEmpty())

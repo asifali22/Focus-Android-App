@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -188,14 +189,14 @@
         android:background="@color/windowBackground"
         >
 
-        <ImageButton
+        <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/buttonPickImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="16dp"
             android:layout_alignParentLeft="true"
             android:padding="16dp"
-            android:src="@drawable/ic_photo_library_black_24dp"
+            app:srcCompat="@drawable/ic_photo_library_black_24dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             />
 
@@ -203,34 +204,35 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_centerHorizontal="true">
-            <ImageButton
+            <android.support.v7.widget.AppCompatImageButton
                 android:id="@+id/buttonRotateLeft"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:src="@drawable/ic_rotate_left_black_24dp"
+                app:srcCompat="@drawable/ic_rotate_left_black_24dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 />
-            <ImageButton
+            <android.support.v7.widget.AppCompatImageButton
                 android:id="@+id/buttonRotateRight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:src="@drawable/ic_rotate_right_black_24dp"
+                app:srcCompat="@drawable/ic_rotate_right_black_24dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 />
 
         </LinearLayout>
 
-        <ImageButton
+        <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/buttonDone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:padding="16dp"
-            android:src="@drawable/ic_done_black_24dp"
+            app:srcCompat="@drawable/ic_done_black_24dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             />
+
     </RelativeLayout>
 </LinearLayout>
