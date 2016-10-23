@@ -32,7 +32,6 @@
                 <action android:name="FIRST_ACTIVITY"/>
                 <action android:name="FOR_SESSION"/>
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>

@@ -29,6 +29,7 @@ import com.hybrid.freeopensourceusers.Adapters.RecyclerSessionAdapter;
 import com.hybrid.freeopensourceusers.Adapters.RecyclerTrendingAdapter;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.Callback.FabClickListener;
+import com.hybrid.freeopensourceusers.Callback.NotificationCallback;
 import com.hybrid.freeopensourceusers.Callback.SessionFeedLoadingListener;
 import com.hybrid.freeopensourceusers.Callback.TabClickListener;
 import com.hybrid.freeopensourceusers.PojoClasses.PostFeed;
@@ -50,7 +51,7 @@ import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SessionFragment extends Fragment implements SessionFeedLoadingListener, FabClickListener,TabClickListener{
+public class SessionFragment extends Fragment implements SessionFeedLoadingListener, FabClickListener,TabClickListener,NotificationCallback{
 
     private static final int RESULT_CONSTANT = 1011;
     private RecyclerView recyclerView;
@@ -203,5 +204,18 @@ public class SessionFragment extends Fragment implements SessionFeedLoadingListe
     @Override
     public void tabListener() {
         recyclerView.smoothScrollToPosition(0);
+    }
+
+    @Override
+    public void notifyUser() {
+        if (sharedPrefManager.isOnline()) {
+            swipeRefreshLayout.setRefreshing(true);
+            new TaskLoadSessionFeed(this).execute();
+
+        }
+        else {
+            swipeRefreshLayout.setRefreshing(false);
+            Toast.makeText(getContext(),"No Network",Toast.LENGTH_SHORT).show();
+        }
     }
 }

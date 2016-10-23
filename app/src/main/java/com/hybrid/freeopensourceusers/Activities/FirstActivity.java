@@ -509,6 +509,7 @@ public class FirstActivity extends AppCompatActivity implements
                 @Override
                 public void onClick(View v) {
                     if(b.getInt("flag",0)==0){
+                        mTabLayout.getTabAt(0).select();
                         Fragment fragment = (Fragment) mAdapter.instantiateItem(mViewPager,mViewPager.getCurrentItem());
                         if (fragment instanceof NotificationCallback)
                             ((NotificationCallback) fragment).notifyUser();
@@ -526,7 +527,12 @@ public class FirstActivity extends AppCompatActivity implements
                         startActivity(i);
                     }
                     if(b.getInt("flag",0)==2){
-                        snackBar.dismiss();
+                        // change the tab
+                        mTabLayout.getTabAt(1).select();
+                        Fragment fragment = (Fragment) mAdapter.instantiateItem(mViewPager,mViewPager.getCurrentItem());
+                        if (fragment instanceof NotificationCallback)
+                            ((NotificationCallback) fragment).notifyUser();
+
                     }
                 }
             });
