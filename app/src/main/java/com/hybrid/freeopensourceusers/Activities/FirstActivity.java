@@ -131,7 +131,7 @@ public class FirstActivity extends AppCompatActivity implements
         requestQueue = volleySingleton.getRequestQueue();
         sharedPrefManager = new SharedPrefManager(this);
 
-
+        Toast.makeText(this, "This is a test run of the App", Toast.LENGTH_SHORT).show();
         bindViews();
 
 
