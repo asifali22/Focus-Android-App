@@ -1,13 +1,7 @@
 package com.hybrid.freeopensourceusers.UserProfileStuff;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.media.Image;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
@@ -15,21 +9,14 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.transition.Transition;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -40,9 +27,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.signature.StringSignature;
-import com.hybrid.freeopensourceusers.Activities.session_details;
-import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.R;
 
 import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
@@ -56,7 +40,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -126,7 +109,7 @@ public class UserProfile extends AppCompatActivity
 //                .into(avatar);
 
         Glide.with(this)
-                .load(R.drawable.geometry)
+                .load(R.drawable.timeline_image_profile)
                 .centerCrop()
                 .into(timeLine);
 
@@ -340,6 +323,7 @@ public class UserProfile extends AppCompatActivity
 
 
     public void showFullProfilePhoto(View view) {
+        if (!profilepic.isEmpty()){
         MyTextDrawable myTextDrawable = new MyTextDrawable();
         LayoutInflater factory = LayoutInflater.from(this);
         final View dialogMainView = factory.inflate(R.layout.fragment_image_post, null);
@@ -349,7 +333,8 @@ public class UserProfile extends AppCompatActivity
         ImageView mImageView = (ImageView) dialogMainView.findViewById(R.id.myImagePostContainer);
 
         myDialog.setView(dialogMainView);
-        if (!profilepic.isEmpty()){
+
+
             Glide.with(this)
                     .load(profilepic)
                     .fitCenter()

@@ -32,14 +32,10 @@ import android.widget.TextView;
 import com.android.volley.RequestQueue;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.signature.StringSignature;
-import com.hybrid.freeopensourceusers.Activities.RegisterActivity;
-import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.Callback.UpdateInterest;
 import com.hybrid.freeopensourceusers.Callback.UpdateOrg;
 import com.hybrid.freeopensourceusers.Callback.UpdateStatus;
 import com.hybrid.freeopensourceusers.Callback.UpdateUI;
-import com.hybrid.freeopensourceusers.Fragments.MainFragment;
 import com.hybrid.freeopensourceusers.Fragments.MainFragmentForUserProfile;
 import com.hybrid.freeopensourceusers.R;
 import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
@@ -48,7 +44,6 @@ import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
 import com.isseiaoki.simplecropview.util.Utils;
 
 import java.io.ByteArrayOutputStream;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -139,7 +134,7 @@ public class UserProfileOwner extends AppCompatActivity
 
 
         Glide.with(this)
-                .load(R.drawable.geometry)
+                .load(R.drawable.timeline_image_profile)
                 .centerCrop()
                 .into(timeLine);
 
@@ -407,6 +402,7 @@ public class UserProfileOwner extends AppCompatActivity
     }
 
     public void showFullProfilePhoto(View view) {
+        if (!sharedPrefManager.getUserImage().isEmpty()) {
         MyTextDrawable myTextDrawable = new MyTextDrawable();
         LayoutInflater factory = LayoutInflater.from(this);
         final View dialogMainView = factory.inflate(R.layout.fragment_image_post, null);
@@ -416,7 +412,7 @@ public class UserProfileOwner extends AppCompatActivity
         ImageView mImageView = (ImageView) dialogMainView.findViewById(R.id.myImagePostContainer);
 
         myDialog.setView(dialogMainView);
-        if (!sharedPrefManager.getUserImage().isEmpty())
+
             Glide.with(this)
                     .load(sharedPrefManager.getUserImage())
                     .fitCenter()
@@ -426,7 +422,8 @@ public class UserProfileOwner extends AppCompatActivity
                     .error(myTextDrawable.setTextDrawableForError("Error!"))
                     .into(mImageView);
 
-        myDialog.show();
+            myDialog.show();
+        }
     }
 
 

@@ -62,6 +62,7 @@ import java.util.Map;
 public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
+    private static final int SUPERUSER = 64;
     private ArrayList<Feeds> feedsArrayList = new ArrayList<>();
     private LayoutInflater layoutInflater = null;
     private DateFormat dateFormat = new SimpleDateFormat("EEE, MMM dd 'at' h:mm a");
@@ -228,7 +229,13 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             holder.postBodyNoImage.setVisibility(View.VISIBLE);
         }
 
-        if (!postFeed.getLink().isEmpty()) {
+        if (postFeed.getUid() == SUPERUSER){
+            holder.post_header.setVisibility(View.GONE);
+            holder.post_description.setVisibility(View.GONE);
+            holder.post_descriptionCustom.setVisibility(View.GONE);
+            holder.post_descriptionBelowImage.setVisibility(View.VISIBLE);
+        }else{
+            holder.post_header.setVisibility(View.VISIBLE);
             if (postFeed.getLink().equals("abc")) {
                 holder.post_description.setVisibility(View.GONE);
                 holder.post_descriptionCustom.setVisibility(View.VISIBLE);
@@ -236,17 +243,10 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 holder.post_description.setVisibility(View.VISIBLE);
                 holder.post_descriptionCustom.setVisibility(View.GONE);
             }
+            holder.post_descriptionBelowImage.setVisibility(View.GONE);
+
         }
 
-        if (postFeed.getUid() == 64){
-            holder.post_header.setVisibility(View.GONE);
-            holder.post_description.setVisibility(View.GONE);
-            holder.post_descriptionBelowImage.setVisibility(View.VISIBLE);
-        }else{
-            holder.post_header.setVisibility(View.VISIBLE);
-            holder.post_description.setVisibility(View.VISIBLE);
-            holder.post_descriptionBelowImage.setVisibility(View.GONE);
-        }
 
         holder.post_body.setOnClickListener(new View.OnClickListener() {
             @Override

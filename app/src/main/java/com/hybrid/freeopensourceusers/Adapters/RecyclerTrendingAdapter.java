@@ -64,6 +64,7 @@ import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendingAdapter.ViewholderPostFeed> {
 
 
+    private static final int SUPERUSER = 64;
     private ArrayList<PostFeed> newsFeedArrayList = new ArrayList<>();
     private LayoutInflater layoutInflater = null;
     private DateFormat dateFormat = new SimpleDateFormat("EEE, MMM dd 'at' h:mm a");
@@ -187,7 +188,14 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
             holder.postBodyNoImage.setVisibility(View.VISIBLE);
         }
 
-        if (!postFeed.getLink().isEmpty()) {
+
+        if (postFeed.getUid() == SUPERUSER){
+            holder.post_header.setVisibility(View.GONE);
+            holder.post_description.setVisibility(View.GONE);
+            holder.post_descriptionCustom.setVisibility(View.GONE);
+            holder.post_descriptionBelowImage.setVisibility(View.VISIBLE);
+        }else{
+            holder.post_header.setVisibility(View.VISIBLE);
             if (postFeed.getLink().equals("abc")) {
                 holder.post_description.setVisibility(View.GONE);
                 holder.post_descriptionCustom.setVisibility(View.VISIBLE);
@@ -195,17 +203,12 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                 holder.post_description.setVisibility(View.VISIBLE);
                 holder.post_descriptionCustom.setVisibility(View.GONE);
             }
+            holder.post_descriptionBelowImage.setVisibility(View.GONE);
+
         }
 
-        if (postFeed.getUid() == 64){
-            holder.post_header.setVisibility(View.GONE);
-            holder.post_description.setVisibility(View.GONE);
-            holder.post_descriptionBelowImage.setVisibility(View.VISIBLE);
-        }else{
-            holder.post_header.setVisibility(View.VISIBLE);
-            holder.post_description.setVisibility(View.VISIBLE);
-            holder.post_descriptionBelowImage.setVisibility(View.GONE);
-        }
+
+
 
         holder.post_body.setOnClickListener(new View.OnClickListener() {
             @Override

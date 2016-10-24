@@ -3,8 +3,10 @@ package com.hybrid.freeopensourceusers.ApplicationContext;
 import android.app.Application;
 import android.content.Context;
 
+import com.crashlytics.android.Crashlytics;
 import com.hybrid.freeopensourceusers.Sqlite.DatabaseOperations;
 import com.hybrid.freeopensourceusers.Sqlite.DatabaseOperations_Session;
+import io.fabric.sdk.android.Fabric;
 
 
 public class MyApplication extends Application {
@@ -17,6 +19,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         sInstance = this;
 
     }
