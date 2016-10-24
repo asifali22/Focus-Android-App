@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
@@ -70,6 +71,9 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
     private static final String POST_FEED = "post_feed";
     private SwipeRefreshLayout swipeRefreshLayout;
     private ProgressDialog progressDialog ;
+    private CoordinatorLayout coordinatorLayout;
+
+
 
     public TrendingFragment() {
         // Required empty public constructor
@@ -82,7 +86,7 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_trending, container, false);
 
-
+        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.trendingFragmentContainer);
         progressDialog = new ProgressDialog(getContext());
         sharedPrefManager = new SharedPrefManager(getContext());
         trendingRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
@@ -107,7 +111,7 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
 
             @Override
             public void likeDislike1(RecyclerTrendingAdapter.ViewholderPostFeed viewholderPostFeed){
-                new MaterialShowcaseView.Builder(getActivity())
+                final MaterialShowcaseView.Builder materialShowcaseView = new MaterialShowcaseView.Builder(getActivity())
                         .setTarget(viewholderPostFeed.getLikeDislikeContainer())
                         .setDismissText("GOT IT")
                         .setContentText("Like or Dislike !! How it works?\n\n1)" +
@@ -116,8 +120,14 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
                                 " Simultaneous like and dislike results in last action, and vise-versa")
                         .setShapePadding(0)
                         .setDelay(500) // optional but starting animations immediately in onCreate can make them choppy
-                        .singleUse(LIKE1) // provide a unique ID used to ensure it is only shown once
-                        .show();
+                        .singleUse(LIKE1) ;// provide a unique ID used to ensure it is only shown once
+
+                coordinatorLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        materialShowcaseView.show();
+                    }
+                });
             }
 
 
