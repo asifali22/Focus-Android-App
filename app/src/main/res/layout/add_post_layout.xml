@@ -89,7 +89,8 @@
                             android:scrollHorizontally="false"
                             android:scrollbars="vertical"
                             android:textColor="@android:color/white"
-                            android:textColorHint="@android:color/white" />
+                            android:textColorHint="@android:color/white"
+                            android:text="http://"/>
 
                         <ImageButton
                             android:id="@+id/pasteButton"
