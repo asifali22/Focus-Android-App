@@ -220,7 +220,11 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("delete from "+html_test_const.getTable_name()+" where "+html_test_const.getSr_key()+"="+pid);
         sqLiteDatabase.close();
     }
-
+    public void deleteCommentbyComment_id(DatabaseOperations dop,int cid){
+        SQLiteDatabase sqLiteDatabase = dop.getWritableDatabase();
+        sqLiteDatabase.execSQL("delete from "+comments_const.getTable_name()+" where "+comments_const.getComment_id()+"="+Integer.toString(cid));
+        sqLiteDatabase.close();
+    }
     public ArrayList<PostFeed> readPostData(DatabaseOperations dop){
         SQLiteDatabase sqLiteDatabase = dop.getReadableDatabase();
         ArrayList<PostFeed> newsFeedList = new ArrayList<>();

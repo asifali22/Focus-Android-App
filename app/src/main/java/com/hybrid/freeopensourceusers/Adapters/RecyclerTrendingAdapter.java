@@ -637,7 +637,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                                     .setMessage("Are you sure you want to delete this post?")
                                     .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
-                                            deletePost(pid);
+                                            deletePost(pid,postFeed.getPostPicUrl());
                                         }
                                     })
                                     .setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -721,7 +721,7 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
         requestQueue.add(stringRequest);
     }
 
-    public void deletePost(final int pid){
+    public void deletePost(final int pid,final String pic){
         String URL = Utility.getIPADDRESS()+"deletePost";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
@@ -759,8 +759,30 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
 
             @Override
             protected Map<String, String> getParams() {
+                int flag=0;
+                String delete_name=pic,temp=pic;
+                if(pic!=null){
+                    if(pic.contains("http://focusvce.com/api/v1/")) {
+                        flag =1;
+                        delete_name = temp.replace("http://focusvce.com/api/v1/","");
+                    }
+                }
+                if(pic.isEmpty()) {
+                    delete_name = "abc";
+                    flag = 0;
+                }
+                if(pic==null)
+                {
+                    delete_name="abc";
+                    flag=0;
+                }
+                Log.e("ADARSH",pic);
+                Log.e("ADARSH",delete_name);
+                Log.e("ADARSH",Integer.toString(flag));
                 Map<String, String> params = new HashMap<>();
                 params.put("pid", Integer.toString(pid));
+                params.put("name",delete_name);
+                params.put("flag",Integer.toString(flag));
                 return params;
             }
 
