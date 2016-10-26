@@ -131,6 +131,6 @@ public class MyFireBaseInstanceIdService extends FirebaseInstanceIdService {
         if (!api_key.isEmpty()) {
             return api_key;
         } else
-            return null;
+            return "";
     }
 }

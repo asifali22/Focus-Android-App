@@ -90,7 +90,8 @@
                             android:scrollbars="vertical"
                             android:textColor="@android:color/white"
                             android:textColorHint="@android:color/white"
-                            android:text="http://"/>
+                            android:text="http://"
+                            android:maxLength="495"/>
 
                         <ImageButton
                             android:id="@+id/pasteButton"
@@ -209,7 +210,8 @@
                                 android:hint="Title"
                                 android:inputType="textCapSentences"
                                 android:textColor="@android:color/white"
-                                android:textColorHint="@android:color/white" />
+                                android:textColorHint="@android:color/white"
+                                android:maxLength="95"/>
 
                             <EditText
                                 android:id="@+id/input_desc"
@@ -224,7 +226,8 @@
                                 android:backgroundTint="@android:color/white"
                                 android:hint="Description"
                                 android:textColor="@android:color/white"
-                                android:textColorHint="@android:color/white" />
+                                android:textColorHint="@android:color/white"
+                                android:maxLength="495"/>
                         </RelativeLayout>
 
                     </RelativeLayout>

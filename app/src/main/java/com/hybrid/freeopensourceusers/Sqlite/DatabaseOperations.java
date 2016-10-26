@@ -2,7 +2,6 @@ package com.hybrid.freeopensourceusers.Sqlite;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -108,6 +107,7 @@ public class DatabaseOperations extends SQLiteOpenHelper {
 
     public void insertReport(DatabaseOperations dop, ArrayList<Report> report,boolean clearPrevious){
         SQLiteDatabase sqLiteDatabase = dop.getWritableDatabase();
+        sqLiteDatabase.beginTransaction();
         if(clearPrevious){
             if(isOnline()){
                 sqLiteDatabase.execSQL("delete from "+report_const.getTable_name());
@@ -117,6 +117,8 @@ public class DatabaseOperations extends SQLiteOpenHelper {
             Report r = report.get(i);
             sqLiteDatabase.execSQL("insert into "+report_const.getTable_name()+" values("+r.getPid()+","+r.getUid()+")");
         }
+        sqLiteDatabase.endTransaction();
+        sqLiteDatabase.close();
     }
     public void addReportStatus(DatabaseOperations dop,int uid,int pid){
         SQLiteDatabase sqLiteDatabase = dop.getWritableDatabase();
@@ -142,6 +144,13 @@ public class DatabaseOperations extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL("insert into "+likes_const.getTable_name()+" values("+l.getUser_id()+
             ","+l.getPid()+","+l.getFlag()+","+l.getFlagd()+")");
         }
+        sqLiteDatabase.close();
+    }
+
+    public void clearOnSignOut(DatabaseOperations dop){
+        SQLiteDatabase sqLiteDatabase = dop.getWritableDatabase();
+        sqLiteDatabase.execSQL("delete from "+likes_const.getTable_name());
+        sqLiteDatabase.close();
     }
     public void setCommentCount(DatabaseOperations dop,int pid,int count){
         SQLiteDatabase sqLiteDatabase = dop.getWritableDatabase();

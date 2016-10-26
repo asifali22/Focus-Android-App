@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
@@ -52,7 +54,7 @@ public class TaskLoadPostFeed extends AsyncTask<Void, Void, ArrayList<PostFeed>>
     private RequestQueue mRequestQueue;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     DatabaseOperations dop = new DatabaseOperations(MyApplication.getAppContext());
-
+    int flag=0;
     public TaskLoadPostFeed(PostFeedLoadingListener myComponent) {
         this.myComponent = myComponent;
         mVolleySingleton = VolleySingleton.getInstance();
@@ -101,6 +103,25 @@ public class TaskLoadPostFeed extends AsyncTask<Void, Void, ArrayList<PostFeed>>
                 return params;
             }
         };
+        stringRequest.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+                if(flag==0) {
+                    flag=1;
+                    Toast.makeText(MyApplication.getAppContext(),"Network too slow",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
         mRequestQueue.add(stringRequest);
         try{
             stringResponse = requestFuture.get(30000,TimeUnit.MILLISECONDS);
@@ -134,6 +155,25 @@ public class TaskLoadPostFeed extends AsyncTask<Void, Void, ArrayList<PostFeed>>
                 params.put("Authorization",api_key);
                 return params;
             }};
+        stringRequest.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+                if(flag==0) {
+                    flag=1;
+                    Toast.makeText(MyApplication.getAppContext(),"Network too slow",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
         mRequestQueue.add(stringRequest);
 
@@ -235,6 +275,22 @@ public class TaskLoadPostFeed extends AsyncTask<Void, Void, ArrayList<PostFeed>>
         RequestFuture<JSONObject> requestFuture = RequestFuture.newFuture();
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null, requestFuture, requestFuture);
+        jsonObjectRequest.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        });
 
         mRequestQueue.add(jsonObjectRequest);
         try {

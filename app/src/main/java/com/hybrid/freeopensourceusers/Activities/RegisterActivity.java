@@ -30,7 +30,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.Fragments.MainFragment;
 import com.hybrid.freeopensourceusers.R;
@@ -39,7 +38,6 @@ import com.hybrid.freeopensourceusers.Utility.Utility;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
 import com.isseiaoki.simplecropview.util.Utils;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -65,7 +63,6 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
     private static Bitmap bitmap;
     private SharedPrefManager sharedPrefManager;
 
-    private static final String REGISTER_URL = Utility.getIPADDRESS()+"register";
 
     private ExecutorService mExecutor;
     public static Intent createIntent(Activity activity, Uri uri) {
@@ -117,6 +114,7 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
 
     public void registerUser(View view) {
         final String name = input_nameRegister.getText().toString().trim();
+
         if (name.isEmpty()) {
             input_nameRegister.setError("Name can't be empty!");
             return;
@@ -145,8 +143,16 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
         //get params and work
 
         if (Utility.validate(email)) {
+            final String REGISTER_URL;
             //handle params
             showProgressDialog();
+            String image =null;
+            if(bitmap!=null)
+            image = getStringImage(bitmap);
+            if(image==null)
+                REGISTER_URL = Utility.getIPADDRESS()+"registerWithoutImage";
+            else
+                REGISTER_URL = Utility.getIPADDRESS()+"register";
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL,
                     new Response.Listener<String>() {
@@ -175,6 +181,7 @@ public class RegisterActivity extends FragmentActivity implements View.OnClickLi
                     params.put("name", name);
                     params.put("email", email);
                     params.put("password", password);
+                    if(REGISTER_URL.equals("register"))
                     params.put("image",getStringImage(bitmap));
                     return params;
                 }

@@ -1,5 +1,6 @@
 package com.hybrid.freeopensourceusers.Activities;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -130,7 +131,10 @@ public class Comment_Actiivity extends AppCompatActivity {
         }
         api_key = extras.getString("API_KEY");
         flag_extra = extras.getInt("FLAG");
-        if (savedInstanceState != null) {
+        if(sharedPrefManager.isOnline()){
+            sendJsonrequest();
+        }
+        else if (savedInstanceState != null) {
             commentsFeedsList = savedInstanceState.getParcelableArrayList(COMMENTS_FEED);
         } else {
 

@@ -235,10 +235,6 @@ public class TrendingFragment extends Fragment implements PostFeedLoadingListene
     }
 
 
-
-
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE){

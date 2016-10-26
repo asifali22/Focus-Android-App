@@ -107,10 +107,7 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
         holder.post_body.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(sharedPrefManager.isLoggedIn())
                 clickCallback.openSessionDetails(sessionFeed, holder);
-                else
-                    sharedPrefManager.showAlertDialog(view);
 
             }
         });

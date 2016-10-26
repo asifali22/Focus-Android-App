@@ -29,7 +29,7 @@ public class SharedPrefManager {
     Context context;
 
     public SharedPrefManager(Context context){
-        this.context=context;
+        this.context=MyApplication.getAppContext();
         myApplication = MyApplication.getInstance();
         sharedPreferences = context.getSharedPreferences("user_details", MODE_PRIVATE);
         sharedPreferencesFirstRun = context.getSharedPreferences("com.hybrid.freeopensourceusers", MODE_PRIVATE);
