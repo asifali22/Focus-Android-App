@@ -29,7 +29,7 @@ public class SharedPrefManager {
     Context context;
 
     public SharedPrefManager(Context context){
-        this.context=context;
+        this.context=MyApplication.getAppContext();
         myApplication = MyApplication.getInstance();
         sharedPreferences = context.getSharedPreferences("user_details", MODE_PRIVATE);
         sharedPreferencesFirstRun = context.getSharedPreferences("com.hybrid.freeopensourceusers", MODE_PRIVATE);
@@ -215,6 +215,7 @@ public class SharedPrefManager {
                 .setPositiveButton("SURE", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent myIntent = new Intent(MyApplication.getAppContext(), LoginActivity.class);
+                        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(myIntent);
                     }
                 })

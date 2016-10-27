@@ -69,7 +69,7 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         if(remoteMessage.getNotification().getClickAction().equals("OPEN_COMMENT_ACTIVITY")) {
             String body = remoteMessage.getNotification().getBody();
-            String arr[] = body.split(" ", 2);
+            String arr[] = body.split(" ", 3);
             String api_key = sharedPrefManager.getApiKey();
             SharedPreferences sharedPreferences = getSharedPreferences("comment", MODE_PRIVATE);
             sharedPreferences.edit().putString("comment_pid", arr[1]).apply();

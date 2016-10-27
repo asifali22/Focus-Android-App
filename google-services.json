@@ -1,72 +1,35 @@
 {
   "project_info": {
-    "project_number": "1075817153541",
-    "project_id": "focus-47de7"
+    "project_number": "1022523501019",
+    "firebase_url": "https://focus-46bf1.firebaseio.com",
+    "project_id": "focus-46bf1",
+    "storage_bucket": "focus-46bf1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1075817153541:android:6280a616593957c8",
-        "android_client_info": {
-          "package_name": "com.hybrid.customlogin"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1075817153541-6q022adq0ii553hvaniec080mgaeluc0.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.hybrid.customlogin",
-            "certificate_hash": "7FB270482AFF87DFB5DA6AA6B7FB53D7C90368AF"
-          }
-        },
-        {
-          "client_id": "1075817153541-n6thgv83031c7ljtlsmfo010nt8k5eh8.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyB2WHFA76HUz-qryVXOaLac-OCjwZFeqLc"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 1
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1075817153541:android:220c788012ddebd2",
+        "mobilesdk_app_id": "1:1022523501019:android:220c788012ddebd2",
         "android_client_info": {
           "package_name": "com.hybrid.freeopensourceusers"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1075817153541-2t9ofd0iaftlfts584atd2h9b4tv13r1.apps.googleusercontent.com",
+          "client_id": "1022523501019-lt3hv2ptpk3d112ifsrheejsvjojm56f.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.hybrid.freeopensourceusers",
-            "certificate_hash": "7FB270482AFF87DFB5DA6AA6B7FB53D7C90368AF"
+            "certificate_hash": "3CEEC7A4177BC0E078EC52C768F78F81F73E6790"
           }
         },
         {
-          "client_id": "1075817153541-n6thgv83031c7ljtlsmfo010nt8k5eh8.apps.googleusercontent.com",
+          "client_id": "1022523501019-6tklecgqt383is7k461p59f10e695s9b.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB2WHFA76HUz-qryVXOaLac-OCjwZFeqLc"
+          "current_key": "AIzaSyCt43i5WTvoydmWTH8-WynO3_apWPH_Ll4"
         }
       ],
       "services": {
@@ -78,7 +41,7 @@
           "other_platform_oauth_client": []
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

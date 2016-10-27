@@ -36,7 +36,7 @@
         <PreferenceScreen
             android:key="aboutSettings"
             android:selectable="false"
-            android:summary="version 1.0"
+            android:summary="version 1.1"
             android:title="About" />
     </PreferenceCategory>
 </PreferenceScreen>

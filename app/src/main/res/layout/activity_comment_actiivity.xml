@@ -62,10 +62,11 @@
                 android:background="@android:color/transparent"
                 android:hint="Comment..."
                 android:inputType="textCapSentences|textMultiLine"
-                android:maxLength="2000"
+                android:maxLength="995"
                 android:maxLines="4"
                 android:scrollHorizontally="false"
-                android:scrollbars="vertical" />
+                android:scrollbars="vertical"
+                />
 
 
             <android.support.design.widget.FloatingActionButton

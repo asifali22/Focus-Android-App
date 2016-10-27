@@ -338,7 +338,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                 end = input.indexOf(" ");
                 if (end != -1&&start!=-1)
                     input = input.substring(0, end);
-                else if(start!=-1) {
+                else if(start!=-1&&!input.equals("http://")) {
                     input = input.substring(0, input.length());
                     getImageUrl = getUrl(input);
                 }
@@ -359,7 +359,7 @@ public class New_Post extends AppCompatActivity implements View.OnClickListener 
                 if ( finalDesc == null || finalDesc.isEmpty() || finalDesc.equals(""))
                     finalDesc = title;
 
-                if(start!=-1)
+                if(start!=-1&&!input.equals("http://"))
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

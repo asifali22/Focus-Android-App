@@ -107,10 +107,7 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
         holder.post_body.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(sharedPrefManager.isLoggedIn())
                 clickCallback.openSessionDetails(sessionFeed, holder);
-                else
-                    sharedPrefManager.showAlertDialog(view);
 
             }
         });
@@ -182,7 +179,8 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
                             "\n\nTime:"+sessionFeed.getTime_and_date()+
                             "\n\nAddress:"+sessionFeed.getAddress()+
                             "\n\nRoom:"+sessionFeed.getRoom()+
-                            "\n\nThank you - shared via FOCUS App, download now @link ");
+                            "\n\nThank you - shared via FOCUS App, download now from play store "+
+                            "http://play.google.com/store/apps/details?id=" + MyApplication.getAppContext().getPackageName());
                     sendIntent.setType("text/plain");
                     context.startActivity(Intent.createChooser(sendIntent, "Share via..."));
                 }

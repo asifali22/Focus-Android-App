@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -27,6 +28,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.hybrid.freeopensourceusers.ApplicationContext.MyApplication;
 import com.hybrid.freeopensourceusers.R;
 import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
 import com.hybrid.freeopensourceusers.Utility.Utility;
@@ -83,7 +85,19 @@ public class SettingsActivity extends AppCompatActivity {
             PreferenceScreen rateSettings = (PreferenceScreen) findPreference("rateSettings");
             rateSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
-                    Toast.makeText(getActivity(), "Implementation needed - url for play store", Toast.LENGTH_SHORT).show();
+                    Uri uri = Uri.parse("market://details?id=" + MyApplication.getAppContext().getPackageName());
+                    Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                    // To count with Play market backstack, After pressing back button,
+                    // to taken back to our application, we need to add following flags to intent.
+                    goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                            Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                            Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                    try {
+                        startActivity(goToMarket);
+                    } catch (ActivityNotFoundException e) {
+                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                Uri.parse("http://play.google.com/store/apps/details?id=" + MyApplication.getAppContext().getPackageName())));
+                    }
                     return true;
                 }
             });

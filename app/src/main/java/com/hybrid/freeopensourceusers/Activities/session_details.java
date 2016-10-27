@@ -287,14 +287,20 @@ public class session_details extends AppCompatActivity {
 
 
     public void callButtonClicked(View v){
-        Intent intent = new Intent(Intent.ACTION_DIAL);
-        intent.setData(Uri.parse("tel:"+phone));
-        startActivity(intent);
+        if (sharedPrefManager.isLoggedIn()) {
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:" + phone));
+            startActivity(intent);
+        }else
+            sharedPrefManager.showAlertDialog(v);
     }
 
     public void mailButtonClicked(View v){
-        Intent intent = new Intent (Intent.ACTION_VIEW , Uri.parse("mailto:" + email));
-        startActivity(intent);
+        if (sharedPrefManager.isLoggedIn()) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:" + email));
+            startActivity(intent);
+        }else
+            sharedPrefManager.showAlertDialog(v);
     }
 
     public void showOnMap(View v){

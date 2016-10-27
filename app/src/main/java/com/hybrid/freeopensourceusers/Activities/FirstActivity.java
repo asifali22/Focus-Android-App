@@ -77,6 +77,7 @@ import com.hybrid.freeopensourceusers.Fragments.TrendingFragment;
 import com.hybrid.freeopensourceusers.SearchStuffs.SearchableProvider;
 import com.hybrid.freeopensourceusers.Services.MyFireBaseInstanceIdService;
 import com.hybrid.freeopensourceusers.SharedPrefManager.SharedPrefManager;
+import com.hybrid.freeopensourceusers.Sqlite.DatabaseOperations;
 import com.hybrid.freeopensourceusers.Task.TaskLoadPostFeed;
 import com.hybrid.freeopensourceusers.UserProfileStuff.UserProfileOwner;
 import com.hybrid.freeopensourceusers.Volley.VolleySingleton;
@@ -91,6 +92,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import static android.R.attr.fragment;
 import static android.R.attr.name;
 import static android.R.attr.type;
 import static java.security.AccessController.getContext;
@@ -123,15 +125,16 @@ public class FirstActivity extends AppCompatActivity implements
         registerReceiver(myReceiver, filter);
         b = getIntent().getExtras();
         if(b!=null)
-        if(b.getBoolean("login_intent",false)==true)
-            new TaskLoadPostFeed(this).execute();
+            if(b.getBoolean("login_intent",false)) {
+                new TaskLoadPostFeed(this).execute();
+            }
+
 
         myApplication = MyApplication.getInstance();
         volleySingleton = VolleySingleton.getInstance();
         requestQueue = volleySingleton.getRequestQueue();
         sharedPrefManager = new SharedPrefManager(this);
 
-        Toast.makeText(this, "This is a test run of the App", Toast.LENGTH_SHORT).show();
         bindViews();
 
 
@@ -261,6 +264,8 @@ public class FirstActivity extends AppCompatActivity implements
             }
         });
 
+
+
     }
 
 
@@ -384,6 +389,8 @@ public class FirstActivity extends AppCompatActivity implements
                                signOut();
                                SharedPreferences sharedPreferences = getSharedPreferences("user_details", MODE_PRIVATE);
                                sharedPreferences.edit().putBoolean("logged_in",false).apply();
+                               DatabaseOperations dop = MyApplication.getDatabase();
+                               dop.clearOnSignOut(dop);
                                startActivity(new Intent(FirstActivity.this, LoginActivity.class));
                                finish();
                            }

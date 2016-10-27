@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity implements
         input_password = (EditText) findViewById(R.id.input_password);
         Login = (Button) findViewById(R.id.btn_login);
         Login.setOnClickListener(this);
-        Glide.with(this).load(R.drawable.focus).into(logoImage);
+        Glide.with(this).load(R.drawable.focus_brand).into(logoImage);
 
 
         // Configure sign-in to request the user's ID, email address, and basic

@@ -83,7 +83,8 @@
                         android:inputType="textCapWords"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Title of the session" />
+                        android:hint="Title of the session"
+                        android:maxLength="95"/>
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
@@ -113,9 +114,9 @@
                     <EditText
                         android:id="@+id/ses_description"
                         android:layout_width="match_parent"
-                        android:inputType="textCapSentences"
                         android:layout_height="wrap_content"
-                        android:hint="About the session" />
+                        android:hint="About the session"
+                        android:maxLength="495"/>
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
@@ -148,7 +149,8 @@
                         android:layout_height="wrap_content"
                         android:inputType="textCapWords"
                         android:layout_marginBottom="8dp"
-                        android:hint="Name" />
+                        android:hint="Name"
+                        android:maxLength="95"/>
 
                     <EditText
                         android:id="@+id/ses_resource_person_designation"
@@ -156,7 +158,8 @@
                         android:layout_height="wrap_content"
                         android:inputType="textCapWords"
                         android:layout_below="@+id/ses_resource_person"
-                        android:hint="Designation" />
+                        android:hint="Designation"
+                        android:maxLength="95"/>
 
                 </LinearLayout>
 
@@ -190,7 +193,8 @@
                         android:inputType="textCapSentences"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:hint="Venue" />
+                        android:hint="Venue"
+                        android:maxLength="100"/>
 
 
                     <EditText
@@ -199,7 +203,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:inputType="textCapSentences"
-                        android:hint="Landmark - shown in map" />
+                        android:hint="Landmark - shown in map"
+                        android:maxLength="195"/>
 
                     <EditText
                         android:id="@+id/ses_room"
@@ -207,7 +212,8 @@
                         android:layout_marginBottom="8dp"
                         android:layout_height="wrap_content"
                         android:inputType="textCapWords"
-                        android:hint="Room" />
+                        android:hint="Room"
+                        android:maxLength="45"/>
 
 
                     <EditText
@@ -215,7 +221,8 @@
                         android:layout_width="match_parent"
                         android:inputType="textCapWords"
                         android:layout_height="wrap_content"
-                        android:hint="Date, @Time" />
+                        android:hint="Date, @Time"
+                        android:maxLength="95"/>
 
                 </LinearLayout>
 
@@ -251,7 +258,8 @@
                         android:inputType="textCapWords"
                         android:layout_marginBottom="8dp"
                         android:layout_below="@+id/ses_venue"
-                        android:hint="Name" />
+                        android:hint="Name"
+                        android:maxLength="95"/>
 
                     <EditText
                         android:id="@+id/ses_email"
@@ -259,7 +267,8 @@
                         android:layout_width="match_parent"
                         android:inputType="textEmailAddress"
                         android:layout_height="wrap_content"
-                        android:hint="Email" />
+                        android:hint="Email"
+                        android:maxLength="95"/>
 
                     <EditText
                         android:id="@+id/ses_phone"
@@ -267,7 +276,8 @@
                         android:inputType="phone"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/ses_email"
-                        android:hint="Phone" />
+                        android:hint="Phone"
+                        android:maxLength="13"/>
 
 
                 </LinearLayout>

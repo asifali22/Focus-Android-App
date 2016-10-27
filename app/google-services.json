@@ -15,13 +15,21 @@
       },
       "oauth_client": [
         {
+          "client_id": "1022523501019-lt3hv2ptpk3d112ifsrheejsvjojm56f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hybrid.freeopensourceusers",
+            "certificate_hash": "3CEEC7A4177BC0E078EC52C768F78F81F73E6790"
+          }
+        },
+        {
           "client_id": "1022523501019-6tklecgqt383is7k461p59f10e695s9b.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCNDKOdjd7U9eaBdjUIKxcTKtifj7akhCY"
+          "current_key": "AIzaSyCt43i5WTvoydmWTH8-WynO3_apWPH_Ll4"
         }
       ],
       "services": {
