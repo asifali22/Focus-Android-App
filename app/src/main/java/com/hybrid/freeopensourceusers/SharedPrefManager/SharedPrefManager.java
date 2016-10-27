@@ -215,6 +215,7 @@ public class SharedPrefManager {
                 .setPositiveButton("SURE", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent myIntent = new Intent(MyApplication.getAppContext(), LoginActivity.class);
+                        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(myIntent);
                     }
                 })

@@ -663,7 +663,8 @@ public class RecyclerTrendingAdapter extends RecyclerView.Adapter<RecyclerTrendi
                             if(!postFeed.getLink().isEmpty())
                             if(!postFeed.getLink().equals("abc"))
                                 shareString=shareString+"\n\nLink:"+postFeed.getLink();
-                            shareString=shareString+"\n\nThank you - shared via FOCUS App, download now @link ";
+                            shareString=shareString+"\n\nThank you - shared via FOCUS App, download now from play store ";
+                            shareString=shareString+"http://play.google.com/store/apps/details?id=" + MyApplication.getAppContext().getPackageName();
                             sendIntent.putExtra(Intent.EXTRA_TEXT,shareString);
                             sendIntent.setType("text/plain");
                             context.startActivity(Intent.createChooser(sendIntent, "Share via..."));

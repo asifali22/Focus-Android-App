@@ -179,7 +179,8 @@ public class RecyclerSessionAdapter extends RecyclerView.Adapter<RecyclerSession
                             "\n\nTime:"+sessionFeed.getTime_and_date()+
                             "\n\nAddress:"+sessionFeed.getAddress()+
                             "\n\nRoom:"+sessionFeed.getRoom()+
-                            "\n\nThank you - shared via FOCUS App, download now @link ");
+                            "\n\nThank you - shared via FOCUS App, download now from play store "+
+                            "http://play.google.com/store/apps/details?id=" + MyApplication.getAppContext().getPackageName());
                     sendIntent.setType("text/plain");
                     context.startActivity(Intent.createChooser(sendIntent, "Share via..."));
                 }

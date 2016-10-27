@@ -251,7 +251,7 @@ public class DatabaseOperations extends SQLiteOpenHelper {
                 html_test_const.getUser_pic(),
                 html_test_const.getUser_status()};
 
-        Cursor cursor = sqLiteDatabase.query(html_test_const.getTable_name(), columns, null, null, null, null, html_test_const.getDate()+" desc");
+        Cursor cursor = sqLiteDatabase.query(html_test_const.getTable_name(), columns, null, null, null, null, html_test_const.getSr_key()+" desc");
         if (cursor != null && cursor.moveToFirst()) {
             L.m("loading entries " + cursor.getCount() + new Date(System.currentTimeMillis()));
             do {

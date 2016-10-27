@@ -240,7 +240,7 @@ public class DatabaseOperations_Session extends SQLiteOpenHelper {
     public ArrayList<SessionFeed> readSessionData(DatabaseOperations_Session dop){
         SQLiteDatabase sqLiteDatabase = dop.getReadableDatabase();
         ArrayList<SessionFeed> newsFeedList = new ArrayList<>();
-        String query ="select * from " + session_class.getTable_name()+";";
+        String query ="select * from " + session_class.getTable_name()+" order by "+session_class.getSession_id()+" desc;";
         Cursor cursor = sqLiteDatabase.rawQuery(query,null);
         if (cursor != null && cursor.moveToFirst()) {
             L.m("loading entries " + cursor.getCount() + new Date(System.currentTimeMillis()));

@@ -1,17 +1,22 @@
 package com.hybrid.freeopensourceusers.UserProfileStuff;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -395,10 +400,25 @@ public class UserProfileOwner extends AppCompatActivity
 
 
     public void changeUserProfilePic(View view) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.fragment_containerUserProfile, MainFragmentForUserProfile.getInstance(),"frag_profile")
-                .commit();
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            //do your check here
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.fragment_containerUserProfile, MainFragmentForUserProfile.getInstance(),"frag_profile")
+                        .commit();
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }
+        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.fragment_containerUserProfile, MainFragmentForUserProfile.getInstance(),"frag_profile")
+                    .commit();
+        }
+
+
     }
 
     public void showFullProfilePhoto(View view) {
